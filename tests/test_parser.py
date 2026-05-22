@@ -1,0 +1,336 @@
+# -*- coding: utf-8 -*-
+"""AST节点测试"""
+import pytest
+from src.parser.ast_nodes import (
+    # 基础节点
+    NumberNode, StringNode, IdentifierNode,
+    # 表达式节点
+    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
+    MemberAccessNode, IndexNode,
+    # 语句节点
+    AssignNode, VarDefNode, IfNode, ForNode, WhileNode,
+    RepeatNode, FunctionDefNode, FunctionCallNode, ReturnNode,
+    # 特殊节点
+    ProgramNode, BlockNode
+)
+
+
+# ============ 基础节点测试 ============
+
+def test_number_node():
+    """测试数字节点"""
+    node = NumberNode(line=1, column=0, value=123)
+    assert node.value == 123
+    assert node.line == 1
+    assert node.column == 0
+    assert str(node) == "NumberNode(123)"
+
+
+def test_number_node_float():
+    """测试浮点数节点"""
+    node = NumberNode(line=1, column=0, value=3.14)
+    assert node.value == 3.14
+    assert str(node) == "NumberNode(3.14)"
+
+
+def test_string_node():
+    """测试字符串节点"""
+    node = StringNode(line=1, column=0, value="你好")
+    assert node.value == "你好"
+    assert str(node) == "StringNode('你好')"
+
+
+def test_identifier_node():
+    """测试标识符节点"""
+    node = IdentifierNode(line=1, column=0, name="变量名")
+    assert node.name == "变量名"
+    assert str(node) == "IdentifierNode(变量名)"
+
+
+# ============ 表达式节点测试 ============
+
+def test_binary_op_node():
+    """测试二元操作节点"""
+    left = NumberNode(line=1, column=0, value=1)
+    right = NumberNode(line=1, column=2, value=2)
+    node = BinaryOpNode(line=1, column=1, left=left, operator="+", right=right)
+    assert node.operator == "+"
+    assert node.left == left
+    assert node.right == right
+    assert str(node) == "BinaryOpNode(NumberNode(1) + NumberNode(2))"
+
+
+def test_unary_op_node():
+    """测试一元操作节点"""
+    operand = NumberNode(line=1, column=1, value=5)
+    node = UnaryOpNode(line=1, column=0, operator="-", operand=operand)
+    assert node.operator == "-"
+    assert node.operand == operand
+    assert str(node) == "UnaryOpNode(-NumberNode(5))"
+
+
+def test_list_node():
+    """测试列表节点"""
+    elem1 = NumberNode(line=1, column=0, value=1)
+    elem2 = NumberNode(line=1, column=2, value=2)
+    node = ListNode(line=1, column=0, elements=[elem1, elem2])
+    assert len(node.elements) == 2
+    assert str(node) == "ListNode([NumberNode(1), NumberNode(2)])"
+
+
+def test_list_node_empty():
+    """测试空列表节点"""
+    node = ListNode(line=1, column=0, elements=[])
+    assert len(node.elements) == 0
+    assert str(node) == "ListNode([])"
+
+
+def test_dict_node():
+    """测试字典节点"""
+    key = StringNode(line=1, column=0, value="键")
+    value = NumberNode(line=1, column=2, value=1)
+    node = DictNode(line=1, column=0, pairs=[(key, value)])
+    assert len(node.pairs) == 1
+    assert str(node) == "DictNode({StringNode('键'): NumberNode(1)})"
+
+
+def test_dict_node_empty():
+    """测试空字典节点"""
+    node = DictNode(line=1, column=0, pairs=[])
+    assert len(node.pairs) == 0
+    assert str(node) == "DictNode({})"
+
+
+def test_member_access_node():
+    """测试成员访问节点"""
+    obj = IdentifierNode(line=1, column=0, name="对象")
+    node = MemberAccessNode(line=1, column=2, obj=obj, member="属性")
+    assert node.obj == obj
+    assert node.member == "属性"
+    assert str(node) == "MemberAccessNode(IdentifierNode(对象).属性)"
+
+
+def test_index_node():
+    """测试索引节点"""
+    obj = IdentifierNode(line=1, column=0, name="列表")
+    index = NumberNode(line=1, column=3, value=0)
+    node = IndexNode(line=1, column=2, obj=obj, index=index)
+    assert node.obj == obj
+    assert node.index == index
+    assert str(node) == "IndexNode(IdentifierNode(列表)[NumberNode(0)])"
+
+
+# ============ 语句节点测试 ============
+
+def test_assign_node():
+    """测试赋值节点"""
+    target = IdentifierNode(line=1, column=0, name="x")
+    value = NumberNode(line=1, column=4, value=10)
+    node = AssignNode(line=1, column=2, target=target, value=value)
+    assert node.target == target
+    assert node.value == value
+    assert str(node) == "AssignNode(IdentifierNode(x) = NumberNode(10))"
+
+
+def test_var_def_node_with_value():
+    """测试带值的变量定义节点"""
+    value = NumberNode(line=1, column=4, value=5)
+    node = VarDefNode(line=1, column=0, name="x", value=value)
+    assert node.name == "x"
+    assert node.value == value
+    assert str(node) == "VarDefNode(x = NumberNode(5))"
+
+
+def test_var_def_node_without_value():
+    """测试不带值的变量定义节点"""
+    node = VarDefNode(line=1, column=0, name="x")
+    assert node.name == "x"
+    assert node.value is None
+    assert str(node) == "VarDefNode(x)"
+
+
+def test_if_node_with_else():
+    """测试带else的条件节点"""
+    condition = IdentifierNode(line=1, column=0, name="x")
+    then_branch = [NumberNode(line=1, column=0, value=1)]
+    else_branch = [NumberNode(line=1, column=0, value=2)]
+    node = IfNode(line=1, column=0, condition=condition, then_branch=then_branch, else_branch=else_branch)
+    assert node.condition == condition
+    assert len(node.then_branch) == 1
+    assert len(node.else_branch) == 1
+    assert str(node) == "IfNode(condition=IdentifierNode(x), then=1 stmts)"
+
+
+def test_if_node_without_else():
+    """测试不带else的条件节点"""
+    condition = IdentifierNode(line=1, column=0, name="x")
+    then_branch = [NumberNode(line=1, column=0, value=1)]
+    node = IfNode(line=1, column=0, condition=condition, then_branch=then_branch)
+    assert node.else_branch is None
+
+
+def test_for_node():
+    """测试遍历循环节点"""
+    iterable = IdentifierNode(line=1, column=4, name="列表")
+    body = [NumberNode(line=1, column=0, value=1)]
+    node = ForNode(line=1, column=0, var="x", iterable=iterable, body=body)
+    assert node.var == "x"
+    assert node.iterable == iterable
+    assert len(node.body) == 1
+    assert str(node) == "ForNode(x in IdentifierNode(列表), 1 stmts)"
+
+
+def test_while_node():
+    """测试当循环节点"""
+    condition = IdentifierNode(line=1, column=0, name="条件")
+    body = [NumberNode(line=1, column=0, value=1)]
+    node = WhileNode(line=1, column=0, condition=condition, body=body)
+    assert node.condition == condition
+    assert len(node.body) == 1
+    assert str(node) == "WhileNode(condition=IdentifierNode(条件), 1 stmts)"
+
+
+def test_repeat_node():
+    """测试重复节点"""
+    count = NumberNode(line=1, column=0, value=10)
+    body = [NumberNode(line=1, column=0, value=1)]
+    node = RepeatNode(line=1, column=0, count=count, body=body)
+    assert node.count == count
+    assert len(node.body) == 1
+    assert str(node) == "RepeatNode(NumberNode(10) times, 1 stmts)"
+
+
+def test_function_def_node():
+    """测试函数定义节点"""
+    body = [NumberNode(line=1, column=0, value=1)]
+    node = FunctionDefNode(line=1, column=0, name="函数名", params=["x", "y"], body=body)
+    assert node.name == "函数名"
+    assert node.params == ["x", "y"]
+    assert len(node.body) == 1
+    assert str(node) == "FunctionDefNode(函数名(x, y), 1 stmts)"
+
+
+def test_function_def_node_no_params():
+    """测试无参数函数定义节点"""
+    body = [NumberNode(line=1, column=0, value=1)]
+    node = FunctionDefNode(line=1, column=0, name="函数名", params=[], body=body)
+    assert node.params == []
+    assert str(node) == "FunctionDefNode(函数名(), 1 stmts)"
+
+
+def test_function_call_node():
+    """测试函数调用节点"""
+    arg1 = NumberNode(line=1, column=0, value=1)
+    arg2 = NumberNode(line=1, column=2, value=2)
+    node = FunctionCallNode(line=1, column=0, name="函数名", args=[arg1, arg2])
+    assert node.name == "函数名"
+    assert len(node.args) == 2
+    assert str(node) == "FunctionCallNode(函数名(NumberNode(1), NumberNode(2)))"
+
+
+def test_function_call_node_no_args():
+    """测试无参数函数调用节点"""
+    node = FunctionCallNode(line=1, column=0, name="函数名", args=[])
+    assert len(node.args) == 0
+    assert str(node) == "FunctionCallNode(函数名())"
+
+
+def test_return_node_with_value():
+    """测试带返回值的返回节点"""
+    value = NumberNode(line=1, column=0, value=42)
+    node = ReturnNode(line=1, column=0, value=value)
+    assert node.value == value
+    assert str(node) == "ReturnNode(NumberNode(42))"
+
+
+def test_return_node_without_value():
+    """测试不带返回值的返回节点"""
+    node = ReturnNode(line=1, column=0)
+    assert node.value is None
+    assert str(node) == "ReturnNode()"
+
+
+# ============ 特殊节点测试 ============
+
+def test_program_node():
+    """测试程序根节点"""
+    stmt1 = NumberNode(line=1, column=0, value=1)
+    stmt2 = NumberNode(line=1, column=0, value=2)
+    node = ProgramNode(line=1, column=0, statements=[stmt1, stmt2])
+    assert len(node.statements) == 2
+    assert str(node) == "ProgramNode(2 statements)"
+
+
+def test_program_node_empty():
+    """测试空程序根节点"""
+    node = ProgramNode(line=1, column=0, statements=[])
+    assert len(node.statements) == 0
+    assert str(node) == "ProgramNode(0 statements)"
+
+
+def test_block_node():
+    """测试代码块节点"""
+    stmt1 = NumberNode(line=1, column=0, value=1)
+    stmt2 = NumberNode(line=1, column=0, value=2)
+    node = BlockNode(line=1, column=0, statements=[stmt1, stmt2])
+    assert len(node.statements) == 2
+    assert str(node) == "BlockNode(2 statements)"
+
+
+def test_block_node_empty():
+    """测试空代码块节点"""
+    node = BlockNode(line=1, column=0, statements=[])
+    assert len(node.statements) == 0
+    assert str(node) == "BlockNode(0 statements)"
+
+
+# ============ 复杂场景测试 ============
+
+def test_nested_binary_op():
+    """测试嵌套二元操作"""
+    # 1 + 2 * 3
+    one = NumberNode(line=1, column=0, value=1)
+    two = NumberNode(line=1, column=4, value=2)
+    three = NumberNode(line=1, column=8, value=3)
+    multiply = BinaryOpNode(line=1, column=6, left=two, operator="*", right=three)
+    add = BinaryOpNode(line=1, column=2, left=one, operator="+", right=multiply)
+    assert add.left == one
+    assert add.right == multiply
+
+
+def test_nested_if():
+    """测试嵌套条件"""
+    # 若 x 则 若 y 则 1 否则 2 否则 3
+    x = IdentifierNode(line=1, column=0, name="x")
+    y = IdentifierNode(line=1, column=0, name="y")
+    inner_if = IfNode(
+        line=2, column=0,
+        condition=y,
+        then_branch=[NumberNode(line=2, column=0, value=1)],
+        else_branch=[NumberNode(line=2, column=0, value=2)]
+    )
+    outer_if = IfNode(
+        line=1, column=0,
+        condition=x,
+        then_branch=[inner_if],
+        else_branch=[NumberNode(line=1, column=0, value=3)]
+    )
+    assert len(outer_if.then_branch) == 1
+    assert isinstance(outer_if.then_branch[0], IfNode)
+
+
+def test_function_with_nested_body():
+    """测试带嵌套语句的函数"""
+    # 函 阶乘 n：
+    #   若 n 小等 1 则 返回 1
+    #   否则 返回 n 乘 阶乘 n 减 1
+    n = IdentifierNode(line=1, column=0, name="n")
+    one = NumberNode(line=1, column=0, value=1)
+    
+    condition = BinaryOpNode(line=2, column=0, left=n, operator="<=", right=one)
+    return1 = ReturnNode(line=2, column=0, value=one)
+    if_stmt = IfNode(line=2, column=0, condition=condition, then_branch=[return1])
+    
+    func = FunctionDefNode(line=1, column=0, name="阶乘", params=["n"], body=[if_stmt])
+    assert func.name == "阶乘"
+    assert len(func.body) == 1
