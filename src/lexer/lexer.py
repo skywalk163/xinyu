@@ -196,13 +196,17 @@ class Lexer:
         while self.pos < len(self.source) and self._is_chinese(self.source[self.pos]):
             self.pos += 1
         
+        # 继续读取后面的英文/数字/下划线（支持混合标识符如"用户name"）
+        while self.pos < len(self.source) and (self.source[self.pos].isalnum() or self.source[self.pos] == '_'):
+            self.pos += 1
+        
         value = self.source[start:self.pos]
         self.column += len(value)
         
-        # 检查是否为关键字
+        # 检查是否为关键字（只有纯中文才可能是关键字）
         if value in ALL_KEYWORDS:
             self.tokens.append(Token(ALL_KEYWORDS[value], value, self.line, start_col))
-        # 检查是否为操作符
+        # 检查是否为操作符（只有纯中文才可能是操作符）
         elif value in OPERATORS:
             self.tokens.append(Token(OPERATORS[value], value, self.line, start_col))
         # 否则为标识符

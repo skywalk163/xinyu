@@ -253,3 +253,37 @@ def test_lexer_symbols():
     
     for i, expected_type in enumerate(expected_types):
         assert tokens[i].type == expected_type
+
+
+# ===== 任务5：词法分析器高级特性测试 =====
+
+def test_lexer_math_expression():
+    """词法分析器：数学表达式 $()"""
+    lexer = Lexer('$(π * r²)')
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.DOLLAR
+    assert tokens[1].type == TokenType.LPAREN
+
+def test_lexer_python_block():
+    """词法分析器：Python代码块 {{}}"""
+    lexer = Lexer('{{import pandas}}')
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.LBRACE
+
+def test_lexer_indentation():
+    """词法分析器：缩进处理（任务4已实现，此测试验证）"""
+    source = """若条件：
+  动作。
+否则：
+  其他动作。"""
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    assert TokenType.INDENT in [t.type for t in tokens]
+    assert TokenType.DEDENT in [t.type for t in tokens]
+
+def test_lexer_mixed_chinese_english():
+    """词法分析器：混合中英文标识符"""
+    lexer = Lexer('用户name = "张三"')
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.IDENTIFIER
+    assert tokens[0].value == "用户name"

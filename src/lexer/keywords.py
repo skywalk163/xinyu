@@ -65,12 +65,19 @@ SYMBOLS = {
     "、": TokenType.PAUSE_MARK,  # 顿号
     "（": TokenType.LPAREN,
     "）": TokenType.RPAREN,
+    "(": TokenType.LPAREN,      # 英文括号（用于数学表达式）
+    ")": TokenType.RPAREN,
     "【": TokenType.LBRACKET,
     "】": TokenType.RBRACKET,
     "{": TokenType.LBRACE,
     "}": TokenType.RBRACE,
     "=": TokenType.ASSIGN,
     "$": TokenType.DOLLAR,
+    # 数学表达式符号
+    "*": TokenType.MULTIPLY,
+    "+": TokenType.PLUS,
+    "-": TokenType.MINUS,
+    "/": TokenType.DIVIDE,
 }
 
 # 合并所有关键字和标记（用于词法分析）
