@@ -43,3 +43,35 @@ def test_operators():
     assert OPERATORS["减"] == TokenType.MINUS
     assert OPERATORS["乘"] == TokenType.MULTIPLY
     assert OPERATORS["除"] == TokenType.DIVIDE
+
+
+# ===== 任务4：词法分析器基础测试 =====
+from src.lexer.lexer import Lexer
+
+def test_lexer_number():
+    """词法分析器：数字"""
+    lexer = Lexer("123")
+    tokens = lexer.tokenize()
+    assert len(tokens) == 2  # NUMBER + EOF
+    assert tokens[0].type == TokenType.NUMBER
+    assert tokens[0].value == 123
+
+def test_lexer_string():
+    """词法分析器：字符串"""
+    lexer = Lexer('"你好世界"')
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.STRING
+    assert tokens[0].value == "你好世界"
+
+def test_lexer_identifier():
+    """词法分析器：标识符"""
+    lexer = Lexer("用户数据")
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.IDENTIFIER
+    assert tokens[0].value == "用户数据"
+
+def test_lexer_keyword():
+    """词法分析器：关键字"""
+    lexer = Lexer("若")
+    tokens = lexer.tokenize()
+    assert tokens[0].type == TokenType.IF
