@@ -10,7 +10,6 @@
 - 注释（-- 开头）
 """
 
-import re
 from typing import List
 from src.lexer.tokens import Token, TokenType
 from src.lexer.keywords import ALL_KEYWORDS, OPERATORS, SYMBOLS
@@ -133,8 +132,12 @@ class Lexer:
         self.pos += 1  # 跳过结尾的 "
         self.column += self.pos - start + 1
         
-        # 处理转义字符
-        value = value.replace('\\n', '\n').replace('\\t', '\t').replace('\\"', '"')
+        # 处理转义字符（注意顺序：先处理 \\，再处理其他）
+        value = value.replace('\\\\', '\x00')  # 临时占位符
+        value = value.replace('\\n', '\n')
+        value = value.replace('\\t', '\t')
+        value = value.replace('\\"', '"')
+        value = value.replace('\x00', '\\')  # 恢复反斜杠
         
         self.tokens.append(Token(TokenType.STRING, value, self.line, start_col))
     
@@ -142,9 +145,24 @@ class Lexer:
         """读取数字（整数或浮点数）"""
         start_col = self.column
         start = self.pos
+        dot_count = 0
         
-        while self.pos < len(self.source) and (self.source[self.pos].isdigit() or self.source[self.pos] == '.'):
-            self.pos += 1
+        while self.pos < len(self.source):
+            char = self.source[self.pos]
+            if char.isdigit():
+                self.pos += 1
+            elif char == '.':
+                dot_count += 1
+                if dot_count > 1:
+                    # 遇到第二个小数点，停止解析并报错
+                    raise LexerError(
+                        f"Invalid number format: multiple decimal points in '{self.source[start:self.pos + 1]}'",
+                        self.line,
+                        start_col
+                    )
+                self.pos += 1
+            else:
+                break
         
         value = self.source[start:self.pos]
         self.column += len(value)
@@ -159,10 +177,12 @@ class Lexer:
         char = self.source[self.pos]
         token_type = SYMBOLS.get(char)
         
-        if token_type:
-            self.tokens.append(Token(token_type, char, self.line, self.column))
-            self.pos += 1
-            self.column += 1
+        if token_type is None:
+            raise LexerError(f"Unknown symbol: {char}", self.line, self.column)
+        
+        self.tokens.append(Token(token_type, char, self.line, self.column))
+        self.pos += 1
+        self.column += 1
     
     def _is_chinese(self, char: str) -> bool:
         """判断字符是否为中文"""
