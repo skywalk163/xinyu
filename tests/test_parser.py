@@ -334,3 +334,545 @@ def test_function_with_nested_body():
     func = FunctionDefNode(line=1, column=0, name="阶乘", params=["n"], body=[if_stmt])
     assert func.name == "阶乘"
     assert len(func.body) == 1
+
+
+# ============ 语法分析器测试 ============
+
+import pytest
+from src.lexer.lexer import Lexer
+from src.parser.parser import Parser, ParseError
+
+
+class TestParserBasic:
+    """基础解析测试"""
+    
+    def test_parse_empty_program(self):
+        """测试空程序"""
+        lexer = Lexer("")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 0
+    
+    def test_parse_number(self):
+        """测试数字解析"""
+        lexer = Lexer("42")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        assert isinstance(ast.statements[0], NumberNode)
+        assert ast.statements[0].value == 42
+    
+    def test_parse_string(self):
+        """测试字符串解析"""
+        lexer = Lexer('"你好世界"')
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        assert isinstance(ast.statements[0], StringNode)
+        assert ast.statements[0].value == "你好世界"
+    
+    def test_parse_identifier(self):
+        """测试标识符解析"""
+        lexer = Lexer("变量名")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        assert isinstance(ast.statements[0], IdentifierNode)
+        assert ast.statements[0].name == "变量名"
+
+
+class TestParserExpression:
+    """表达式解析测试"""
+    
+    def test_parse_binary_add(self):
+        """测试加法表达式"""
+        lexer = Lexer("1 加 2")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "+"
+        assert expr.left.value == 1
+        assert expr.right.value == 2
+    
+    def test_parse_binary_subtract(self):
+        """测试减法表达式"""
+        lexer = Lexer("5 减 3")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "-"
+    
+    def test_parse_binary_multiply(self):
+        """测试乘法表达式"""
+        lexer = Lexer("3 乘 4")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "*"
+    
+    def test_parse_binary_divide(self):
+        """测试除法表达式"""
+        lexer = Lexer("10 除 2")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "/"
+    
+    def test_parse_comparison_equals(self):
+        """测试相等比较"""
+        lexer = Lexer("x 等 5")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "=="
+    
+    def test_parse_comparison_less(self):
+        """测试小于比较"""
+        lexer = Lexer("a 小 b")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "<"
+    
+    def test_parse_unary_not(self):
+        """测试逻辑非"""
+        lexer = Lexer("非 真")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, UnaryOpNode)
+        assert expr.operator == "not"
+    
+    def test_parse_unary_negative(self):
+        """测试负号"""
+        lexer = Lexer("-5")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, UnaryOpNode)
+        assert expr.operator == "-"
+    
+    def test_parse_parentheses(self):
+        """测试括号表达式"""
+        lexer = Lexer("（1 加 2）")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "+"
+    
+    def test_parse_operator_precedence(self):
+        """测试运算符优先级：1 加 2 乘 3 应该解析为 1 + (2 * 3)"""
+        lexer = Lexer("1 加 2 乘 3")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "+"
+        assert isinstance(expr.right, BinaryOpNode)
+        assert expr.right.operator == "*"
+    
+    def test_parse_logical_and(self):
+        """测试逻辑与操作"""
+        lexer = Lexer("x 且 y")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "and"
+    
+    def test_parse_logical_or(self):
+        """测试逻辑或操作"""
+        lexer = Lexer("x 或 y")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "or"
+    
+    def test_parse_logical_precedence(self):
+        """测试逻辑操作符优先级：x 或 y 且 z 应该解析为 x 或 (y 且 z)"""
+        lexer = Lexer("x 或 y 且 z")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        expr = ast.statements[0]
+        assert isinstance(expr, BinaryOpNode)
+        assert expr.operator == "or"
+        assert isinstance(expr.right, BinaryOpNode)
+        assert expr.right.operator == "and"
+
+
+class TestParserStatement:
+    """语句解析测试"""
+    
+    def test_parse_var_def(self):
+        """测试变量定义"""
+        lexer = Lexer("定 x = 5")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, VarDefNode)
+        assert stmt.name == "x"
+        assert stmt.value.value == 5
+    
+    def test_parse_assignment(self):
+        """测试赋值语句"""
+        lexer = Lexer("x = 10")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, AssignNode)
+        assert stmt.target.name == "x"
+        assert stmt.value.value == 10
+    
+    def test_parse_function_call_no_args(self):
+        """测试无参数函数调用（使用括号）"""
+        lexer = Lexer("函数名（）")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, FunctionCallNode)
+        assert stmt.name == "函数名"
+        assert len(stmt.args) == 0
+    
+    def test_parse_identifier_not_call(self):
+        """测试单独的标识符不是函数调用"""
+        lexer = Lexer("变量名")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        # 单独的标识符应该是标识符引用，不是函数调用
+        assert isinstance(stmt, IdentifierNode)
+        assert stmt.name == "变量名"
+    
+    def test_parse_function_call_with_args(self):
+        """测试带参数函数调用"""
+        lexer = Lexer("函数名 1 2 3")
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        stmt = ast.statements[0]
+        assert isinstance(stmt, FunctionCallNode)
+        assert stmt.name == "函数名"
+        assert len(stmt.args) == 3
+
+
+class TestParserControlFlow:
+    """控制流解析测试"""
+    
+    def test_parse_if_then(self):
+        """测试条件语句（只有then分支）"""
+        source = """若 x 则
+    印 1
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, IfNode)
+        assert isinstance(stmt.condition, IdentifierNode)
+        assert stmt.condition.name == "x"
+        assert len(stmt.then_branch) == 1
+        assert stmt.else_branch is None
+    
+    def test_parse_if_then_else(self):
+        """测试条件语句（带else分支）"""
+        source = """若 x 则
+    印 1
+否则
+    印 2
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        stmt = ast.statements[0]
+        assert isinstance(stmt, IfNode)
+        assert len(stmt.then_branch) == 1
+        assert len(stmt.else_branch) == 1
+    
+    def test_parse_for_loop(self):
+        """测试遍历循环"""
+        source = """遍历 x 于 列表：
+    印 x
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, ForNode)
+        assert stmt.var == "x"
+        assert isinstance(stmt.iterable, IdentifierNode)
+        assert len(stmt.body) == 1
+    
+    def test_parse_while_loop(self):
+        """测试当循环"""
+        source = """当 条件：
+    印 1
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, WhileNode)
+        assert isinstance(stmt.condition, IdentifierNode)
+        assert len(stmt.body) == 1
+    
+    def test_parse_repeat(self):
+        """测试重复语句"""
+        source = """重复 5 次：
+    印 1
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, RepeatNode)
+        assert stmt.count.value == 5
+        assert len(stmt.body) == 1
+
+
+class TestParserFunction:
+    """函数解析测试"""
+    
+    def test_parse_function_def_no_params(self):
+        """测试无参数函数定义"""
+        source = """定 函数名 = 函：
+    返回 1
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        # 函数定义是通过变量定义实现的
+        stmt = ast.statements[0]
+        assert isinstance(stmt, VarDefNode)
+        assert stmt.name == "函数名"
+        assert isinstance(stmt.value, FunctionDefNode)
+        assert len(stmt.value.params) == 0
+        assert len(stmt.value.body) == 1
+    
+    def test_parse_function_def_with_params(self):
+        """测试带参数函数定义"""
+        source = """定 加法 = 函 x y：
+    返回 x 加 y
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        stmt = ast.statements[0]
+        assert isinstance(stmt, VarDefNode)
+        assert stmt.name == "加法"
+        assert isinstance(stmt.value, FunctionDefNode)
+        assert stmt.value.params == ["x", "y"]
+        assert len(stmt.value.body) == 1
+    
+    def test_parse_return_with_value(self):
+        """测试带返回值的返回语句"""
+        source = "返回 42"
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, ReturnNode)
+        assert stmt.value.value == 42
+    
+    def test_parse_return_without_value(self):
+        """测试不带返回值的返回语句"""
+        source = "返回"
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 1
+        stmt = ast.statements[0]
+        assert isinstance(stmt, ReturnNode)
+        assert stmt.value is None
+
+
+class TestParserError:
+    """错误处理测试"""
+    
+    def test_parse_error_unexpected_token(self):
+        """测试意外的token错误"""
+        lexer = Lexer("定 = 5")  # 缺少变量名
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        
+        with pytest.raises(ParseError):
+            parser.parse()
+    
+    def test_parse_error_missing_colon(self):
+        """测试缺少冒号错误"""
+        source = """遍历 x 于 列表
+    印 x
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        
+        with pytest.raises(ParseError):
+            parser.parse()
+
+
+class TestParserComplex:
+    """复杂场景测试"""
+    
+    def test_parse_multiple_statements(self):
+        """测试多个语句"""
+        source = """定 x = 1
+定 y = 2
+印 x 加 y"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        assert len(ast.statements) == 3
+    
+    def test_parse_nested_if(self):
+        """测试嵌套条件"""
+        source = """若 x 则
+    若 y 则
+        印 1
+    。
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        stmt = ast.statements[0]
+        assert isinstance(stmt, IfNode)
+        assert isinstance(stmt.then_branch[0], IfNode)
+    
+    def test_parse_function_in_function(self):
+        """测试函数内定义函数"""
+        source = """定 外层 = 函：
+    定 内层 = 函：
+        返回 1
+    。
+    返回 内层
+。"""
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        assert isinstance(ast, ProgramNode)
+        stmt = ast.statements[0]
+        # 外层是 VarDefNode，值是 FunctionDefNode
+        assert isinstance(stmt, VarDefNode)
+        assert isinstance(stmt.value, FunctionDefNode)
+        # 函数体内第一个语句是 VarDefNode
+        assert isinstance(stmt.value.body[0], VarDefNode)
+        # 内层函数定义
+        assert isinstance(stmt.value.body[0].value, FunctionDefNode)
