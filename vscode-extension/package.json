@@ -1,0 +1,43 @@
+{
+  "name": "yanlv-language",
+  "displayName": "言律语言 (Yán Lǜ)",
+  "description": "言律语言 VS Code 扩展",
+  "version": "0.1.0",
+  "publisher": "yanlv",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:yanlv"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "yanlv",
+        "aliases": ["言律", "YanLv", "yanlv"],
+        "extensions": [".yan"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "yanlv",
+        "scopeName": "source.yanlv",
+        "path": "./syntaxes/yanlv.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  }
+}
