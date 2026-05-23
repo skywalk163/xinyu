@@ -138,6 +138,10 @@ class Parser:
             
             # 左侧必须是标识符
             if isinstance(expr, IdentifierNode):
+                # 消费语句结束符 。
+                if self._check(TokenType.PERIOD):
+                    self._advance()
+                
                 return AssignNode(
                     line=expr.line,
                     column=expr.column,
@@ -146,6 +150,10 @@ class Parser:
                 )
             else:
                 raise ParseError("Invalid assignment target", self._current_token())
+        
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
         
         return expr
     
@@ -417,6 +425,10 @@ class Parser:
         # 期望 则
         self._expect(TokenType.THEN, "Expected '则' after condition")
         
+        # 消费冒号（可选）
+        if self._check(TokenType.COLON):
+            self._advance()
+        
         # 解析 then 分支
         then_branch = self._parse_block()
         
@@ -424,6 +436,9 @@ class Parser:
         else_branch = None
         if self._check(TokenType.ELSE):
             self._advance()  # 消费 否则
+            # 消费冒号（可选）
+            if self._check(TokenType.COLON):
+                self._advance()
             else_branch = self._parse_block()
         
         # 消费结尾的 。
@@ -548,6 +563,10 @@ class Parser:
         # 解析值
         value = self._parse_expression()
         
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+        
         return VarDefNode(
             line=token.line,
             column=token.column,
@@ -594,6 +613,10 @@ class Parser:
         value = None
         if not self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD):
             value = self._parse_expression()
+        
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
         
         return ReturnNode(
             line=token.line,
