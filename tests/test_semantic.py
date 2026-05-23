@@ -72,6 +72,28 @@ class TestScope(unittest.TestCase):
         # 更新不存在的符号
         result = scope.assign("y", "number")
         self.assertFalse(result)
+    
+    def test_nested_scope_assign(self):
+        """测试嵌套作用域中的变量更新"""
+        parent = Scope()
+        parent.define("x", "variable", value_type="unknown")
+        
+        child = Scope(parent=parent)
+        
+        # 子作用域可以更新父作用域的变量
+        result = child.assign("x", "number")
+        self.assertTrue(result)
+        self.assertEqual(parent.symbols["x"]["value_type"], "number")
+        
+        # 更新不存在的变量
+        result = child.assign("y", "number")
+        self.assertFalse(result)
+        
+        # 多层嵌套
+        grandchild = Scope(parent=child)
+        result = grandchild.assign("x", "string")
+        self.assertTrue(result)
+        self.assertEqual(parent.symbols["x"]["value_type"], "string")
 
 
 class TestSemanticAnalyzer(unittest.TestCase):
@@ -180,6 +202,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
         self.assertTrue(success)
         self.assertEqual(len(errors), 0)
     
+    @unittest.skip("列表字面量语法暂不支持，需要运行时支持")
     def test_for_loop(self):
         """测试遍历循环"""
         # 注意：列表语法需要使用【】而不是[]
@@ -190,7 +213,10 @@ class TestSemanticAnalyzer(unittest.TestCase):
         code = """定 列表 = 创建列表。
 遍历 i 于 列表：
   印 i。"""
-        # 暂时跳过，因为需要运行时支持
+        success, errors = self._analyze(code)
+        
+        self.assertTrue(success)
+        self.assertEqual(len(errors), 0)
     
     def test_while_loop(self):
         """测试当循环"""

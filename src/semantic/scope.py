@@ -72,6 +72,8 @@ class Scope:
     def assign(self, name: str, value_type: str) -> bool:
         """更新符号类型
         
+        从当前作用域开始查找，如果未找到则向上查找父作用域。
+        
         Args:
             name: 符号名称
             value_type: 新的类型
@@ -82,6 +84,9 @@ class Scope:
         if name in self.symbols:
             self.symbols[name]["value_type"] = value_type
             return True
+        
+        if self.parent:
+            return self.parent.assign(name, value_type)
         
         return False
     
