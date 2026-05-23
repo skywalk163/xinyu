@@ -125,10 +125,10 @@ class PythonCodegen:
             node: 字符串节点
             
         Returns:
-            用单引号包裹的字符串
+            正确转义的字符串字面量
         """
-        # 使用单引号包裹字符串
-        return f"'{node.value}'"
+        # 使用 repr() 自动处理转义（包括引号、换行符等）
+        return repr(node.value)
     
     def _generate_identifier(self, node: IdentifierNode) -> str:
         """生成标识符表达式
@@ -151,12 +151,17 @@ class PythonCodegen:
             
         Returns:
             二元操作表达式字符串
+            
+        Raises:
+            CodegenError: 遇到未知的二元操作符
         """
         left = self.generate(node.left)
         right = self.generate(node.right)
         
         # 映射操作符
-        operator = self.BINARY_OPERATORS.get(node.operator, node.operator)
+        operator = self.BINARY_OPERATORS.get(node.operator)
+        if operator is None:
+            raise CodegenError(f"未知的二元操作符: {node.operator}")
         
         return f"{left} {operator} {right}"
     
@@ -168,11 +173,16 @@ class PythonCodegen:
             
         Returns:
             一元操作表达式字符串
+            
+        Raises:
+            CodegenError: 遇到未知的一元操作符
         """
         operand = self.generate(node.operand)
         
         # 映射操作符
-        operator = self.UNARY_OPERATORS.get(node.operator, node.operator)
+        operator = self.UNARY_OPERATORS.get(node.operator)
+        if operator is None:
+            raise CodegenError(f"未知的一元操作符: {node.operator}")
         
         # not 是关键字，需要空格
         if operator == "not":
