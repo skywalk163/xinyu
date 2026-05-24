@@ -135,7 +135,7 @@ def test_generate_binary_add():
     )
     result = codegen.generate(node)
 
-    assert result == "1 + 2"
+    assert result == "(1 + 2)"
 
 
 def test_generate_binary_subtract():
@@ -151,7 +151,7 @@ def test_generate_binary_subtract():
     )
     result = codegen.generate(node)
 
-    assert result == "5 - 3"
+    assert result == "(5 - 3)"
 
 
 def test_generate_binary_multiply():
@@ -167,7 +167,7 @@ def test_generate_binary_multiply():
     )
     result = codegen.generate(node)
 
-    assert result == "4 * 5"
+    assert result == "(4 * 5)"
 
 
 def test_generate_binary_divide():
@@ -183,7 +183,7 @@ def test_generate_binary_divide():
     )
     result = codegen.generate(node)
 
-    assert result == "10 / 2"
+    assert result == "(10 / 2)"
 
 
 def test_generate_binary_comparison():
@@ -199,7 +199,7 @@ def test_generate_binary_comparison():
     )
     result = codegen.generate(node)
 
-    assert result == "x > 0"
+    assert result == "(x > 0)"
 
 
 def test_generate_operator_precedence():
@@ -221,8 +221,8 @@ def test_generate_operator_precedence():
     )
     result = codegen.generate(node)
 
-    # 应该生成 "1 + 2 * 3"（Python 会正确处理优先级）
-    assert result == "1 + 2 * 3"
+    # 应该生成 "(1 + (2 * 3))"（括号确保优先级正确）
+    assert result == "(1 + (2 * 3))"
 
 
 def test_generate_nested_parentheses():
@@ -492,7 +492,7 @@ def test_generate_function_def():
     )
     result = codegen.generate(node)
 
-    expected = "def 平方(x):\n    return x * x"
+    expected = "def 平方(x):\n    return (x * x)"
     assert result == expected
 
 
@@ -544,41 +544,41 @@ def test_generate_if():
     )
     result = codegen.generate(node)
 
-    expected = "if x > 0:\n    print('正数')"
+    expected = "if (x > 0):\n    print('正数')"
     assert result == expected
 
 
 def test_generate_if_else():
-    """测试条件语句带否则分支生成"""
+    """测试 if-else 语句生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = IfNode(
         line=1, column=0,
         condition=BinaryOpNode(
-            line=1, column=2,
-            left=IdentifierNode(line=1, column=2, name="x"),
+            line=1, column=3,
+            left=IdentifierNode(line=1, column=3, name="x"),
             operator="大于",
-            right=NumberNode(line=1, column=5, value=0)
+            right=NumberNode(line=1, column=6, value=0)
         ),
         then_branch=[
             FunctionCallNode(
                 line=2, column=4,
                 name="印",
-                args=[StringNode(line=2, column=7, value="正数")]
+                args=[StringNode(line=2, column=5, value="正数")]
             )
         ],
         else_branch=[
             FunctionCallNode(
                 line=4, column=4,
                 name="印",
-                args=[StringNode(line=4, column=7, value="非正数")]
+                args=[StringNode(line=4, column=5, value="非正数")]
             )
         ]
     )
     result = codegen.generate(node)
 
-    expected = "if x > 0:\n    print('正数')\nelse:\n    print('非正数')"
+    expected = "if (x > 0):\n    print('正数')\nelse:\n    print('非正数')"
     assert result == expected
 
 
@@ -640,7 +640,7 @@ def test_generate_while():
     )
     result = codegen.generate(node)
 
-    expected = "while x < 10:\n    x = x + 1"
+    expected = "while (x < 10):\n    x = (x + 1)"
     assert result == expected
 
 
@@ -806,7 +806,7 @@ def test_generate_nested_function():
     )
     result = codegen.generate(node)
 
-    expected = "def 外层(x):\n    def 内层(y):\n        return x + y\n    return 内层(10)"
+    expected = "def 外层(x):\n    def 内层(y):\n        return (x + y)\n    return 内层(10)"
     assert result == expected
 
 

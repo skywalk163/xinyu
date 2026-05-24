@@ -158,12 +158,20 @@ class PythonCodegen:
         left = self.generate(node.left)
         right = self.generate(node.right)
         
-        # 映射操作符
+        # 映射操作符（支持中文和英文）
         operator = self.BINARY_OPERATORS.get(node.operator)
         if operator is None:
-            raise CodegenError(f"未知的二元操作符: {node.operator}")
+            # 如果不是中文操作符，可能是英文操作符（语法分析器已转换）
+            # 直接使用英文操作符
+            if node.operator in ["+", "-", "*", "/", "%", "//",
+                                "==", "!=", "<", ">", "<=", ">=",
+                                "and", "or"]:
+                operator = node.operator
+            else:
+                raise CodegenError(f"未知的二元操作符: {node.operator}")
         
-        return f"{left} {operator} {right}"
+        # 为二元操作添加括号，确保优先级正确
+        return f"({left} {operator} {right})"
     
     def _generate_unaryop(self, node: UnaryOpNode) -> str:
         """生成一元操作表达式
@@ -179,10 +187,15 @@ class PythonCodegen:
         """
         operand = self.generate(node.operand)
         
-        # 映射操作符
+        # 映射操作符（支持中文和英文）
         operator = self.UNARY_OPERATORS.get(node.operator)
         if operator is None:
-            raise CodegenError(f"未知的一元操作符: {node.operator}")
+            # 如果不是中文操作符，可能是英文操作符（语法分析器已转换）
+            # 直接使用英文操作符
+            if node.operator in ["-", "not"]:
+                operator = node.operator
+            else:
+                raise CodegenError(f"未知的一元操作符: {node.operator}")
         
         # not 是关键字，需要空格
         if operator == "not":
@@ -273,6 +286,11 @@ class PythonCodegen:
             变量定义语句字符串
         """
         if node.value is not None:
+            # 特殊处理：如果值是函数定义，直接生成函数定义
+            if isinstance(node.value, FunctionDefNode):
+                # 设置函数名
+                node.value.name = node.name
+                return self.generate(node.value)
             value = self.generate(node.value)
             return f"{node.name} = {value}"
         else:
@@ -347,7 +365,7 @@ class PythonCodegen:
         
         # 生成else分支
         if node.else_branch:
-            lines.append("else:")
+            lines.append(f"{self._indent()}else:")
             self._increase_indent()
             
             for stmt in node.else_branch:
@@ -469,9 +487,27 @@ class PythonCodegen:
         
         lines = []
         for stmt in node.statements:
-            lines.append(self.generate(stmt))
+            code = self._generate_statement(stmt)
+            if code:
+                lines.append(code)
         
         return "\n".join(lines)
+    
+    def _generate_statement(self, stmt: ASTNode) -> str:
+        """生成语句代码
+        
+        Args:
+            stmt: 语句节点
+            
+        Returns:
+            语句代码字符串
+        """
+        # 特殊处理：单独的标识符语句可能是函数调用
+        if isinstance(stmt, IdentifierNode):
+            # 生成函数调用（无参数）
+            return f"{stmt.name}()"
+        
+        return self.generate(stmt)
     
     def _generate_block(self, node: BlockNode) -> str:
         """生成代码块

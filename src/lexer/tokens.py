@@ -51,6 +51,7 @@ class TokenType(Enum):
     COLON = auto()       # ：
     SEMICOLON = auto()   # ；
     PAUSE_MARK = auto()  # 、（顿号）
+    DOT = auto()         # . （成员访问）
     LPAREN = auto()      # （
     RPAREN = auto()      # ）
     LBRACKET = auto()    # 【

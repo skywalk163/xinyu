@@ -48,6 +48,11 @@ class SemanticAnalyzer:
         "写入": {"params": -1},  # 可变参数
     }
     
+    # 内置模块
+    BUILTIN_MODULES = {
+        "math", "random", "json", "re", "datetime", "date", "time", "timedelta"
+    }
+    
     def __init__(self):
         """初始化语义分析器"""
         self.global_scope = Scope()
@@ -61,6 +66,15 @@ class SemanticAnalyzer:
                 "function",
                 value_type="function",
                 params=info["params"],
+                is_builtin=True
+            )
+        
+        # 注册内置模块
+        for module_name in self.BUILTIN_MODULES:
+            self.global_scope.define(
+                module_name,
+                "module",
+                value_type="module",
                 is_builtin=True
             )
     
@@ -363,6 +377,11 @@ class SemanticAnalyzer:
     def _visit_member_access(self, node: MemberAccessNode) -> str:
         """访问成员访问节点"""
         obj_type = self._visit_expression(node.obj)
+        
+        # 如果是内置模块的成员访问，不报错
+        if isinstance(node.obj, IdentifierNode):
+            if node.obj.name in self.BUILTIN_MODULES:
+                return "unknown"
         
         # TODO: 根据对象类型推断成员类型
         return "unknown"

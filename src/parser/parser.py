@@ -300,7 +300,7 @@ class Parser:
         return self._parse_primary()
     
     def _parse_primary(self) -> ASTNode:
-        """解析基础表达式（数字、字符串、标识符、括号）"""
+        """解析基础表达式（数字、字符串、标识符、括号、列表）"""
         token = self._current_token()
         
         # 数字
@@ -338,6 +338,10 @@ class Parser:
                 name="假"
             )
         
+        # 列表字面量 [1, 2, 3] 或 【1，2，3】
+        if self._check(TokenType.LBRACKET):
+            return self._parse_list()
+        
         # 括号表达式
         if self._check(TokenType.LPAREN):
             self._advance()  # 消费 (
@@ -350,6 +354,28 @@ class Parser:
             return self._parse_identifier_or_call()
         
         raise ParseError(f"Unexpected token: {token.type.name}", token)
+    
+    def _parse_list(self) -> ListNode:
+        """解析列表字面量"""
+        token = self._advance()  # 消费 [ 或 【
+        elements = []
+        
+        # 解析元素列表
+        while not self._check(TokenType.RBRACKET):
+            elem = self._parse_expression()
+            elements.append(elem)
+            
+            # 跳过逗号（中文或英文）
+            if self._check(TokenType.COMMA):
+                self._advance()
+        
+        self._expect(TokenType.RBRACKET, "Expected ']' or '】' after list elements")
+        
+        return ListNode(
+            line=token.line,
+            column=token.column,
+            elements=elements
+        )
     
     def _parse_identifier_or_call(self) -> ASTNode:
         """解析标识符或函数调用"""
@@ -372,12 +398,13 @@ class Parser:
             
             self._expect(TokenType.RPAREN, "Expected '）' after arguments")
             
-            return FunctionCallNode(
+            node = FunctionCallNode(
                 line=token.line,
                 column=token.column,
                 name=name,
                 args=args
             )
+            return self._parse_postfix(node)
         
         # 检查是否为无括号函数调用（后面跟着参数）
         args = []
@@ -400,18 +427,52 @@ class Parser:
                 break
         
         if args:
-            return FunctionCallNode(
+            node = FunctionCallNode(
                 line=token.line,
                 column=token.column,
                 name=name,
                 args=args
             )
+            return self._parse_postfix(node)
         
-        return IdentifierNode(
+        node = IdentifierNode(
             line=token.line,
             column=token.column,
             name=name
         )
+        return self._parse_postfix(node)
+    
+    def _parse_postfix(self, node: ASTNode) -> ASTNode:
+        """解析后缀表达式（成员访问、索引）"""
+        while True:
+            # 成员访问：obj.member
+            if self._check(TokenType.DOT):
+                self._advance()  # 消费 .
+                if self._check(TokenType.IDENTIFIER):
+                    member_token = self._advance()
+                    node = MemberAccessNode(
+                        line=node.line,
+                        column=node.column,
+                        obj=node,
+                        member=member_token.value
+                    )
+                else:
+                    raise ParseError("Expected identifier after '.'", self._current_token())
+            # 索引访问：obj[index]
+            elif self._check(TokenType.LBRACKET):
+                self._advance()  # 消费 [
+                index = self._parse_expression()
+                self._expect(TokenType.RBRACKET, "Expected ']' after index")
+                node = IndexNode(
+                    line=node.line,
+                    column=node.column,
+                    obj=node,
+                    index=index
+                )
+            else:
+                break
+        
+        return node
     
     # ============ 控制流解析 ============
     

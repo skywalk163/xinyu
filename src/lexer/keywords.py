@@ -45,12 +45,19 @@ OPERATORS = {
     "减": TokenType.MINUS,
     "乘": TokenType.MULTIPLY,
     "除": TokenType.DIVIDE,
+    "除以": TokenType.DIVIDE,
     "等": TokenType.EQUALS,
+    "等于": TokenType.EQUALS,
     "不等": TokenType.NOT_EQUALS,
+    "不等于": TokenType.NOT_EQUALS,
     "小": TokenType.LESS,
+    "小于": TokenType.LESS,
     "大": TokenType.GREATER,
+    "大于": TokenType.GREATER,
     "小等": TokenType.LESS_EQ,
+    "小于等于": TokenType.LESS_EQ,
     "大等": TokenType.GREATER_EQ,
+    "大于等于": TokenType.GREATER_EQ,
     "且": TokenType.AND,
     "或": TokenType.OR,
     "非": TokenType.NOT,
@@ -59,6 +66,7 @@ OPERATORS = {
 # 符号映射
 SYMBOLS = {
     "，": TokenType.COMMA,
+    ",": TokenType.COMMA,      # 英文逗号
     "。": TokenType.PERIOD,
     "：": TokenType.COLON,
     "；": TokenType.SEMICOLON,
@@ -69,15 +77,25 @@ SYMBOLS = {
     ")": TokenType.RPAREN,
     "【": TokenType.LBRACKET,
     "】": TokenType.RBRACKET,
+    "[": TokenType.LBRACKET,    # 英文方括号（用于列表）
+    "]": TokenType.RBRACKET,
     "{": TokenType.LBRACE,
     "}": TokenType.RBRACE,
     "=": TokenType.ASSIGN,
     "$": TokenType.DOLLAR,
+    ".": TokenType.DOT,         # 成员访问符
     # 数学表达式符号
     "*": TokenType.MULTIPLY,
     "+": TokenType.PLUS,
     "-": TokenType.MINUS,
     "/": TokenType.DIVIDE,
+}
+
+# 内置函数（优先识别）
+BUILTIN_FUNCTIONS = {
+    "印": TokenType.IDENTIFIER,  # print
+    "读取": TokenType.IDENTIFIER,  # input
+    "写入": TokenType.IDENTIFIER,  # write
 }
 
 # 合并所有关键字和标记（用于词法分析）
