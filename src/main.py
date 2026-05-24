@@ -11,12 +11,21 @@
 
 import sys
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, NoReturn
 
 from src.lexer.lexer import Lexer, LexerError
 from src.parser.parser import Parser, ParseError
 from src.semantic.analyzer import SemanticAnalyzer, SemanticError
 from src.codegen.python_codegen import PythonCodegen, CodegenError
+
+
+# 常量定义
+VERSION = "1.0"
+REPL_PROMPT = "心语> "
+WELCOME_MESSAGE = f"""心语语言 v{VERSION}
+输入 '退出' 或 'exit' 退出
+输入 '帮助' 或 'help' 查看帮助
+"""
 
 
 class ChineseProgram:
@@ -40,6 +49,14 @@ class ChineseProgram:
             
         Returns:
             执行结果（如果有），或 None（如果出错）
+            
+        Security Warning:
+            本方法使用 exec() 执行生成的 Python 代码。
+            请勿执行不可信的代码来源，可能存在安全风险。
+            在生产环境中，建议：
+            1. 仅执行经过审查的代码
+            2. 使用沙箱环境隔离执行
+            3. 限制可用的模块和函数
         """
         try:
             # 1. 词法分析
@@ -87,7 +104,7 @@ class ChineseProgram:
             source: 心语源代码
             
         Returns:
-            生成的 Python 代码字符串
+            生成的 Python 代码字符串，如果出错则返回空字符串
         """
         try:
             # 1. 词法分析
@@ -158,7 +175,7 @@ class ChineseProgram:
         return exec_globals
 
 
-def main():
+def main() -> None:
     """主函数：支持交互式模式和文件模式"""
     import argparse
     
@@ -222,15 +239,13 @@ def main():
         return
     
     # 交互式模式（REPL）
-    print("心语语言 v1.0")
-    print("输入 '退出' 或 'exit' 退出")
-    print("输入 '帮助' 或 'help' 查看帮助")
+    print(WELCOME_MESSAGE)
     print()
     
     while True:
         try:
             # 读取输入
-            line = input("心语> ")
+            line = input(REPL_PROMPT)
             
             # 检查退出命令
             if line.strip() in ('退出', 'exit', 'quit'):
@@ -255,7 +270,7 @@ def main():
             print(f"错误：{e}")
 
 
-def print_help():
+def print_help() -> None:
     """打印帮助信息"""
     help_text = '''
 心语语言帮助

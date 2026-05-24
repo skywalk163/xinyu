@@ -448,8 +448,13 @@ class TestErrorHandling:
         program = ChineseProgram()
         source = '定 x = @。'  # @ 是非法字符
         
-        result = program.run(source)
-        assert result is None or "错误" in str(result)
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            result = program.run(source)
+        
+        output = captured_output.getvalue()
+        assert result is None
+        assert "词法错误" in output or "错误" in output
     
     def test_syntax_error(self):
         """测试语法错误"""
@@ -458,8 +463,13 @@ class TestErrorHandling:
         program = ChineseProgram()
         source = '若 则。'  # 缺少条件
         
-        result = program.run(source)
-        assert result is None or "错误" in str(result)
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            result = program.run(source)
+        
+        output = captured_output.getvalue()
+        assert result is None
+        assert "语法错误" in output or "错误" in output
     
     def test_semantic_error(self):
         """测试语义错误"""
@@ -468,9 +478,14 @@ class TestErrorHandling:
         program = ChineseProgram()
         source = '印未定义的变量。'
         
-        result = program.run(source)
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            result = program.run(source)
+        
+        output = captured_output.getvalue()
         # 语义分析应该检测到未定义的变量
-        assert result is None or "错误" in str(result)
+        assert result is None
+        assert "语义错误" in output or "错误" in output
 
 
 class TestBuiltinFunctions:
