@@ -8,3 +8,13 @@ dist/
 build/
 *.egg-info/
 .vscode/
+.venv/
+.auto-coder/
+/actions/
+/output.txt
+.autocoderrules
+.autocodertools
+.autocodercommands
+.autocoderagents
+.autocoderlinters
+.autocoderworkflow

@@ -12,7 +12,7 @@
 
 from typing import List
 from src.lexer.tokens import Token, TokenType
-from src.lexer.keywords import ALL_KEYWORDS, OPERATORS, SYMBOLS
+from src.lexer.keywords import ALL_KEYWORDS, OPERATORS, SYMBOLS, BUILTIN_FUNCTIONS
 
 
 class LexerError(Exception):
@@ -192,6 +192,16 @@ class Lexer:
         """读取中文（关键字、操作符或标识符）"""
         start_col = self.column
         start = self.pos
+        
+        # 先尝试匹配内置函数（优先级最高）
+        # 注意：内置函数应该作为独立的 token，即使后面跟着中文
+        for func_name in BUILTIN_FUNCTIONS:
+            if self.source[start:start + len(func_name)] == func_name:
+                # 直接识别为内置函数
+                self.pos = start + len(func_name)
+                self.column += len(func_name)
+                self.tokens.append(Token(TokenType.IDENTIFIER, func_name, self.line, start_col))
+                return
         
         while self.pos < len(self.source) and self._is_chinese(self.source[self.pos]):
             self.pos += 1
