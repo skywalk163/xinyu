@@ -1,34 +1,93 @@
 """
 宏系统核心
 
-提供宏的注册、查找和管理功能。
+提供宏的定义、注册、查找和展开功能。
 """
+
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Any
+from enum import Enum
+
+
+class MacroType(Enum):
+    """宏类型"""
+    SYNTAX = "syntax"      # 语法宏
+    IDIOM = "idiom"        # 成语宏
+
+
+@dataclass
+class Macro:
+    """宏定义"""
+    name: str
+    type: MacroType
+    params: List[str]
+    body: str
+    description: Optional[str] = None
+
+    def __str__(self):
+        return f"Macro({self.name}, type={self.type.value}, params={self.params})"
 
 
 class MacroSystem:
     """宏系统核心类"""
 
     def __init__(self):
-        self.macros = {}
-        self.macro_stack = []  # 用于检测递归展开
+        self.macros: Dict[str, Macro] = {}
+        self.macro_stack: List[str] = []  # 用于检测递归展开
 
-    def register(self, name, macro):
+    def register(self, name: str, macro: Macro):
         """注册宏"""
         self.macros[name] = macro
 
-    def unregister(self, name):
+    def unregister(self, name: str):
         """注销宏"""
         if name in self.macros:
             del self.macros[name]
 
-    def get(self, name):
+    def get(self, name: str) -> Optional[Macro]:
         """获取宏"""
         return self.macros.get(name)
 
-    def has(self, name):
+    def has(self, name: str) -> bool:
         """检查宏是否存在"""
         return name in self.macros
 
-    def list_macros(self):
+    def expand(self, name: str, args: Dict[str, Any]) -> str:
+        """
+        展开宏
+
+        Args:
+            name: 宏名称
+            args: 参数字典
+
+        Returns:
+            展开后的代码字符串
+        """
+        macro = self.get(name)
+        if not macro:
+            raise ValueError(f"未定义的宏: {name}")
+
+        # 检测递归展开
+        if name in self.macro_stack:
+            raise ValueError(f"检测到宏递归展开: {name}")
+
+        self.macro_stack.append(name)
+
+        try:
+            # 参数替换
+            result = macro.body
+            for param in macro.params:
+                if param in args:
+                    result = result.replace(param, str(args[param]))
+
+            return result
+        finally:
+            self.macro_stack.pop()
+
+    def list_macros(self) -> List[str]:
         """列出所有宏"""
         return list(self.macros.keys())
+
+    def list_macros_by_type(self, macro_type: MacroType) -> List[str]:
+        """列出指定类型的宏"""
+        return [name for name, macro in self.macros.items() if macro.type == macro_type]
