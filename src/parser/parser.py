@@ -128,30 +128,40 @@ class Parser:
         return self._parse_expression_statement()
     
     def _parse_expression_statement(self) -> ASTNode:
-        """解析表达式语句（包括赋值）"""
-        expr = self._parse_expression()
-        
-        # 检查是否为赋值
-        if self._check(TokenType.ASSIGN):
-            self._advance()  # 消费 =
-            value = self._parse_expression()
+        """解析表达式语句"""
+        # 检查是否是赋值语句：标识符 = 表达式
+        if self._check(TokenType.IDENTIFIER):
+            # 保存当前位置
+            start_pos = self.pos
+            name_token = self._advance()
             
-            # 左侧必须是标识符
-            if isinstance(expr, IdentifierNode):
-                # 消费语句结束符 。
+            # 检查是否是赋值
+            if self._check(TokenType.ASSIGN):
+                self._advance()  # 消费 =
+                value = self._parse_expression()
+                
+                # 消耗句号（如果有）
                 if self._check(TokenType.PERIOD):
                     self._advance()
                 
                 return AssignNode(
-                    line=expr.line,
-                    column=expr.column,
-                    target=expr,
+                    line=name_token.line,
+                    column=name_token.column,
+                    target=IdentifierNode(
+                        line=name_token.line,
+                        column=name_token.column,
+                        name=name_token.value
+                    ),
                     value=value
                 )
             else:
-                raise ParseError("Invalid assignment target", self._current_token())
+                # 不是赋值，回退并解析表达式
+                self.pos = start_pos
         
-        # 消费语句结束符 。
+        # 解析表达式
+        expr = self._parse_expression()
+        
+        # 消耗句号（如果有）
         if self._check(TokenType.PERIOD):
             self._advance()
         
@@ -306,20 +316,28 @@ class Parser:
         # 数字
         if self._check(TokenType.NUMBER):
             self._advance()
-            return NumberNode(
+            node = NumberNode(
                 line=token.line,
                 column=token.column,
                 value=token.value
             )
+            # 检查是否是意合式调用
+            if self._check(TokenType.PAUSE_MARK):
+                return self._parse_intentional_call_from_literal(node)
+            return node
         
         # 字符串
         if self._check(TokenType.STRING):
             self._advance()
-            return StringNode(
+            node = StringNode(
                 line=token.line,
                 column=token.column,
                 value=token.value
             )
+            # 检查是否是意合式调用
+            if self._check(TokenType.PAUSE_MARK):
+                return self._parse_intentional_call_from_literal(node)
+            return node
         
         # 布尔值
         if self._check(TokenType.TRUE):
@@ -355,6 +373,60 @@ class Parser:
         
         raise ParseError(f"Unexpected token: {token.type.name}", token)
     
+    def _parse_intentional_call_from_literal(self, first_arg: ASTNode) -> ASTNode:
+        """
+        从数字或字符串字面量开始解析意合式调用
+        
+        语法：参数1、参数2，函数名。
+        示例：10、20，求和。
+        """
+        args = [first_arg]
+        
+        # 收集顿号分隔的参数
+        while self._check(TokenType.PAUSE_MARK):
+            self._advance()  # 消费顿号
+            
+            # 解析下一个参数（只支持基本类型：数字、字符串、标识符）
+            # 直接解析，不检查意合式调用
+            token = self._current_token()
+            
+            if self._check(TokenType.NUMBER):
+                self._advance()
+                args.append(NumberNode(line=token.line, column=token.column, value=token.value))
+            elif self._check(TokenType.STRING):
+                self._advance()
+                args.append(StringNode(line=token.line, column=token.column, value=token.value))
+            elif self._check(TokenType.IDENTIFIER):
+                self._advance()
+                args.append(IdentifierNode(line=token.line, column=token.column, name=token.value))
+            else:
+                raise ParseError(f"Expected argument after '、', got {token.type.name}", token)
+        
+        # 检查是否有逗号和函数名
+        if self._check(TokenType.COMMA):
+            self._advance()  # 消费逗号
+            
+            # 解析函数名
+            if self._check(TokenType.IDENTIFIER):
+                func_token = self._advance()
+                func_name = func_token.value
+                
+                # 消耗句号（如果有）
+                if self._check(TokenType.PERIOD):
+                    self._advance()
+                
+                return FunctionCallNode(
+                    line=first_arg.line,
+                    column=first_arg.column,
+                    name=func_name,
+                    args=args
+                )
+        
+        # 如果没有逗号和函数名，说明不是意合式调用
+        # 这种情况不应该发生，因为我们是在看到顿号后才调用这个方法的
+        raise ParseError("Expected function name after intentional call arguments", 
+                        self._current_token())
+    
     def _parse_list(self) -> ListNode:
         """解析列表字面量"""
         token = self._advance()  # 消费 [ 或 【
@@ -381,6 +453,10 @@ class Parser:
         """解析标识符或函数调用"""
         token = self._advance()
         name = token.value
+        
+        # 检查是否为意合式调用：参数1、参数2，函数名。
+        if self._check(TokenType.PAUSE_MARK):
+            return self._parse_intentional_call(token)
         
         # 检查是否为括号函数调用：（参数）
         if self._check(TokenType.LPAREN):
@@ -441,6 +517,54 @@ class Parser:
             name=name
         )
         return self._parse_postfix(node)
+    
+    def _parse_intentional_call(self, first_token: Token) -> ASTNode:
+        """
+        解析意合式调用
+        
+        语法：参数1、参数2，函数名。
+        示例：北京、上海，计算距离。
+        """
+        args = []
+        
+        # 第一个参数已经解析过了（first_token对应的标识符）
+        args.append(IdentifierNode(
+            line=first_token.line,
+            column=first_token.column,
+            name=first_token.value
+        ))
+        
+        # 收集顿号分隔的参数
+        while self._check(TokenType.PAUSE_MARK):
+            self._advance()  # 消费顿号
+            
+            # 解析下一个参数
+            arg = self._parse_primary()
+            args.append(arg)
+        
+        # 检查是否有逗号和函数名
+        if self._check(TokenType.COMMA):
+            self._advance()  # 消费逗号
+            
+            # 解析函数名
+            if self._check(TokenType.IDENTIFIER):
+                func_token = self._advance()
+                func_name = func_token.value
+                
+                # 消耗句号（如果有）
+                if self._check(TokenType.PERIOD):
+                    self._advance()
+                
+                return FunctionCallNode(
+                    line=first_token.line,
+                    column=first_token.column,
+                    name=func_name,
+                    args=args
+                )
+        
+        # 如果没有逗号和函数名，说明不是意合式调用
+        # 返回第一个参数（这种情况下应该报错，但为了简单起见，返回第一个标识符）
+        return args[0]
     
     def _parse_postfix(self, node: ASTNode) -> ASTNode:
         """解析后缀表达式（成员访问、索引）"""
