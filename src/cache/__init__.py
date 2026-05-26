@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+"""缓存模块
+
+提供编译缓存功能。
+"""
+
+from src.cache.compilation_cache import (
+    CompilationCache,
+    CachedLexer,
+    CachedParser,
+    CacheEntry,
+    get_global_cache,
+    clear_global_cache,
+    tokenize_cached,
+)
+
+__all__ = [
+    'CompilationCache',
+    'CachedLexer',
+    'CachedParser',
+    'CacheEntry',
+    'get_global_cache',
+    'clear_global_cache',
+    'tokenize_cached',
+]

@@ -1,190 +1,343 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """性能基准测试
 
-评估类型推断和错误处理对性能的影响。
+测试编译器各阶段的性能。
 """
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
+import pytest
 import time
 from src.lexer.lexer import Lexer
-from src.lexer.lexer_with_error_handler import LexerWithErrorHandler
-from src.semantic.analyzer import SemanticAnalyzer
-from src.semantic.analyzer_with_inference import SemanticAnalyzerWithInference
 from src.parser.parser import Parser
-from src.error_handling import ErrorHandler
+from src.semantic.analyzer import SemanticAnalyzer
+from src.codegen.python_codegen import PythonCodegen
+from src.main import ChineseProgram
 
 
-def benchmark_lexer(iterations=1000):
-    """词法分析器性能基准测试"""
-    source = """
-    定 x = 42。
-    定 y = "你好"。
-    定 z = x 加 10。
-    印 x。
-    印 y。
-    印 z。
-    """
+class TestLexerPerformance:
+    """词法分析器性能测试"""
     
-    # 测试原始 Lexer
-    start = time.time()
-    for _ in range(iterations):
+    def test_lexer_small_program(self, benchmark):
+        """测试小程序词法分析性能"""
+        source = '定 x = 5。'
+        benchmark(Lexer(source).tokenize)
+    
+    def test_lexer_medium_program(self, benchmark):
+        """测试中等程序词法分析性能"""
+        source = '''
+定 x = 1。
+定 y = 2。
+定 z = x 加 y。
+印z。
+
+定 加法 = 函 a b：
+    返回 a 加 b。
+
+定 结果 = 加法(3, 4)。
+印结果。
+'''
+        benchmark(Lexer(source).tokenize)
+    
+    def test_lexer_large_program(self, benchmark):
+        """测试大程序词法分析性能"""
+        # 生成100行代码
+        lines = []
+        for i in range(100):
+            lines.append(f'定 x{i} = {i}。')
+        source = '\n'.join(lines)
+        benchmark(Lexer(source).tokenize)
+    
+    def test_lexer_complex_expressions(self, benchmark):
+        """测试复杂表达式词法分析性能"""
+        source = '''
+定 a = 1 加 2 乘 3 减 4 除以 5。
+定 b = (1 加 2) 乘 (3 减 4)。
+定 c = a 加 b 乘 2。
+'''
+        benchmark(Lexer(source).tokenize)
+
+
+class TestParserPerformance:
+    """语法分析器性能测试"""
+    
+    def test_parser_small_program(self, benchmark):
+        """测试小程序语法分析性能"""
+        source = '定 x = 5。'
         lexer = Lexer(source)
         tokens = lexer.tokenize()
-    original_time = time.time() - start
+        benchmark(Parser(tokens).parse)
     
-    # 测试 LexerWithErrorHandler
-    start = time.time()
-    for _ in range(iterations):
-        error_handler = ErrorHandler()
-        lexer = LexerWithErrorHandler(source, error_handler)
+    def test_parser_medium_program(self, benchmark):
+        """测试中等程序语法分析性能"""
+        source = '''
+定 x = 1。
+定 y = 2。
+定 z = x 加 y。
+
+定 加法 = 函 a b：
+    返回 a 加 b。
+
+定 结果 = 加法(3, 4)。
+'''
+        lexer = Lexer(source)
         tokens = lexer.tokenize()
-    enhanced_time = time.time() - start
+        benchmark(Parser(tokens).parse)
     
-    print(f"\n=== 词法分析器性能测试 ({iterations} 次迭代) ===")
-    print(f"原始 Lexer: {original_time:.4f} 秒")
-    print(f"LexerWithErrorHandler: {enhanced_time:.4f} 秒")
-    print(f"性能差异: {(enhanced_time - original_time) / original_time * 100:.2f}%")
-    
-    return original_time, enhanced_time
+    def test_parser_nested_functions(self, benchmark):
+        """测试嵌套函数语法分析性能"""
+        source = '''
+定 外层 = 函 x：
+    定 内层 = 函 y：
+        返回 x 加 y。
+    返回 内层。
 
+定 结果 = 外层(5)(3)。
+'''
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        benchmark(Parser(tokens).parse)
+    
+    def test_parser_complex_control_flow(self, benchmark):
+        """测试复杂控制流语法分析性能"""
+        source = '''
+定 x = 10。
 
-def benchmark_semantic_analyzer(iterations=500):
-    """语义分析器性能基准测试"""
-    source = """
-    定 x = 42。
-    定 y = "你好"。
-    定 z = 100。
-    印 x。
-    印 y。
-    印 z。
-    """
-    
-    # 准备AST
-    lexer = Lexer(source)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-    
-    # 测试原始 SemanticAnalyzer
-    start = time.time()
-    for _ in range(iterations):
-        analyzer = SemanticAnalyzer()
-        analyzer.analyze(ast)
-    original_time = time.time() - start
-    
-    # 测试 SemanticAnalyzerWithInference
-    start = time.time()
-    for _ in range(iterations):
-        error_handler = ErrorHandler()
-        analyzer = SemanticAnalyzerWithInference(error_handler)
-        analyzer.analyze(ast)
-    enhanced_time = time.time() - start
-    
-    print(f"\n=== 语义分析器性能测试 ({iterations} 次迭代) ===")
-    print(f"原始 SemanticAnalyzer: {original_time:.4f} 秒")
-    print(f"SemanticAnalyzerWithInference: {enhanced_time:.4f} 秒")
-    print(f"性能差异: {(enhanced_time - original_time) / original_time * 100:.2f}%")
-    
-    return original_time, enhanced_time
-
-
-def benchmark_full_pipeline(iterations=200):
-    """完整编译流程性能基准测试"""
-    source = """
-    定 x = 42。
-    定 y = "你好世界"。
-    定 z = x 加 10。
-    
-    若 x 大 40 则：
-        印 "x 大于 40"。
+若 x 大于 0 则：
+    若 x 大于 5 则：
+        印"大于5"。
     否则：
-        印 "x 不大于 40"。
+        印"小于等于5"。
+否则：
+    印"非正数"。
+
+遍历 i 于 [1, 2, 3, 4, 5]：
+    若 i 大于 2 则：
+        印i。
+'''
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        benchmark(Parser(tokens).parse)
+
+
+class TestSemanticPerformance:
+    """语义分析器性能测试"""
     
-    印 x。
-    印 y。
-    印 z。
-    """
-    
-    # 测试原始流程
-    start = time.time()
-    for _ in range(iterations):
+    def test_semantic_small_program(self, benchmark):
+        """测试小程序语义分析性能"""
+        source = '定 x = 5。'
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
+        
         analyzer = SemanticAnalyzer()
-        analyzer.analyze(ast)
-    original_time = time.time() - start
+        benchmark(analyzer.analyze, ast)
     
-    # 测试增强流程
-    start = time.time()
-    for _ in range(iterations):
-        error_handler = ErrorHandler()
-        lexer = LexerWithErrorHandler(source, error_handler)
+    def test_semantic_medium_program(self, benchmark):
+        """测试中等程序语义分析性能"""
+        source = '''
+定 x = 1。
+定 y = 2。
+定 z = x 加 y。
+
+定 加法 = 函 a b：
+    返回 a 加 b。
+
+定 结果 = 加法(3, 4)。
+'''
+        lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        analyzer = SemanticAnalyzerWithInference(error_handler)
-        analyzer.analyze(ast)
-    enhanced_time = time.time() - start
+        
+        analyzer = SemanticAnalyzer()
+        benchmark(analyzer.analyze, ast)
     
-    print(f"\n=== 完整编译流程性能测试 ({iterations} 次迭代) ===")
-    print(f"原始流程: {original_time:.4f} 秒")
-    print(f"增强流程: {enhanced_time:.4f} 秒")
-    print(f"性能差异: {(enhanced_time - original_time) / original_time * 100:.2f}%")
+    def test_semantic_complex_scopes(self, benchmark):
+        """测试复杂作用域语义分析性能"""
+        source = '''
+定 全局 = 10。
+
+定 函数1 = 函 x：
+    定 局部1 = x 加 全局。
     
-    return original_time, enhanced_time
+    定 函数2 = 函 y：
+        定 局部2 = y 加 局部1。
+        返回 局部2。
+    
+    返回 函数2。
+
+定 结果 = 函数1(5)(3)。
+'''
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        analyzer = SemanticAnalyzer()
+        benchmark(analyzer.analyze, ast)
 
 
-def run_all_benchmarks():
-    """运行所有基准测试"""
-    print("=" * 60)
-    print("性能基准测试")
-    print("=" * 60)
+class TestCodegenPerformance:
+    """代码生成器性能测试"""
     
-    # 运行各项测试
-    lexer_orig, lexer_enh = benchmark_lexer(1000)
-    semantic_orig, semantic_enh = benchmark_semantic_analyzer(500)
-    pipeline_orig, pipeline_enh = benchmark_full_pipeline(200)
+    def test_codegen_small_program(self, benchmark):
+        """测试小程序代码生成性能"""
+        source = '定 x = 5。'
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        codegen = PythonCodegen()
+        benchmark(codegen.generate, ast)
     
-    # 总结
-    print("\n" + "=" * 60)
-    print("性能总结")
-    print("=" * 60)
+    def test_codegen_medium_program(self, benchmark):
+        """测试中等程序代码生成性能"""
+        source = '''
+定 x = 1。
+定 y = 2。
+定 z = x 加 y。
+
+定 加法 = 函 a b：
+    返回 a 加 b。
+
+定 结果 = 加法(3, 4)。
+'''
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        codegen = PythonCodegen()
+        benchmark(codegen.generate, ast)
     
-    total_orig = lexer_orig + semantic_orig + pipeline_orig
-    total_enh = lexer_enh + semantic_enh + pipeline_enh
-    
-    print(f"\n总耗时:")
-    print(f"原始版本: {total_orig:.4f} 秒")
-    print(f"增强版本: {total_enh:.4f} 秒")
-    print(f"总体性能差异: {(total_enh - total_orig) / total_orig * 100:.2f}%")
-    
-    # 评估
-    print("\n" + "=" * 60)
-    print("性能评估")
-    print("=" * 60)
-    
-    overhead = (total_enh - total_orig) / total_orig * 100
-    
-    if overhead < 5:
-        print("✅ 性能影响极小 (< 5%)，可以安全使用增强版本")
-    elif overhead < 10:
-        print("✅ 性能影响可接受 (< 10%)，建议使用增强版本")
-    elif overhead < 20:
-        print("⚠️  性能影响中等 (< 20%)，根据需求选择使用")
-    else:
-        print("❌ 性能影响较大 (> 20%)，建议优化或选择性使用")
-    
-    print("\n建议:")
-    print("1. 错误处理集成: 推荐使用，性能影响小，错误报告更友好")
-    print("2. 类型推断集成: 推荐使用，性能影响可接受，提供类型信息")
-    print("3. 完整流程: 推荐使用，总体性能影响在可接受范围内")
+    def test_codegen_complex_program(self, benchmark):
+        """测试复杂程序代码生成性能"""
+        source = '''
+定 斐波那契 = 函 n：
+    若 n 小于 2 则：
+        返回 n。
+    否则：
+        返回 斐波那契(n 减 1) 加 斐波那契(n 减 2)。
+
+遍历 i 于 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]：
+    印斐波那契(i)。
+'''
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        codegen = PythonCodegen()
+        benchmark(codegen.generate, ast)
 
 
-if __name__ == "__main__":
-    run_all_benchmarks()
+class TestFullPipelinePerformance:
+    """完整编译流程性能测试"""
+    
+    def test_full_pipeline_small(self, benchmark):
+        """测试小程序完整编译流程性能"""
+        source = '定 x = 5。印x。'
+        
+        def compile_and_run():
+            program = ChineseProgram()
+            return program.run(source)
+        
+        benchmark(compile_and_run)
+    
+    def test_full_pipeline_medium(self, benchmark):
+        """测试中等程序完整编译流程性能"""
+        source = '''
+定 x = 1。
+定 y = 2。
+定 z = x 加 y。
+
+定 加法 = 函 a b：
+    返回 a 加 b。
+
+定 结果 = 加法(3, 4)。
+印结果。
+'''
+        
+        def compile_and_run():
+            program = ChineseProgram()
+            return program.run(source)
+        
+        benchmark(compile_and_run)
+    
+    def test_full_pipeline_complex(self, benchmark):
+        """测试复杂程序完整编译流程性能"""
+        source = '''
+定 阶乘 = 函 n：
+    若 n 小于等于 1 则：
+        返回 1。
+    否则：
+        返回 n 乘 阶乘(n 减 1)。
+
+遍历 i 于 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]：
+    印阶乘(i)。
+'''
+        
+        def compile_and_run():
+            program = ChineseProgram()
+            return program.run(source)
+        
+        benchmark(compile_and_run)
+
+
+class TestMemoryUsage:
+    """内存使用测试"""
+    
+    def test_memory_large_source(self):
+        """测试大源代码内存使用"""
+        # 生成1000行代码
+        lines = []
+        for i in range(1000):
+            lines.append(f'定 x{i} = {i}。')
+        source = '\n'.join(lines)
+        
+        # 编译
+        lexer = Lexer(source)
+        tokens = lexer.tokenize()
+        
+        # 检查Token数量
+        assert len(tokens) > 1000
+        
+        # 检查内存使用（简单检查）
+        import sys
+        token_size = sys.getsizeof(tokens)
+        assert token_size < 10 * 1024 * 1024  # 小于10MB
+
+
+class TestScalability:
+    """可扩展性测试"""
+    
+    def test_scalability_linear_growth(self):
+        """测试线性增长性能"""
+        times = []
+        sizes = [10, 50, 100, 200]
+        
+        for size in sizes:
+            # 生成指定大小的代码
+            lines = []
+            for i in range(size):
+                lines.append(f'定 x{i} = {i}。')
+            source = '\n'.join(lines)
+            
+            # 测量编译时间
+            start = time.time()
+            lexer = Lexer(source)
+            tokens = lexer.tokenize()
+            parser = Parser(tokens)
+            ast = parser.parse()
+            end = time.time()
+            
+            times.append(end - start)
+        
+        # 检查时间增长是否合理（不超过线性增长）
+        # 最后一个时间应该不超过第一个时间的20倍（允许一定波动）
+        assert times[-1] < times[0] * 20
+
+
+if __name__ == '__main__':
+    pytest.main([__file__, '-v', '--benchmark-only'])

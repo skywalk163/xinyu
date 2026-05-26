@@ -1,7 +1,17 @@
-"""
-标准库模块
+# -*- coding: utf-8 -*-
+"""心语语言标准库
 
-提供言律语言的核心功能和常用工具。
+提供常用功能的内置实现。
 """
 
-# TODO: 导入标准库模块
+# 导入标准库模块
+from stdlib import math as 数学
+from stdlib import string as 字符串
+from stdlib import list as 列表
+
+# 导出模块
+__all__ = [
+    '数学',
+    '字符串',
+    '列表',
+]
