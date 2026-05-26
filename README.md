@@ -163,15 +163,155 @@ src/
 - ✅ 语法分析器（支持表达式、控制流、函数定义）
 - ✅ 语义分析器（作用域管理、类型推断、错误检测）
 - ✅ Python代码生成器（生成可执行Python代码）
+- ✅ 错误处理系统（统一错误处理和报告）
+- ✅ 类型推断系统（自动类型推断）
+- ✅ 宏系统（内置宏和成语宏）
 - ⏳ 运行时环境（开发中）
 - ⏳ 标准库（规划中）
 - ⏳ 示例程序（规划中）
 
+## 开发指南
+
+### 环境设置
+
+```bash
+# 克隆仓库
+git clone https://github.com/yourname/xinyu.git
+cd xinyu
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 安装开发依赖
+pip install pytest pytest-cov pytest-asyncio
+```
+
+### 项目结构
+
+```
+chineseprogram/
+├── src/                    # 源代码
+│   ├── lexer/             # 词法分析器
+│   │   ├── tokens.py      # Token定义
+│   │   ├── keywords.py    # 关键字映射
+│   │   ├── lexer.py       # 词法分析器实现
+│   │   └── lexer_with_error_handler.py  # 增强版词法分析器
+│   ├── parser/            # 语法分析器
+│   │   ├── ast_nodes.py   # AST节点定义
+│   │   ├── parser.py      # 语法分析器实现
+│   │   └── parser_with_error_handler.py # 增强版语法分析器
+│   ├── semantic/          # 语义分析器
+│   │   ├── scope.py       # 作用域管理
+│   │   ├── analyzer.py    # 语义分析器实现
+│   │   ├── analyzer_with_inference.py  # 增强版语义分析器
+│   │   └── type_inference.py  # 类型推断系统
+│   ├── codegen/           # 代码生成器
+│   │   └── python_codegen.py  # Python代码生成
+│   ├── macro/             # 宏系统
+│   │   ├── macro_system.py    # 宏系统核心
+│   │   ├── macro_expander.py  # 宏展开器
+│   │   ├── builtin_macros.py  # 内置宏
+│   │   └── idiom_macros.py    # 成语宏
+│   ├── error_handling.py  # 统一错误处理
+│   └── main.py            # 主入口
+├── tests/                 # 测试文件
+│   ├── test_lexer.py      # 词法分析器测试
+│   ├── test_parser.py     # 语法分析器测试
+│   ├── test_semantic.py   # 语义分析器测试
+│   ├── test_codegen.py    # 代码生成器测试
+│   ├── test_main.py       # 主程序测试
+│   └── ...                # 其他测试
+├── docs/                  # 文档
+│   └── integration_guide.md  # 集成版本使用指南
+├── examples/              # 示例代码
+└── README.md              # 项目说明
+```
+
+### 编译流程
+
+心语语言的编译流程分为以下几个阶段：
+
+1. **词法分析** (Lexer)
+   - 将源代码转换为Token序列
+   - 识别中文关键字、操作符、标识符
+
+2. **语法分析** (Parser)
+   - 将Token序列转换为抽象语法树(AST)
+   - 支持递归下降解析
+
+3. **语义分析** (Semantic Analyzer)
+   - 作用域管理和符号表构建
+   - 类型检查和推断
+   - 错误检测
+
+4. **宏展开** (Macro Expander)
+   - 展开宏调用
+   - 代码转换和优化
+
+5. **代码生成** (Code Generator)
+   - 将AST转换为目标代码（Python）
+   - 生成可执行代码
+
+### 添加新功能
+
+#### 添加新的关键字
+
+1. 在 `src/lexer/keywords.py` 中添加关键字映射
+2. 在 `src/lexer/tokens.py` 中添加对应的TokenType
+3. 在 `src/lexer/lexer.py` 中实现识别逻辑
+4. 在 `src/parser/parser.py` 中实现解析逻辑
+5. 添加相应的测试
+
+#### 添加新的操作符
+
+1. 在 `src/lexer/tokens.py` 中定义TokenType
+2. 在 `src/lexer/lexer.py` 中实现识别逻辑
+3. 在 `src/parser/parser.py` 中实现解析逻辑
+4. 在 `src/codegen/python_codegen.py` 中实现代码生成
+5. 添加相应的测试
+
+#### 添加新的AST节点
+
+1. 在 `src/parser/ast_nodes.py` 中定义节点类
+2. 在 `src/parser/parser.py` 中实现解析逻辑
+3. 在 `src/semantic/analyzer.py` 中实现语义分析
+4. 在 `src/codegen/python_codegen.py` 中实现代码生成
+5. 添加相应的测试
+
+### 代码规范
+
+- 使用Python 3.8+特性
+- 遵循PEP 8代码风格
+- 使用类型注解
+- 编写文档字符串（中文）
+- 保持测试覆盖率在70%以上
+
+### 提交代码
+
+1. Fork本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建Pull Request
+
 ## 测试覆盖
 
-- 总测试数：159个
-- 通过率：99.4%（158通过，1跳过）
-- 代码覆盖率：86%
+- 总测试数：348个
+- 通过率：100%（348通过，2跳过）
+- 代码覆盖率：77%
+
+### 运行测试
+
+```bash
+# 运行所有测试
+pytest
+
+# 运行测试并生成覆盖率报告
+pytest --cov=src --cov-report=html
+
+# 运行特定测试文件
+pytest tests/test_lexer.py -v
+```
 
 ## 设计哲学
 
