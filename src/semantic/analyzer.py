@@ -50,7 +50,9 @@ class SemanticAnalyzer:
 
     # 内置函数
     BUILTIN_FUNCTIONS = {
-        "印": {"params": -1},  # 可变参数
+        "打印": {"params": -1},  # 可变参数
+        "输入": {"params": 0},
+        "输出": {"params": -1},  # 可变参数
         "读取": {"params": 0},
         "写入": {"params": -1},  # 可变参数
     }
