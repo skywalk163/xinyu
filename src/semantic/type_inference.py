@@ -130,8 +130,8 @@ class TypeInferencer:
             operand_type = self.infer(node.operand, context)
             operator = node.operator
 
-            # 逻辑非
-            if operator in ['not', '非']:
+            # 逻辑非（双字）
+            if operator in ['not', '非也']:
                 return 'boolean'
 
             # 负号

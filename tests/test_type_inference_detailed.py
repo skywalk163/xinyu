@@ -27,30 +27,33 @@ class TestTypeInferencerDetailed:
         """测试类型规则初始化"""
         # 检查一些基本的类型规则
         assert len(self.inferencer.type_rules) > 0
-        
-        # 检查算术运算规则
+
+        # 检查算术运算规则（双字）
         assert ('number', '+', 'number') in self.inferencer.type_rules
-        assert ('number', '加', 'number') in self.inferencer.type_rules
+        assert ('number', '相加', 'number') in self.inferencer.type_rules
         assert self.inferencer.type_rules[('number', '+', 'number')] == 'number'
-        
-        # 检查比较运算规则
+
+        # 检查比较运算规则（双字）
         assert ('number', '==', 'number') in self.inferencer.type_rules
-        assert ('number', '等', 'number') in self.inferencer.type_rules
+        assert ('number', '等于', 'number') in self.inferencer.type_rules
         assert self.inferencer.type_rules[('number', '==', 'number')] == 'boolean'
-        
-        # 检查逻辑运算规则
+
+        # 检查逻辑运算规则（双字）
         assert ('boolean', 'and', 'boolean') in self.inferencer.type_rules
-        assert ('boolean', '且', 'boolean') in self.inferencer.type_rules
+        assert ('boolean', '并且', 'boolean') in self.inferencer.type_rules
 
     def test_builtin_returns_initialization(self):
         """测试内置函数返回类型初始化"""
-        # 检查一些内置函数的返回类型
-        assert '印' in self.inferencer.builtin_returns
-        assert self.inferencer.builtin_returns['印'] is None
-        
+        # 检查一些内置函数的返回类型（双字）
+        assert '打印' in self.inferencer.builtin_returns
+        assert self.inferencer.builtin_returns['打印'] is None
+
         assert '读取' in self.inferencer.builtin_returns
         assert self.inferencer.builtin_returns['读取'] == 'string'
-        
+
+        assert '输入' in self.inferencer.builtin_returns
+        assert self.inferencer.builtin_returns['输入'] == 'string'
+
         assert '长度' in self.inferencer.builtin_returns
         assert self.inferencer.builtin_returns['长度'] == 'number'
 
