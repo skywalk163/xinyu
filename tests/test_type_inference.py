@@ -62,7 +62,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_boolean_true(self):
         """测试布尔值True类型推断"""
-        code = "真"
+        code = "真值"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -76,7 +76,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_boolean_false(self):
         """测试布尔值False类型推断"""
-        code = "假"
+        code = "假值"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -90,7 +90,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_binary_add_numbers(self):
         """测试数字加法类型推断"""
-        code = "1 加 2"
+        code = "1 相加 2"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -104,7 +104,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_binary_add_strings(self):
         """测试字符串连接类型推断"""
-        code = '"a" 加 "b"'
+        code = '"a" 相加 "b"'
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -118,7 +118,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_comparison(self):
         """测试比较表达式类型推断"""
-        code = "1 小 2"
+        code = "1 小于 2"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -132,7 +132,7 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_logical_and(self):
         """测试逻辑与类型推断"""
-        code = "真 且 假"
+        code = "真值 并且 假"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)

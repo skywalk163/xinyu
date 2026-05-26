@@ -33,7 +33,7 @@ class TestMacro:
     def test_macro_with_description(self):
         """测试带描述的宏"""
         macro = Macro(
-            name="遍历",
+            name="循环",
             type=MacroType.SYNTAX,
             params=["变量", "列表", "循环体"],
             body="定迭代器=列表的迭代器。当迭代器有下一个：定变量=迭代器下一个。循环体。",
@@ -111,14 +111,14 @@ class TestMacroSystem:
         """测试多参数宏展开"""
         system = MacroSystem()
         macro = Macro(
-            name="遍历",
+            name="循环",
             type=MacroType.SYNTAX,
             params=["变量", "列表", "循环体"],
             body="定迭代器=列表的迭代器。当迭代器有下一个：定变量=迭代器下一个。循环体。"
         )
-        system.register("遍历", macro)
+        system.register("循环", macro)
 
-        expanded = system.expand("遍历", {
+        expanded = system.expand("循环", {
             "变量": "用户",
             "列表": "用户列表",
             "循环体": "发送通知给用户。"
@@ -137,9 +137,9 @@ class TestBuiltinMacros:
         register_builtin_macros(system)
 
         # 检查内置宏
-        assert system.has("遍历")
+        assert system.has("循环")
         assert system.has("重复")
-        assert system.has("持续")
+        assert system.has("继续")
         assert system.has("除非")
 
     def test_for_loop_expansion(self):
@@ -147,7 +147,7 @@ class TestBuiltinMacros:
         system = MacroSystem()
         register_builtin_macros(system)
 
-        expanded = system.expand("遍历", {
+        expanded = system.expand("循环", {
             "变量": "用户",
             "列表": "用户列表",
             "循环体": "发送通知给用户。"
@@ -224,7 +224,7 @@ class TestIdiomMacros:
             "处理函数": "处理点击"
         })
 
-        assert "持续" in expanded or "若真" in expanded
+        assert "继续" in expanded or "若真" in expanded
         assert "用户点击" in expanded
 
     def test_yi_ju_liang_de_expansion(self):

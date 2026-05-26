@@ -18,35 +18,35 @@ class TestChineseProgram:
 
     def test_run_simple_expression(self):
         """测试运行简单表达式"""
-        source = "定 x = 42。"
+        source = "定义 x = 42。"
         result = self.program.run(source)
         # 应该成功执行，不返回错误
         assert result is None or result is not None
 
     def test_run_print_statement(self):
         """测试运行打印语句"""
-        source = '印 "你好世界"。'
+        source = '打印 "你好世界"。'
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_arithmetic(self):
         """测试运行算术运算"""
-        source = "定 x = 10 加 20。"
+        source = "定义 x = 10 相加 20。"
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_variable_definition(self):
         """测试运行变量定义"""
-        source = "定 数字 = 100。"
+        source = "定义 数字 = 100。"
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_string_operations(self):
         """测试运行字符串操作"""
-        source = '定 消息 = "你好" 加 "世界"。'
+        source = '定义 消息 = "你好" 相加 "世界"。'
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
@@ -54,11 +54,11 @@ class TestChineseProgram:
     def test_run_if_statement(self):
         """测试运行条件语句"""
         source = """
-        定 x = 10。
-        若 x 大 5 则：
-            印 "x 大于 5"。
+        定义 x = 10。
+        如果 x 大于 5 则：
+            打印 "x 大遍历 5"。
         否则：
-            印 "x 不大于 5"。
+            打印 "x 不大遍历 5"。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -68,7 +68,7 @@ class TestChineseProgram:
         """测试运行函数定义"""
         source = """
         定义 问候(名字)：
-            印 名字。
+            打印 名字。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -78,9 +78,9 @@ class TestChineseProgram:
         """测试运行函数调用"""
         source = """
         定义 加法(a, b)：
-            返回 a 加 b。
+            返回 a 相加 b。
         
-        定 结果 = 加法(3, 5)。
+        定义 结果 = 加法(3, 5)。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -88,7 +88,7 @@ class TestChineseProgram:
 
     def test_run_list_operations(self):
         """测试运行列表操作"""
-        source = "定 列表 = [1, 2, 3]。"
+        source = "定义 列表 = [1, 2, 3]。"
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
@@ -96,10 +96,10 @@ class TestChineseProgram:
     def test_run_while_loop(self):
         """测试运行当循环"""
         source = """
-        定 计数 = 0。
-        当 计数 小 3：
-            印 计数。
-            计数 = 计数 加 1。
+        定义 计数 = 0。
+        当满足 计数 小于 3：
+            打印 计数。
+            计数 = 计数 相加 1。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -107,7 +107,7 @@ class TestChineseProgram:
 
     def test_compile_simple_expression(self):
         """测试编译简单表达式"""
-        source = "定 x = 42。"
+        source = "定义 x = 42。"
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)
@@ -116,7 +116,7 @@ class TestChineseProgram:
 
     def test_compile_print_statement(self):
         """测试编译打印语句"""
-        source = '印 "你好"。'
+        source = '打印 "你好"。'
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)
@@ -126,7 +126,7 @@ class TestChineseProgram:
         """测试编译函数定义"""
         source = """
         定义 测试函数(x)：
-            返回 x 加 1。
+            返回 x 相加 1。
         """
         python_code = self.program.compile(source)
         # 函数定义可能不被支持，所以检查是否返回字符串即可
@@ -135,10 +135,10 @@ class TestChineseProgram:
     def test_compile_if_statement(self):
         """测试编译条件语句"""
         source = """
-        若 真 则：
-            印 "真"。
+        如果 真值 则：
+            打印 "真值"。
         否则：
-            印 "假"。
+            打印 "假值"。
         """
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
@@ -148,8 +148,8 @@ class TestChineseProgram:
     def test_compile_while_loop(self):
         """测试编译当循环"""
         source = """
-        当 假：
-            印 "不会执行"。
+        当满足 假：
+            打印 "不会执行"。
         """
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
@@ -158,28 +158,28 @@ class TestChineseProgram:
 
     def test_run_with_lexical_error(self):
         """测试运行有词法错误的代码"""
-        source = "定 x = @#$"
+        source = "定义 x = @#$"
         result = self.program.run(source)
         # 应该返回 None（错误）
         assert result is None
 
     def test_run_with_syntax_error(self):
         """测试运行有语法错误的代码"""
-        source = "定 x = "
+        source = "定义 x = "
         result = self.program.run(source)
         # 应该返回 None（错误）
         assert result is None
 
     def test_compile_with_lexical_error(self):
         """测试编译有词法错误的代码"""
-        source = "定 x = @#$"
+        source = "定义 x = @#$"
         python_code = self.program.compile(source)
         # 应该返回空字符串（错误）
         assert python_code == ""
 
     def test_compile_with_syntax_error(self):
         """测试编译有语法错误的代码"""
-        source = "定 x = "
+        source = "定义 x = "
         python_code = self.program.compile(source)
         # 应该返回空字符串（错误）
         assert python_code == ""
@@ -208,10 +208,10 @@ class TestChineseProgram:
     def test_run_multiple_statements(self):
         """测试运行多个语句"""
         source = """
-        定 a = 1。
-        定 b = 2。
-        定 c = a 加 b。
-        印 c。
+        定义 a = 1。
+        定义 b = 2。
+        定义 c = a 相加 b。
+        打印 c。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -220,9 +220,9 @@ class TestChineseProgram:
     def test_compile_multiple_statements(self):
         """测试编译多个语句"""
         source = """
-        定 a = 1。
-        定 b = 2。
-        定 c = a 加 b。
+        定义 a = 1。
+        定义 b = 2。
+        定义 c = a 相加 b。
         """
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
@@ -231,14 +231,14 @@ class TestChineseProgram:
 
     def test_run_nested_expressions(self):
         """测试运行嵌套表达式"""
-        source = "定 结果 = (10 加 20) 乘 (5 减 3)。"
+        source = "定义 结果 = (10 相加 20) 相乘 (5 相减 3)。"
         result = self.program.run(source)
         # 应该成功执行
         assert result is None or result is not None
 
     def test_compile_nested_expressions(self):
         """测试编译嵌套表达式"""
-        source = "定 结果 = (10 加 20) 乘 (5 减 3)。"
+        source = "定义 结果 = (10 相加 20) 相乘 (5 相减 3)。"
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)
@@ -247,9 +247,9 @@ class TestChineseProgram:
     def test_run_boolean_operations(self):
         """测试运行布尔运算"""
         source = """
-        定 a = 真。
-        定 b = 假。
-        定 c = a 且 b。
+        定义 a = 真。
+        定义 b = 假。
+        定义 c = a 并且 b。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -257,7 +257,7 @@ class TestChineseProgram:
 
     def test_compile_boolean_operations(self):
         """测试编译布尔运算"""
-        source = "定 结果 = 真 且 假。"
+        source = "定义 结果 = 真值 并且 假。"
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)
@@ -266,9 +266,9 @@ class TestChineseProgram:
     def test_run_comparison_operations(self):
         """测试运行比较运算"""
         source = """
-        定 x = 10。
-        定 y = 20。
-        定 结果 = x 小 y。
+        定义 x = 10。
+        定义 y = 20。
+        定义 结果 = x 小于 y。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -276,7 +276,7 @@ class TestChineseProgram:
 
     def test_compile_comparison_operations(self):
         """测试编译比较运算"""
-        source = "定 结果 = 10 小 20。"
+        source = "定义 结果 = 10 小于 20。"
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)

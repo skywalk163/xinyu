@@ -30,26 +30,26 @@ WELCOME_MESSAGE = f"""心语语言 v{VERSION}
 
 class ChineseProgram:
     """心语语言主类
-    
+
     提供完整的编译和执行功能。
-    
+
     属性：
         env: 执行环境（包含内置模块和函数）
     """
-    
+
     def __init__(self):
         """初始化心语语言环境"""
         self.env = self._create_exec_globals()
-    
+
     def run(self, source: str) -> Optional[Any]:
         """编译并执行心语代码
-        
+
         Args:
             source: 心语源代码
-            
+
         Returns:
             执行结果（如果有），或 None（如果出错）
-            
+
         Security Warning:
             本方法使用 exec() 执行生成的 Python 代码。
             请勿执行不可信的代码来源，可能存在安全风险。
@@ -62,28 +62,28 @@ class ChineseProgram:
             # 1. 词法分析
             lexer = Lexer(source)
             tokens = lexer.tokenize()
-            
+
             # 2. 语法分析
             parser = Parser(tokens)
             ast = parser.parse()
-            
+
             # 3. 语义分析
             analyzer = SemanticAnalyzer()
             if not analyzer.analyze(ast):
                 for error in analyzer.errors:
                     print(f"语义错误: {error.message} (行 {error.line}, 列 {error.column})")
                 return None
-            
+
             # 4. 代码生成
             codegen = PythonCodegen()
             python_code = codegen.generate(ast)
-            
+
             # 5. 执行
             exec_globals = self._create_exec_globals()
             exec(python_code, exec_globals)
-            
+
             return exec_globals.get('__result__')
-            
+
         except LexerError as e:
             print(f"词法错误: {e.message} (行 {e.line}, 列 {e.column})")
             return None
@@ -96,13 +96,13 @@ class ChineseProgram:
         except Exception as e:
             print(f"运行时错误: {e}")
             return None
-    
+
     def compile(self, source: str) -> str:
         """编译心语代码为 Python 代码
-        
+
         Args:
             source: 心语源代码
-            
+
         Returns:
             生成的 Python 代码字符串，如果出错则返回空字符串
         """
@@ -110,35 +110,35 @@ class ChineseProgram:
             # 1. 词法分析
             lexer = Lexer(source)
             tokens = lexer.tokenize()
-            
+
             # 2. 语法分析
             parser = Parser(tokens)
             ast = parser.parse()
-            
+
             # 3. 语义分析（可选，只检查错误）
             analyzer = SemanticAnalyzer()
             if not analyzer.analyze(ast):
                 for error in analyzer.errors:
                     print(f"语义警告: {error.message} (行 {error.line}, 列 {error.column})")
-            
+
             # 4. 代码生成
             codegen = PythonCodegen()
             python_code = codegen.generate(ast)
-            
+
             return python_code
-            
+
         except (LexerError, ParseError, CodegenError) as e:
             print(f"编译错误: {e}")
             return ""
-    
+
     def _create_exec_globals(self) -> Dict[str, Any]:
         """创建执行环境
-        
+
         包含：
         - Python 内置函数
         - Python 标准模块（math, random, json, re, datetime）
         - 心语内置函数
-        
+
         Returns:
             执行环境字典
         """
@@ -147,7 +147,7 @@ class ChineseProgram:
         import json
         import re
         from datetime import datetime, date, time, timedelta
-        
+
         # 基础环境
         exec_globals = {
             '__builtins__': __builtins__,
@@ -157,7 +157,7 @@ class ChineseProgram:
             '__loader__': None,
             '__spec__': None,
         }
-        
+
         # Python 标准模块
         exec_globals['math'] = math
         exec_globals['random'] = random
@@ -167,18 +167,18 @@ class ChineseProgram:
         exec_globals['date'] = date
         exec_globals['time'] = time
         exec_globals['timedelta'] = timedelta
-        
+
         # 心语内置值
         exec_globals['真'] = True
         exec_globals['假'] = False
-        
+
         return exec_globals
 
 
 def main() -> None:
     """主函数：支持交互式模式和文件模式"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='心语语言 - 极简中文编程语言',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -190,28 +190,28 @@ def main() -> None:
   python -m src.main --compile program.心语  # 编译为 Python
         '''
     )
-    
+
     parser.add_argument(
         'file',
         nargs='?',
         help='要执行的心语文件'
     )
-    
+
     parser.add_argument(
         '-c', '--code',
         help='直接执行代码字符串'
     )
-    
+
     parser.add_argument(
         '--compile',
         action='store_true',
         help='只编译为 Python 代码，不执行'
     )
-    
+
     args = parser.parse_args()
-    
+
     program = ChineseProgram()
-    
+
     # 直接执行代码字符串
     if args.code:
         if args.compile:
@@ -220,13 +220,13 @@ def main() -> None:
         else:
             program.run(args.code)
         return
-    
+
     # 执行文件
     if args.file:
         try:
             with open(args.file, 'r', encoding='utf-8') as f:
                 source = f.read()
-            
+
             if args.compile:
                 python_code = program.compile(source)
                 print(python_code)
@@ -237,30 +237,30 @@ def main() -> None:
         except Exception as e:
             print(f"错误：{e}")
         return
-    
+
     # 交互式模式（REPL）
     print(WELCOME_MESSAGE)
     print()
-    
+
     while True:
         try:
             # 读取输入
             line = input(REPL_PROMPT)
-            
+
             # 检查退出命令
             if line.strip() in ('退出', 'exit', 'quit'):
                 print("再见！")
                 break
-            
+
             # 检查帮助命令
             if line.strip() in ('帮助', 'help'):
                 print_help()
                 continue
-            
+
             # 执行代码
             if line.strip():
                 program.run(line)
-        
+
         except EOFError:
             print("\n再见！")
             break
@@ -297,15 +297,15 @@ def print_help() -> None:
 示例：
   定 x = 5。
   印x。
-  
+
   定 加法 = 函 a b：
       返回 a 加 b。
-  
+
   若 x 大于 0 则：
       印"正数"。
   否则：
       印"非正数"。
-  
+
   遍历 i 于 [1, 2, 3]：
       印i。
 '''

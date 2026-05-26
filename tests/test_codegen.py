@@ -130,7 +130,7 @@ def test_generate_binary_add():
     node = BinaryOpNode(
         line=1, column=0,
         left=NumberNode(line=1, column=0, value=1),
-        operator="加",
+        operator="相加",
         right=NumberNode(line=1, column=2, value=2)
     )
     result = codegen.generate(node)
@@ -146,7 +146,7 @@ def test_generate_binary_subtract():
     node = BinaryOpNode(
         line=1, column=0,
         left=NumberNode(line=1, column=0, value=5),
-        operator="减",
+        operator="相减",
         right=NumberNode(line=1, column=2, value=3)
     )
     result = codegen.generate(node)
@@ -162,7 +162,7 @@ def test_generate_binary_multiply():
     node = BinaryOpNode(
         line=1, column=0,
         left=NumberNode(line=1, column=0, value=4),
-        operator="乘",
+        operator="相乘",
         right=NumberNode(line=1, column=2, value=5)
     )
     result = codegen.generate(node)
@@ -211,11 +211,11 @@ def test_generate_operator_precedence():
     node = BinaryOpNode(
         line=1, column=0,
         left=NumberNode(line=1, column=0, value=1),
-        operator="加",
+        operator="相加",
         right=BinaryOpNode(
             line=1, column=4,
             left=NumberNode(line=1, column=4, value=2),
-            operator="乘",
+            operator="相乘",
             right=NumberNode(line=1, column=6, value=3)
         )
     )
@@ -238,10 +238,10 @@ def test_generate_nested_parentheses():
         left=BinaryOpNode(
             line=1, column=1,
             left=NumberNode(line=1, column=1, value=1),
-            operator="加",
+            operator="相加",
             right=NumberNode(line=1, column=5, value=2)
         ),
-        operator="乘",
+        operator="相乘",
         right=NumberNode(line=1, column=10, value=3)
     )
     result = codegen.generate(node)
@@ -276,7 +276,7 @@ def test_generate_unary_not():
     codegen = PythonCodegen()
     node = UnaryOpNode(
         line=1, column=0,
-        operator="非",
+        operator="非也",
         operand=IdentifierNode(line=1, column=1, name="x")
     )
     result = codegen.generate(node)
@@ -362,7 +362,7 @@ def test_generate_function_call():
     codegen = PythonCodegen()
     node = FunctionCallNode(
         line=1, column=0,
-        name="印",
+        name="打印",
         args=[StringNode(line=1, column=2, value="你好")]
     )
     result = codegen.generate(node)
@@ -395,7 +395,7 @@ def test_generate_builtin_print():
     codegen = PythonCodegen()
     node = FunctionCallNode(
         line=1, column=0,
-        name="印",
+        name="打印",
         args=[IdentifierNode(line=1, column=2, name="x")]
     )
     result = codegen.generate(node)
@@ -484,7 +484,7 @@ def test_generate_function_def():
                 value=BinaryOpNode(
                     line=2, column=11,
                     left=IdentifierNode(line=2, column=11, name="x"),
-                    operator="乘",
+                    operator="相乘",
                     right=IdentifierNode(line=2, column=13, name="x")
                 )
             )
@@ -508,7 +508,7 @@ def test_generate_function_def_no_params():
         body=[
             FunctionCallNode(
                 line=2, column=4,
-                name="印",
+                name="打印",
                 args=[StringNode(line=2, column=7, value="你好")]
             )
         ]
@@ -537,7 +537,7 @@ def test_generate_if():
         then_branch=[
             FunctionCallNode(
                 line=2, column=4,
-                name="印",
+                name="打印",
                 args=[StringNode(line=2, column=7, value="正数")]
             )
         ]
@@ -564,14 +564,14 @@ def test_generate_if_else():
         then_branch=[
             FunctionCallNode(
                 line=2, column=4,
-                name="印",
+                name="打印",
                 args=[StringNode(line=2, column=5, value="正数")]
             )
         ],
         else_branch=[
             FunctionCallNode(
                 line=4, column=4,
-                name="印",
+                name="打印",
                 args=[StringNode(line=4, column=5, value="非正数")]
             )
         ]
@@ -601,7 +601,7 @@ def test_generate_for():
         body=[
             FunctionCallNode(
                 line=2, column=4,
-                name="印",
+                name="打印",
                 args=[IdentifierNode(line=2, column=7, name="i")]
             )
         ]
@@ -632,7 +632,7 @@ def test_generate_while():
                 value=BinaryOpNode(
                     line=2, column=8,
                     left=IdentifierNode(line=2, column=8, name="x"),
-                    operator="加",
+                    operator="相加",
                     right=NumberNode(line=2, column=10, value=1)
                 )
             )
@@ -655,7 +655,7 @@ def test_generate_repeat():
         body=[
             FunctionCallNode(
                 line=2, column=4,
-                name="印",
+                name="打印",
                 args=[StringNode(line=2, column=7, value="你好")]
             )
         ]
@@ -713,7 +713,7 @@ def test_generate_program():
             ),
             FunctionCallNode(
                 line=2, column=0,
-                name="印",
+                name="打印",
                 args=[IdentifierNode(line=2, column=2, name="x")]
             )
         ]
@@ -755,7 +755,7 @@ def test_generate_nested_if():
                 then_branch=[
                     FunctionCallNode(
                         line=3, column=8,
-                        name="印",
+                        name="打印",
                         args=[StringNode(line=3, column=11, value="嵌套")]
                     )
                 ]
@@ -788,7 +788,7 @@ def test_generate_nested_function():
                         value=BinaryOpNode(
                             line=3, column=15,
                             left=IdentifierNode(line=3, column=15, name="x"),
-                            operator="加",
+                            operator="相加",
                             right=IdentifierNode(line=3, column=17, name="y")
                         )
                     )

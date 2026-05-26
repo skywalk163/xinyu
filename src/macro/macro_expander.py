@@ -35,6 +35,17 @@ class MacroExpander:
 
         self.current_depth += 1
         try:
+            # 处理列表（宏展开可能返回多个语句）
+            if isinstance(node, list):
+                expanded_items = []
+                for item in node:
+                    expanded = self.expand_ast(item)
+                    if isinstance(expanded, list):
+                        expanded_items.extend(expanded)
+                    else:
+                        expanded_items.append(expanded)
+                return expanded_items
+
             if isinstance(node, ProgramNode):
                 expanded_statements = []
                 for stmt in node.statements:
@@ -43,22 +54,27 @@ class MacroExpander:
                         expanded_statements.extend(expanded)
                     else:
                         expanded_statements.append(expanded)
-                return ProgramNode(expanded_statements, line=node.line, column=node.column)
+                return ProgramNode(line=node.line, column=node.column, statements=expanded_statements)
 
             elif isinstance(node, FunctionCallNode):
                 # 检查是否是宏调用
                 if self.macro_system.has(node.name):
-                    return self._expand_macro_call(node)
+                    expanded = self._expand_macro_call(node)
+                    # 如果展开结果是列表，需要继续展开列表中的每个元素
+                    if isinstance(expanded, list):
+                        return self.expand_ast(expanded)
+                    else:
+                        return expanded
                 else:
                     # 递归展开参数
                     expanded_args = [self.expand_ast(arg) for arg in node.args]
-                    return FunctionCallNode(node.name, expanded_args, line=node.line, column=node.column)
+                    return FunctionCallNode(name=node.name, args=expanded_args, line=node.line, column=node.column)
 
             elif isinstance(node, IfNode):
                 expanded_condition = self.expand_ast(node.condition)
                 expanded_then = [self.expand_ast(stmt) for stmt in node.then_branch]
                 expanded_else = [self.expand_ast(stmt) for stmt in node.else_branch] if node.else_branch else None
-                return IfNode(expanded_condition, expanded_then, expanded_else, line=node.line, column=node.column)
+                return IfNode(condition=expanded_condition, then_branch=expanded_then, else_branch=expanded_else, line=node.line, column=node.column)
 
             elif isinstance(node, ForNode):
                 # 遍历循环可能是宏调用
@@ -69,7 +85,7 @@ class MacroExpander:
             elif isinstance(node, WhileNode):
                 expanded_condition = self.expand_ast(node.condition)
                 expanded_body = [self.expand_ast(stmt) for stmt in node.body]
-                return WhileNode(expanded_condition, expanded_body, line=node.line, column=node.column)
+                return WhileNode(condition=expanded_condition, body=expanded_body, line=node.line, column=node.column)
 
             elif isinstance(node, RepeatNode):
                 # 重复循环是宏调用
@@ -115,10 +131,16 @@ class MacroExpander:
         parser = Parser(tokens)
         expanded_ast = parser.parse()
 
+        # 递归展开AST中可能存在的宏调用
+        # 注意：这里不调用expand_ast，因为会在外层的expand_ast中处理
+        # 只需要返回展开后的AST，让外层的expand_ast继续处理
+        
         # 返回展开后的语句列表或单个语句
         if len(expanded_ast.statements) > 1:
+            # 多个语句，返回列表，让外层的expand_ast处理
             return expanded_ast.statements
         elif len(expanded_ast.statements) == 1:
+            # 单个语句，直接返回，让外层的expand_ast继续展开
             return expanded_ast.statements[0]
         else:
             return node
@@ -134,16 +156,7 @@ class MacroExpander:
             展开后的AST节点
         """
         # 将遍历循环转换为宏调用
-        macro_call = FunctionCallNode(
-            "遍历",
-            [
-                IdentifierNode(node.variable, line=node.line, column=node.column),
-                node.iterable,
-                node.body
-            ],
-            line=node.line,
-            column=node.column
-        )
+        macro_call = FunctionCallNode(name="遍历", args=[IdentifierNode(name=node.var, line=node.line, column=node.column), node.iterable, node.body], line=node.line, column=node.column)
         return self._expand_macro_call(macro_call)
 
     def _expand_repeat_loop(self, node: RepeatNode) -> ASTNode:
@@ -157,10 +170,5 @@ class MacroExpander:
             展开后的AST节点
         """
         # 将重复循环转换为宏调用
-        macro_call = FunctionCallNode(
-            "重复",
-            [node.count, node.body],
-            line=node.line,
-            column=node.column
-        )
+        macro_call = FunctionCallNode(name="重复", args=[node.count, node.body], line=node.line, column=node.column)
         return self._expand_macro_call(macro_call)

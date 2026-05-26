@@ -23,45 +23,49 @@ class TypeInferencer:
         """初始化类型推断器"""
         # 类型规则： (左类型, 操作符, 右类型) -> 结果类型
         self.type_rules = {
-            # 算术运算
+            # 算术运算（双字）
             ('number', '+', 'number'): 'number',
             ('number', '-', 'number'): 'number',
             ('number', '*', 'number'): 'number',
             ('number', '/', 'number'): 'number',
-            ('number', '加', 'number'): 'number',
-            ('number', '减', 'number'): 'number',
-            ('number', '乘', 'number'): 'number',
-            ('number', '除以', 'number'): 'number',
+            ('number', '相加', 'number'): 'number',
+            ('number', '相减', 'number'): 'number',
+            ('number', '相乘', 'number'): 'number',
+            ('number', '相除', 'number'): 'number',
+            ('number', '取余', 'number'): 'number',
 
-            # 字符串连接
+            # 字符串连接（双字）
             ('string', '+', 'string'): 'string',
-            ('string', '加', 'string'): 'string',
+            ('string', '相加', 'string'): 'string',
 
-            # 比较运算
+            # 比较运算（双字）
             ('number', '==', 'number'): 'boolean',
             ('number', '!=', 'number'): 'boolean',
             ('number', '<', 'number'): 'boolean',
             ('number', '>', 'number'): 'boolean',
             ('number', '<=', 'number'): 'boolean',
             ('number', '>=', 'number'): 'boolean',
-            ('number', '等', 'number'): 'boolean',
+            ('number', '等于', 'number'): 'boolean',
             ('number', '不等', 'number'): 'boolean',
-            ('number', '小', 'number'): 'boolean',
-            ('number', '大', 'number'): 'boolean',
+            ('number', '小于', 'number'): 'boolean',
+            ('number', '大于', 'number'): 'boolean',
             ('number', '小等', 'number'): 'boolean',
             ('number', '大等', 'number'): 'boolean',
 
-            # 逻辑运算
+            # 逻辑运算（双字）
             ('boolean', 'and', 'boolean'): 'boolean',
             ('boolean', 'or', 'boolean'): 'boolean',
-            ('boolean', '且', 'boolean'): 'boolean',
-            ('boolean', '或', 'boolean'): 'boolean',
+            ('boolean', '并且', 'boolean'): 'boolean',
+            ('boolean', '或者', 'boolean'): 'boolean',
         }
 
-        # 内置函数返回类型
+        # 内置函数返回类型（双字）
         self.builtin_returns = {
-            '印': None,  # print函数无返回值
+            '打印': None,  # print函数无返回值
             '读取': 'string',  # input返回字符串
+            '输入': 'string',  # input返回字符串
+            '输出': None,  # output无返回值
+            '写入': None,  # write无返回值
             '长度': 'number',  # len返回数字
             '求和': 'number',  # sum返回数字
             '最大': 'number',  # max返回数字
@@ -96,8 +100,8 @@ class TypeInferencer:
 
         # 标识符
         if isinstance(node, IdentifierNode):
-            # 特殊处理布尔值
-            if node.name in ['真', '假']:
+            # 特殊处理布尔值（双字）
+            if node.name in ['真值', '假值']:
                 return 'boolean'
             return context.get(node.name, 'unknown')
 
@@ -112,8 +116,8 @@ class TypeInferencer:
             if result:
                 return result
 
-            # 特殊处理：数字和字符串的加法
-            if operator in ['+', '加']:
+            # 特殊处理：数字和字符串的加法（双字）
+            if operator in ['+', '相加']:
                 if left_type == 'number' and right_type == 'number':
                     return 'number'
                 if left_type == 'string' or right_type == 'string':

@@ -28,6 +28,7 @@ class Error:
     line: int
     column: int
     source: Optional[str] = None
+    suggestion: Optional[str] = None  # 添加建议字段
 
     def __str__(self) -> str:
         """格式化错误信息"""
@@ -38,7 +39,15 @@ class Error:
             ErrorType.RUNTIME_ERROR: "运行时错误",
         }
         type_name = type_names.get(self.error_type, "错误")
-        return f"{type_name}：第 {self.line} 行，第 {self.column} 列：{self.message}"
+        
+        # 基本错误信息
+        result = f"{type_name}：第 {self.line} 行，第 {self.column} 列：{self.message}"
+        
+        # 添加建议
+        if self.suggestion:
+            result += f"\n  💡 建议：{self.suggestion}"
+        
+        return result
 
 
 class ErrorHandler:
@@ -54,7 +63,8 @@ class ErrorHandler:
         message: str,
         line: int,
         column: int,
-        source: Optional[str] = None
+        source: Optional[str] = None,
+        suggestion: Optional[str] = None
     ) -> None:
         """报告错误
 
@@ -64,13 +74,15 @@ class ErrorHandler:
             line: 行号
             column: 列号
             source: 源代码（可选）
+            suggestion: 修复建议（可选）
         """
         error = Error(
             error_type=error_type,
             message=message,
             line=line,
             column=column,
-            source=source
+            source=source,
+            suggestion=suggestion
         )
         self.errors.append(error)
 

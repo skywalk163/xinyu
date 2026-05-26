@@ -78,7 +78,7 @@ class TestErrorHandler(unittest.TestCase):
     def test_error_formatting_with_context(self):
         """测试带上下文的错误格式化"""
         handler = ErrorHandler()
-        source = "定 x = 。"
+        source = "定义 x = 。"
         handler.report(
             ErrorType.PARSER_ERROR,
             "Expected expression",

@@ -17,7 +17,7 @@ class TestLexerWithErrorHandler:
 
     def test_basic_tokenization(self):
         """测试基本的词法分析功能"""
-        source = "定 x = 42"
+        source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -28,7 +28,7 @@ class TestLexerWithErrorHandler:
 
     def test_error_collection(self):
         """测试错误收集功能"""
-        source = "定 x = @#$"  # 非法字符
+        source = "定义 x = @#$"  # 非法字符
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -41,7 +41,7 @@ class TestLexerWithErrorHandler:
 
     def test_multiple_errors(self):
         """测试多个错误的收集"""
-        source = "定 x = @ 定 y = #"
+        source = "定义 x = @ 定义 y = #"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         lexer.tokenize()
@@ -53,7 +53,7 @@ class TestLexerWithErrorHandler:
 
     def test_unterminated_string(self):
         """测试未终止字符串的错误报告"""
-        source = '定 x = "未终止的字符串'
+        source = '定义 x = "未终止的字符串'
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         lexer.tokenize()
@@ -64,7 +64,7 @@ class TestLexerWithErrorHandler:
 
     def test_chinese_operators(self):
         """测试中文操作符的正确识别"""
-        source = "加 减 乘 除"
+        source = "相加 相减 相乘 除"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -80,7 +80,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_basic_analysis(self):
         """测试基本的语义分析功能"""
-        source = "定 x = 42"
+        source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -96,7 +96,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_type_inference_number(self):
         """测试数字类型推断"""
-        source = "定 x = 42"
+        source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -114,7 +114,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_type_inference_string(self):
         """测试字符串类型推断"""
-        source = '定 x = "你好"'
+        source = '定义 x = "你好"'
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -132,7 +132,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_undefined_variable_error(self):
         """测试未定义变量的错误报告"""
-        source = "印 未定义变量"
+        source = "打印 未定义变量"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -150,7 +150,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_redefinition_error(self):
         """测试重复定义的错误报告"""
-        source = "定 x = 1。定 x = 2。"
+        source = "定义 x = 1。定义 x = 2。"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -168,7 +168,7 @@ class TestSemanticAnalyzerWithInference:
 
     def test_builtin_function(self):
         """测试内置函数"""
-        source = '印 "你好"'
+        source = '打印 "你好"'
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
@@ -189,10 +189,10 @@ class TestIntegration:
     def test_full_pipeline(self):
         """测试完整的编译流程"""
         source = """
-        定 x = 42。
-        定 y = "你好"。
-        印 x。
-        印 y。
+        定义 x = 42。
+        定义 y = "你好"。
+        打印 x。
+        打印 y。
         """
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
@@ -218,7 +218,7 @@ class TestIntegration:
 
     def test_error_recovery(self):
         """测试错误恢复能力"""
-        source = "定 y = 42。印 y。"
+        source = "定义 y = 42。打印 y。"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
