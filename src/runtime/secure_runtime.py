@@ -195,6 +195,7 @@ class SecureRuntime:
             
             # RestrictedPython需要的守卫函数
             '_iter_unpack_sequence': guarded_iter_unpack_sequence,
+            '_print_': lambda x: print(x),  # RestrictedPython的print守卫
         }
         
         # 创建受限全局环境

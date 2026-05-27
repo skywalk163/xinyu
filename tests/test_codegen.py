@@ -404,13 +404,14 @@ def test_generate_builtin_print():
 
 
 def test_generate_builtin_input():
-    """测试内置函数输入取映射到input"""
+    """测试内置函数input生成"""
     from src.codegen.python_codegen import PythonCodegen
+    from src.parser.ast_nodes import FunctionCallNode
 
     codegen = PythonCodegen()
     node = FunctionCallNode(
         line=1, column=0,
-        name="输入取",
+        name="输入",
         args=[]
     )
     result = codegen.generate(node)

@@ -211,12 +211,13 @@ class TestStdlibIntegration:
         """测试跨模块使用"""
         # 使用数学模块计算
         result = 数学.平方根(16)
-        # 使用字符串模块格式化
-        text = 字符串.格式化(f"结果是{result}")
+        # 使用字符串模块处理
+        text = 字符串.大写("hello")
         # 使用列表模块处理
         lst = 列表.排序([3, 1, 2])
-        
+
         assert result == 4.0
+        assert text == "HELLO"
         assert lst == [1, 2, 3]
 
 

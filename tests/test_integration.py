@@ -195,12 +195,12 @@ class TestFunction:
         program = ChineseProgram()
         source = '''
 定义 阶相乘 = 函数 n：
-    如果 n 等于于遍历 1 那么：
+    如果 n 等于 1 那么：
         返回 1。
-    否那么：
-        返回 n 相乘 阶相乘(n 相减 1)。
+    否则：
+        返回 n 相乘 阶相乘 n 相减 1。
 定义 结果 = 阶相乘 5。
-打印结果。
+打印 结果。
 '''
 
         captured_output = io.StringIO()
@@ -345,11 +345,11 @@ class TestComplexPrograms:
 定义 斐波那契 = 函数 n：
     如果 n 小于等于 1 那么：
         返回 n。
-    否那么：
-        返回 斐波那契(n 相减 1) 相加 斐波那契(n 相减 2)。
+    否则：
+        返回 斐波那契 n 相减 1 相加 斐波那契 n 相减 2。
 
 定义 结果 = 斐波那契 10。
-打印结果。
+打印 结果。
 '''
 
         captured_output = io.StringIO()

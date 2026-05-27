@@ -165,9 +165,9 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_function_call(self):
         """测试函数调用"""
-        code = """定义 加法 = 函数 a b：
+        code = """定义 求和 = 函数 a b：
   返回 a 相加 b。
-加法 1 2。"""
+求和 1 2。"""
         success, errors = self._analyze(code)
 
         self.assertTrue(success)
@@ -175,7 +175,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_undefined_function(self):
         """测试未定义函数检测"""
-        code = "加法 1 2。"
+        code = "求和 1 2。"
         success, errors = self._analyze(code)
 
         self.assertFalse(success)
