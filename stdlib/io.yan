@@ -1,0 +1,281 @@
+# stdlib/io.yan
+# 文件输入输出标准库
+
+"""
+文件输入输出标准库
+
+提供文件操作功能，包括：
+- 文件读写
+- 目录操作
+- 路径处理
+- 文件信息
+"""
+
+# ===== 文件读写 =====
+
+函数 读取文件：
+  """读取文件内容"""
+  参数 path。
+  参数 encoding = 'utf-8'。
+  定义 f = open(path, 'r', encoding=encoding)。
+  定义 content = f.read()。
+  f.close()。
+  返回 content。
+
+函数 写入文件：
+  """写入文件内容"""
+  参数 path。
+  参数 content。
+  参数 encoding = 'utf-8'。
+  定义 f = open(path, 'w', encoding=encoding)。
+  f.write(content)。
+  f.close()。
+
+函数 追加文件：
+  """追加文件内容"""
+  参数 path。
+  参数 content。
+  参数 encoding = 'utf-8'。
+  定义 f = open(path, 'a', encoding=encoding)。
+  f.write(content)。
+  f.close()。
+
+函数 读取行：
+  """按行读取文件"""
+  参数 path。
+  参数 encoding = 'utf-8'。
+  定义 f = open(path, 'r', encoding=encoding)。
+  定义 lines = f.readlines()。
+  f.close()。
+  返回 lines。
+
+函数 写入行：
+  """按行写入文件"""
+  参数 path。
+  参数 lines。
+  参数 encoding = 'utf-8'。
+  定义 f = open(path, 'w', encoding=encoding)。
+  f.writelines(lines)。
+  f.close()。
+
+# ===== 二进制文件 =====
+
+函数 读取二进制：
+  """读取二进制文件"""
+  参数 path。
+  定义 f = open(path, 'rb')。
+  定义 data = f.read()。
+  f.close()。
+  返回 data。
+
+函数 写入二进制：
+  """写入二进制文件"""
+  参数 path。
+  参数 data。
+  定义 f = open(path, 'wb')。
+  f.write(data)。
+  f.close()。
+
+# ===== 目录操作 =====
+
+函数 创建目录：
+  """创建目录"""
+  参数 path。
+  import os。
+  os.makedirs(path, exist_ok=True)。
+
+函数 删除目录：
+  """删除目录"""
+  参数 path。
+  import os。
+  os.rmdir(path)。
+
+函数 列出目录：
+  """列出目录内容"""
+  参数 path。
+  import os。
+  返回 os.listdir(path)。
+
+函数 遍历目录：
+  """遍历目录树"""
+  参数 path。
+  import os。
+  返回 os.walk(path)。
+
+# ===== 文件操作 =====
+
+函数 复制文件：
+  """复制文件"""
+  参数 src。
+  参数 dst。
+  import shutil。
+  shutil.copy(src, dst)。
+
+函数 移动文件：
+  """移动文件"""
+  参数 src。
+  参数 dst。
+  import shutil。
+  shutil.move(src, dst)。
+
+函数 删除文件：
+  """删除文件"""
+  参数 path。
+  import os。
+  os.remove(path)。
+
+函数 重命名：
+  """重命名文件"""
+  参数 old。
+  参数 new。
+  import os。
+  os.rename(old, new)。
+
+# ===== 路径处理 =====
+
+函数 路径连接：
+  """连接路径"""
+  参数 *paths。
+  import os。
+  返回 os.path.join(*paths)。
+
+函数 路径分割：
+  """分割路径"""
+  参数 path。
+  import os。
+  返回 os.path.split(path)。
+
+函数 获取文件名：
+  """获取文件名"""
+  参数 path。
+  import os。
+  返回 os.path.basename(path)。
+
+函数 获取目录名：
+  """获取目录名"""
+  参数 path。
+  import os。
+  返回 os.path.dirname(path)。
+
+函数 获取扩展名：
+  """获取文件扩展名"""
+  参数 path。
+  import os。
+  返回 os.path.splitext(path)[1]。
+
+函数 绝对路径：
+  """获取绝对路径"""
+  参数 path。
+  import os。
+  返回 os.path.abspath(path)。
+
+函数 规范化路径：
+  """规范化路径"""
+  参数 path。
+  import os。
+  返回 os.path.normpath(path)。
+
+# ===== 文件信息 =====
+
+函数 文件存在：
+  """检查文件是否存在"""
+  参数 path。
+  import os。
+  返回 os.path.exists(path)。
+
+函数 是文件：
+  """检查是否为文件"""
+  参数 path。
+  import os。
+  返回 os.path.isfile(path)。
+
+函数 是目录：
+  """检查是否为目录"""
+  参数 path。
+  import os。
+  返回 os.path.isdir(path)。
+
+函数 文件大小：
+  """获取文件大小"""
+  参数 path。
+  import os。
+  返回 os.path.getsize(path)。
+
+函数 修改时间：
+  """获取修改时间"""
+  参数 path。
+  import os。
+  返回 os.path.getmtime(path)。
+
+函数 访问时间：
+  """获取访问时间"""
+  参数 path。
+  import os。
+  返回 os.path.getatime(path)。
+
+函数 创建时间：
+  """获取创建时间"""
+  参数 path。
+  import os。
+  返回 os.path.getctime(path)。
+
+# ===== 临时文件 =====
+
+函数 创建临时文件：
+  """创建临时文件"""
+  import tempfile。
+  返回 tempfile.mktemp()。
+
+函数 创建临时目录：
+  """创建临时目录"""
+  import tempfile。
+  返回 tempfile.mkdtemp()。
+
+# ===== JSON文件 =====
+
+函数 读取JSON：
+  """读取JSON文件"""
+  参数 path。
+  参数 encoding = 'utf-8'。
+  import json。
+  定义 f = open(path, 'r', encoding=encoding)。
+  定义 data = json.load(f)。
+  f.close()。
+  返回 data。
+
+函数 写入JSON：
+  """写入JSON文件"""
+  参数 path。
+  参数 data。
+  参数 encoding = 'utf-8'。
+  参数 indent = 2。
+  import json。
+  定义 f = open(path, 'w', encoding=encoding)。
+  json.dump(data, f, indent=indent, ensure_ascii=False)。
+  f.close()。
+
+# ===== CSV文件 =====
+
+函数 读取CSV：
+  """读取CSV文件"""
+  参数 path。
+  参数 encoding = 'utf-8'。
+  import csv。
+  定义 rows = []。
+  定义 f = open(path, 'r', encoding=encoding)。
+  定义 reader = csv.reader(f)。
+  循环 row 遍历 reader：
+    rows.append(row)。
+  f.close()。
+  返回 rows。
+
+函数 写入CSV：
+  """写入CSV文件"""
+  参数 path。
+  参数 rows。
+  参数 encoding = 'utf-8'。
+  import csv。
+  定义 f = open(path, 'w', encoding=encoding, newline='')。
+  定义 writer = csv.writer(f)。
+  writer.writerows(rows)。
+  f.close()。

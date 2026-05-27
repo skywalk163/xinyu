@@ -123,7 +123,7 @@ def test_generate_identifier():
 # ============ 二元操作生成测试 ============
 
 def test_generate_binary_add():
-    """测试加法生成"""
+    """测试相加法生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -139,7 +139,7 @@ def test_generate_binary_add():
 
 
 def test_generate_binary_subtract():
-    """测试减法生成"""
+    """测试相减法生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -155,7 +155,7 @@ def test_generate_binary_subtract():
 
 
 def test_generate_binary_multiply():
-    """测试乘法生成"""
+    """测试相乘法生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -171,14 +171,14 @@ def test_generate_binary_multiply():
 
 
 def test_generate_binary_divide():
-    """测试除法生成"""
+    """测试相除法生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
         line=1, column=0,
         left=NumberNode(line=1, column=0, value=10),
-        operator="除以",
+        operator="相除以",
         right=NumberNode(line=1, column=3, value=2)
     )
     result = codegen.generate(node)
@@ -194,7 +194,7 @@ def test_generate_binary_comparison():
     node = BinaryOpNode(
         line=1, column=0,
         left=IdentifierNode(line=1, column=0, name="x"),
-        operator="大于",
+        operator="大于于",
         right=NumberNode(line=1, column=3, value=0)
     )
     result = codegen.generate(node)
@@ -203,7 +203,7 @@ def test_generate_binary_comparison():
 
 
 def test_generate_operator_precedence():
-    """测试操作符优先级（乘法优先于加法）"""
+    """测试操作符优先级（相乘法优先于相加法）"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -248,7 +248,7 @@ def test_generate_nested_parentheses():
 
     # AST 结构已经体现了优先级，生成 "1 + 2 * 3" 是正确的
     # 但如果我们想保留括号语义，需要生成 "(1 + 2) * 3"
-    # 这里测试当前实现的行为
+    # 这里测试当满足前实现的行为
     assert "1 + 2" in result and "* 3" in result
 
 
@@ -270,13 +270,13 @@ def test_generate_unary_negative():
 
 
 def test_generate_unary_not():
-    """测试逻辑非生成"""
+    """测试逻辑非也生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = UnaryOpNode(
         line=1, column=0,
-        operator="非也",
+        operator="非也也",
         operand=IdentifierNode(line=1, column=1, name="x")
     )
     result = codegen.generate(node)
@@ -389,7 +389,7 @@ def test_generate_function_call_multiple_args():
 
 
 def test_generate_builtin_print():
-    """测试内置函数印映射到print"""
+    """测试内置函数打印映射到print"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -404,13 +404,13 @@ def test_generate_builtin_print():
 
 
 def test_generate_builtin_input():
-    """测试内置函数读取映射到input"""
+    """测试内置函数输入取映射到input"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = FunctionCallNode(
         line=1, column=0,
-        name="读取",
+        name="输入取",
         args=[]
     )
     result = codegen.generate(node)
@@ -531,7 +531,7 @@ def test_generate_if():
         condition=BinaryOpNode(
             line=1, column=2,
             left=IdentifierNode(line=1, column=2, name="x"),
-            operator="大于",
+            operator="大于于",
             right=NumberNode(line=1, column=5, value=0)
         ),
         then_branch=[
@@ -558,7 +558,7 @@ def test_generate_if_else():
         condition=BinaryOpNode(
             line=1, column=3,
             left=IdentifierNode(line=1, column=3, name="x"),
-            operator="大于",
+            operator="大于于",
             right=NumberNode(line=1, column=6, value=0)
         ),
         then_branch=[
@@ -572,13 +572,13 @@ def test_generate_if_else():
             FunctionCallNode(
                 line=4, column=4,
                 name="打印",
-                args=[StringNode(line=4, column=5, value="非正数")]
+                args=[StringNode(line=4, column=5, value="非也正数")]
             )
         ]
     )
     result = codegen.generate(node)
 
-    expected = "if (x > 0):\n    print('正数')\nelse:\n    print('非正数')"
+    expected = "if (x > 0):\n    print('正数')\nelse:\n    print('非也正数')"
     assert result == expected
 
 
@@ -613,7 +613,7 @@ def test_generate_for():
 
 
 def test_generate_while():
-    """测试当循环生成"""
+    """测试当满足循环生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
@@ -622,7 +622,7 @@ def test_generate_while():
         condition=BinaryOpNode(
             line=1, column=2,
             left=IdentifierNode(line=1, column=2, name="x"),
-            operator="小于",
+            operator="小于于",
             right=NumberNode(line=1, column=5, value=10)
         ),
         body=[
@@ -818,7 +818,7 @@ def test_generate_unknown_node():
 
     codegen = PythonCodegen()
 
-    # 创建一个假的节点类型
+    # 创建一个假值的节点类型
     class FakeNode:
         def __init__(self):
             self.line = 1

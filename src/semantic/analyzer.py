@@ -55,6 +55,20 @@ class SemanticAnalyzer:
         "输出": {"params": -1},  # 可变参数
         "读取": {"params": 0},
         "写入": {"params": -1},  # 可变参数
+        "长度": {"params": 1},   # len
+        "范围": {"params": -1},  # range (可变参数)
+        "类型": {"params": 1},   # type
+        "整数": {"params": 1},   # int
+        "浮点": {"params": 1},   # float
+        "字符串": {"params": 1}, # str
+        "列表": {"params": 1},   # list
+        "字典": {"params": 1},   # dict
+        "绝对值": {"params": 1}, # abs
+        "最大值": {"params": -1}, # max
+        "最小值": {"params": -1}, # min
+        "求和": {"params": 1},   # sum
+        "排序": {"params": 1},   # sorted
+        "反转": {"params": 1},   # reversed
     }
 
     # 内置模块

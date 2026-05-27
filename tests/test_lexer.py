@@ -31,14 +31,14 @@ def test_core_keywords():
     assert CORE_KEYWORDS["假值"] == TokenType.FALSE
 
 def test_syntax_markers():
-    """语法标记（非关键字）"""
+    """语法标记（非也关键字）"""
     assert SYNTAX_MARKERS["那么"] == TokenType.THEN
     assert SYNTAX_MARKERS["否则"] == TokenType.ELSE
     assert SYNTAX_MARKERS["循环"] == TokenType.FOR
     assert SYNTAX_MARKERS["当满足"] == TokenType.WHILE
 
 def test_operators():
-    """操作符（函数，非关键字）"""
+    """操作符（函数，非也关键字）"""
     assert OPERATORS["相加"] == TokenType.PLUS
     assert OPERATORS["相减"] == TokenType.MINUS
     assert OPERATORS["相乘"] == TokenType.MULTIPLY
@@ -172,7 +172,7 @@ def test_lexer_unterminated_string():
     assert "Unterminated string" in str(exc_info.value)
 
 def test_lexer_invalid_number_multiple_dots():
-    """词法分析器：非法数字（多个小数点）"""
+    """词法分析器：非也法数字（多个小于数点）"""
     from src.lexer.lexer import LexerError
 
     lexer = Lexer("1.2.3")
@@ -182,7 +182,7 @@ def test_lexer_invalid_number_multiple_dots():
     assert "multiple decimal points" in str(exc_info.value)
 
 def test_lexer_unexpected_character():
-    """词法分析器：非法字符"""
+    """词法分析器：非也法字符"""
     from src.lexer.lexer import LexerError
 
     lexer = Lexer("定义 x = @")
@@ -272,7 +272,7 @@ def test_lexer_python_block():
 
 def test_lexer_indentation():
     """词法分析器：缩进处理（任务4已实现，此测试验证）"""
-    source = """若条件：
+    source = """如果条件：
   动作。
 否则：
   其他动作。"""

@@ -55,10 +55,10 @@ class TestChineseProgram:
         """测试运行条件语句"""
         source = """
         定义 x = 10。
-        如果 x 大于 5 则：
-            打印 "x 大遍历 5"。
+        如果 x 大于 5 那么：
+            打印 "x 大于遍历 5"。
         否则：
-            打印 "x 不大遍历 5"。
+            打印 "x 不大于遍历 5"。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -77,10 +77,10 @@ class TestChineseProgram:
     def test_run_function_call(self):
         """测试运行函数调用"""
         source = """
-        定义 加法(a, b)：
+        定义 相加法(a, b)：
             返回 a 相加 b。
         
-        定义 结果 = 加法(3, 5)。
+        定义 结果 = 相加法(3, 5)。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -94,7 +94,7 @@ class TestChineseProgram:
         assert result is None or result is not None
 
     def test_run_while_loop(self):
-        """测试运行当循环"""
+        """测试运行当满足循环"""
         source = """
         定义 计数 = 0。
         当满足 计数 小于 3：
@@ -135,7 +135,7 @@ class TestChineseProgram:
     def test_compile_if_statement(self):
         """测试编译条件语句"""
         source = """
-        如果 真值 则：
+        如果 真值 那么：
             打印 "真值"。
         否则：
             打印 "假值"。
@@ -146,9 +146,9 @@ class TestChineseProgram:
         assert len(python_code) > 0
 
     def test_compile_while_loop(self):
-        """测试编译当循环"""
+        """测试编译当满足循环"""
         source = """
-        当满足 假：
+        当满足 假值：
             打印 "不会执行"。
         """
         python_code = self.program.compile(source)
@@ -202,7 +202,7 @@ class TestChineseProgram:
         """测试编译空源代码"""
         source = ""
         python_code = self.program.compile(source)
-        # 应该生成空代码或最小代码
+        # 应该生成空代码或者最小于代码
         assert isinstance(python_code, str)
 
     def test_run_multiple_statements(self):
@@ -247,9 +247,9 @@ class TestChineseProgram:
     def test_run_boolean_operations(self):
         """测试运行布尔运算"""
         source = """
-        定义 a = 真。
-        定义 b = 假。
-        定义 c = a 并且 b。
+        定义 a = 真值。
+        定义 b = 假值。
+        定义 c = a 并并且 b。
         """
         result = self.program.run(source)
         # 应该成功执行
@@ -257,7 +257,7 @@ class TestChineseProgram:
 
     def test_compile_boolean_operations(self):
         """测试编译布尔运算"""
-        source = "定义 结果 = 真值 并且 假。"
+        source = "定义 结果 = 真值 并并且 假值。"
         python_code = self.program.compile(source)
         # 应该生成 Python 代码
         assert isinstance(python_code, str)

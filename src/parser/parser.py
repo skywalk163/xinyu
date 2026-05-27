@@ -689,8 +689,8 @@ class Parser:
         # 解析条件
         condition = self._parse_expression()
 
-        # 期望 则
-        self._expect(TokenType.THEN, "Expected '则' after condition")
+        # 期望 那么
+        self._expect(TokenType.THEN, "Expected '那么' after condition")
 
         # 消费冒号（可选）
         if self._check(TokenType.COLON):
@@ -721,11 +721,11 @@ class Parser:
         )
 
     def _parse_for(self) -> ForNode:
-        """解析遍历循环（遍历 x 于 列表：...）"""
-        token = self._advance()  # 消费 遍历
+        """解析遍历循环（循环 x 于 列表：...）"""
+        token = self._advance()  # 消费 循环
 
         # 解析循环变量
-        var_token = self._expect(TokenType.IDENTIFIER, "Expected variable name after '遍历'")
+        var_token = self._expect(TokenType.IDENTIFIER, "Expected variable name after '循环'")
         var = var_token.value
 
         # 期望 于
@@ -783,11 +783,11 @@ class Parser:
         # 解析重复次数
         count = self._parse_expression()
 
-        # 期望 次
-        self._expect(TokenType.TIMES, "Expected '次' after count")
+        # 期望 次数
+        self._expect(TokenType.TIMES, "Expected '次数' after count")
 
         # 期望 ：
-        self._expect(TokenType.COLON, "Expected '：' after '次'")
+        self._expect(TokenType.COLON, "Expected '：' after '次数'")
 
         # 解析循环体
         body = self._parse_block()

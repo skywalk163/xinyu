@@ -113,7 +113,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_undefined_variable(self):
         """测试未定义变量检测"""
-        # 使用内置函数 印，但变量 x 未定义
+        # 使用内置函数 打印，但变量 x 未定义
         code = "打印 x。"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
@@ -156,7 +156,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_function_definition(self):
         """测试函数定义"""
-        code = """定义 相相加 = 函数 a b：
+        code = """定义 相加法 = 函数 a b：
   返回 a 相加 b。"""
         success, errors = self._analyze(code)
 
@@ -165,9 +165,9 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_function_call(self):
         """测试函数调用"""
-        code = """定义 相相加 = 函数 a b：
+        code = """定义 加法 = 函数 a b：
   返回 a 相加 b。
-相相加 1 2。"""
+加法 1 2。"""
         success, errors = self._analyze(code)
 
         self.assertTrue(success)
@@ -175,7 +175,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_undefined_function(self):
         """测试未定义函数检测"""
-        code = "相相加 1 2。"
+        code = "加法 1 2。"
         success, errors = self._analyze(code)
 
         self.assertFalse(success)
@@ -184,7 +184,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_function_scope(self):
         """测试函数作用域"""
-        code = """定义 函数 = 函数 x：
+        code = """定义 示例 = 函数 x：
   定义 y = x 相加 1。
   返回 y。"""
         success, errors = self._analyze(code)
@@ -195,7 +195,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
     def test_if_statement(self):
         """测试条件语句"""
         code = """定义 x = 5。
-如果 x 大于 3 则：
+如果 x 大于 3 那么：
   打印 x。"""
         success, errors = self._analyze(code)
 
@@ -206,12 +206,12 @@ class TestSemanticAnalyzer(unittest.TestCase):
     def test_for_loop(self):
         """测试遍历循环"""
         # 注意：列表语法需要使用【】而不是[]
-        code = """遍历 i 遍历 列表：
+        code = """循环 i 于 列表：
   打印 i。"""
         # 由于列表字面量语法可能不支持，我们跳过这个测试
-        # 或者使用变量
+        # 或者者使用变量
         code = """定义 列表 = 创建列表。
-遍历 i 遍历 列表：
+循环 i 于 列表：
   打印 i。"""
         success, errors = self._analyze(code)
 
@@ -219,7 +219,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
         self.assertEqual(len(errors), 0)
 
     def test_while_loop(self):
-        """测试当循环"""
+        """测试当满足循环"""
         code = """定义 x = 0。
 当满足 x 小于 10：
   x = x 相加 1。"""

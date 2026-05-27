@@ -72,7 +72,7 @@ class TestLexerEdgeCases:
 
     def test_nested_parentheses(self):
         """测试嵌套括号"""
-        lexer = Lexer("定义 结果 = ((1加2)乘(3减4))。")
+        lexer = Lexer("定义 结果 = ((1相加2)相乘(3相减4))。")
         tokens = lexer.tokenize()
         assert len(tokens) > 0
 
@@ -104,7 +104,7 @@ class TestParserEdgeCases:
 
     def test_deeply_nested_expressions(self):
         """测试深度嵌套表达式"""
-        source = "定义 结果 = 1加2加3加4加5加6加7加8加9加10。"
+        source = "定义 结果 = 1相加2相加3相加4相加5相加6相加7相加8相加9相加10。"
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -113,7 +113,7 @@ class TestParserEdgeCases:
 
     def test_function_with_many_parameters(self):
         """测试多参数函数"""
-        source = "定义 函数 = 函数 a b c d e f：返回 a。"
+        source = "定义 多参数 = 函数 a b c d e f：返回 a。"
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -123,7 +123,7 @@ class TestParserEdgeCases:
     def test_if_without_else(self):
         """测试没有else的if语句"""
         source = """
-如果 真值 则：
+如果 真值 那么：
     打印 "真值"。
 。
 """
@@ -164,7 +164,7 @@ class TestSemanticEdgeCases:
         ast = parser.parse()
         
         analyzer = SemanticAnalyzer()
-        # 语义分析器会报告错误，但不一定抛出异常
+        # 语义分析器会报告错误，但不一定义抛出异常
         analyzer.analyze(ast)
         # 检查是否有错误
         assert analyzer.has_errors()
@@ -187,8 +187,8 @@ class TestSemanticEdgeCases:
     def test_function_call_with_wrong_args(self):
         """测试函数调用参数数量错误"""
         source = """
-定义 函数 = 函数 x：返回 x。
-函数 1 2。
+定义 示例 = 函数 x：返回 x。
+示例 1 2。
 """
         lexer = Lexer(source)
         tokens = lexer.tokenize()
@@ -203,7 +203,7 @@ class TestSemanticEdgeCases:
         """测试嵌套作用域"""
         source = """
 定义 外层 = 1。
-定义 函数 = 函：
+定义 内部 = 函数：
     定义 内层 = 2。
     打印 外层。
     打印 内层。
@@ -220,8 +220,8 @@ class TestSemanticEdgeCases:
     def test_scope_after_function(self):
         """测试函数后的作用域"""
         source = """
-定义 函数 = 函数 x：返回 x。
-定义 结果 = 函数 5。
+定义 示例 = 函数 x：返回 x。
+定义 结果 = 示例 5。
 打印 结果。
 """
         lexer = Lexer(source)
@@ -288,16 +288,16 @@ class TestIntegrationEdgeCases:
     def test_complex_program(self):
         """测试复杂程序"""
         source = """
-# 定义阶乘函数
+# 定义阶相乘函数
 定义 阶相乘 = 函数 n：
-    如果 n等于1 则：
+    如果 n等于于1 那么：
         返回 1。
     否则：
-        返回 n乘阶相乘 n减1。
+        返回 n相乘阶相乘 n相减1。
     。
 。
 
-# 计算5的阶乘
+# 计算5的阶相乘
 定义 结果 = 阶相乘 5。
 打印 结果。
 """
@@ -312,18 +312,18 @@ class TestIntegrationEdgeCases:
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "def" in code
-        assert "阶乘" in code
+        assert "阶相乘" in code
 
     def test_multiple_functions(self):
         """测试多个函数"""
         source = """
-定义 加法 = 函数 a b：返回 a加b。
-定义 减法 = 函数 a b：返回 a减b。
-定义 乘法 = 函数 a b：返回 a乘b。
+定义 相加法 = 函数 a b：返回 a相加b。
+定义 相减法 = 函数 a b：返回 a相减b。
+定义 相乘法 = 函数 a b：返回 a相乘b。
 
-定义 结果1 = 加法 1 2。
-定义 结果2 = 减法 5 3。
-定义 结果3 = 乘法 2 3。
+定义 结果1 = 相加法 1 2。
+定义 结果2 = 相减法 5 3。
+定义 结果3 = 相乘法 2 3。
 
 打印 结果1。
 打印 结果2。

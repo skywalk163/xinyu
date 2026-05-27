@@ -62,7 +62,7 @@ class TestChineseProgramEnhanced:
         program = ChineseProgram()
         source = '''
 定 x = 10。
-若 x 大于 0 则：
+若 x 大于 0 那么：
     印"正数"。
 '''
         result = program.run(source)
@@ -73,7 +73,7 @@ class TestChineseProgramEnhanced:
         program = ChineseProgram()
         source = '''
 定 x = -5。
-若 x 大于 0 则：
+若 x 大于 0 那么：
     印"正数"。
 否则：
     印"非正数"。
@@ -107,7 +107,7 @@ class TestChineseProgramEnhanced:
         """测试repeat循环"""
         program = ChineseProgram()
         source = '''
-重复 3 次：
+重复 3 次数：
     印"你好"。
 '''
         result = program.run(source)
@@ -136,7 +136,7 @@ class TestChineseProgramEnhanced:
         """测试编译条件语句"""
         program = ChineseProgram()
         source = '''
-若 x 大于 0 则：
+若 x 大于 0 那么：
     印"正数"。
 '''
         python_code = program.compile(source)

@@ -1,0 +1,91 @@
+{
+  "name": "xinyu-language",
+  "displayName": "心语语言支持",
+  "description": "为心语中文编程语言提供语法高亮、自动补全和代码片段",
+  "version": "1.0.0",
+  "publisher": "xinyu-lang",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onLanguage:yan"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "yan",
+        "aliases": ["心语", "Xinyu", "yan"],
+        "extensions": [".yan"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "yan",
+        "scopeName": "source.yan",
+        "path": "./syntaxes/yan.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "yan",
+        "path": "./snippets/yan.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "xinyu.run",
+        "title": "运行心语程序"
+      },
+      {
+        "command": "xinyu.compile",
+        "title": "编译心语程序"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "xinyu.run",
+          "group": "xinyu",
+          "when": "editorLangId == yan"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "心语语言",
+      "properties": {
+        "xinyu.interpreterPath": {
+          "type": "string",
+          "default": "python src/main.py",
+          "description": "心语解释器路径"
+        },
+        "xinyu.enableAutoComplete": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用自动补全"
+        },
+        "xinyu.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用语法检查"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.0",
+    "@types/vscode": "^1.60.0",
+    "typescript": "^4.0.0"
+  }
+}

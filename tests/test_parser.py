@@ -181,7 +181,7 @@ def test_for_node():
 
 
 def test_while_node():
-    """测试当循环节点"""
+    """测试当满足循环节点"""
     condition = IdentifierNode(line=1, column=0, name="条件")
     body = [NumberNode(line=1, column=0, value=1)]
     node = WhileNode(line=1, column=0, condition=condition, body=body)
@@ -322,7 +322,7 @@ def test_nested_if():
 def test_function_with_nested_body():
     """测试带嵌套语句的函数"""
     # 函数 阶相乘 n：
-    #   如果 n 小等于 1 那么 返回 1
+    #   如果 n 小于等于于 1 那么 返回 1
     #   否那么 返回 n 相乘 阶相乘 n 相减 1
     n = IdentifierNode(line=1, column=0, name="n")
     one = NumberNode(line=1, column=0, value=1)
@@ -331,8 +331,8 @@ def test_function_with_nested_body():
     return1 = ReturnNode(line=2, column=0, value=one)
     if_stmt = IfNode(line=2, column=0, condition=condition, then_branch=[return1])
 
-    func = FunctionDefNode(line=1, column=0, name="阶乘", params=["n"], body=[if_stmt])
-    assert func.name == "阶乘"
+    func = FunctionDefNode(line=1, column=0, name="阶相乘", params=["n"], body=[if_stmt])
+    assert func.name == "阶相乘"
     assert len(func.body) == 1
 
 
@@ -397,7 +397,7 @@ class TestParserExpression:
     """表达式解析测试"""
 
     def test_parse_binary_add(self):
-        """测试加法表达式"""
+        """测试相加法表达式"""
         lexer = Lexer("1 相加 2")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -412,7 +412,7 @@ class TestParserExpression:
         assert expr.right.value == 2
 
     def test_parse_binary_subtract(self):
-        """测试减法表达式"""
+        """测试相减法表达式"""
         lexer = Lexer("5 相减 3")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -424,7 +424,7 @@ class TestParserExpression:
         assert expr.operator == "-"
 
     def test_parse_binary_multiply(self):
-        """测试乘法表达式"""
+        """测试相乘法表达式"""
         lexer = Lexer("3 相乘 4")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -436,7 +436,7 @@ class TestParserExpression:
         assert expr.operator == "*"
 
     def test_parse_binary_divide(self):
-        """测试除法表达式"""
+        """测试相除法表达式"""
         lexer = Lexer("10 相除 2")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -448,7 +448,7 @@ class TestParserExpression:
         assert expr.operator == "/"
 
     def test_parse_comparison_equals(self):
-        """测试相等比较"""
+        """测试相等于比较"""
         lexer = Lexer("x 等于 5")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -472,8 +472,8 @@ class TestParserExpression:
         assert expr.operator == "<"
 
     def test_parse_unary_not(self):
-        """测试逻辑非"""
-        lexer = Lexer("非也 真")
+        """测试逻辑非也"""
+        lexer = Lexer("非也也 真值")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
@@ -534,7 +534,7 @@ class TestParserExpression:
         assert expr.operator == "and"
 
     def test_parse_logical_or(self):
-        """测试逻辑或操作"""
+        """测试逻辑或者操作"""
         lexer = Lexer("x 或者 y")
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -638,7 +638,7 @@ class TestParserControlFlow:
 
     def test_parse_if_then(self):
         """测试条件语句（只有then分支）"""
-        source = """如果 x 则
+        source = """如果 x 那么
     打印 1
 。"""
         lexer = Lexer(source)
@@ -657,7 +657,7 @@ class TestParserControlFlow:
 
     def test_parse_if_then_else(self):
         """测试条件语句（带else分支）"""
-        source = """如果 x 则
+        source = """如果 x 那么
     打印 1
 否则
     打印 2
@@ -675,7 +675,7 @@ class TestParserControlFlow:
 
     def test_parse_for_loop(self):
         """测试遍历循环"""
-        source = """遍历 x 遍历 列表：
+        source = """循环 x 遍历 列表：
     打印 x
 。"""
         lexer = Lexer(source)
@@ -692,7 +692,7 @@ class TestParserControlFlow:
         assert len(stmt.body) == 1
 
     def test_parse_while_loop(self):
-        """测试当循环"""
+        """测试当满足循环"""
         source = """当满足 条件：
     打印 1
 。"""
@@ -710,7 +710,7 @@ class TestParserControlFlow:
 
     def test_parse_repeat(self):
         """测试重复语句"""
-        source = """重复 5 次：
+        source = """重复 5 次数：
     打印 1
 。"""
         lexer = Lexer(source)
@@ -731,7 +731,7 @@ class TestParserFunction:
 
     def test_parse_function_def_no_params(self):
         """测试无参数函数定义"""
-        source = """定义 函数名 = 函：
+        source = """定义 函数名 = 函数：
     返回 1
 。"""
         lexer = Lexer(source)
@@ -751,7 +751,7 @@ class TestParserFunction:
 
     def test_parse_function_def_with_params(self):
         """测试带参数函数定义"""
-        source = """定义 加法 = 函数 x y：
+        source = """定义 相加法 = 函数 x y：
     返回 x 相加 y
 。"""
         lexer = Lexer(source)
@@ -762,7 +762,7 @@ class TestParserFunction:
         assert isinstance(ast, ProgramNode)
         stmt = ast.statements[0]
         assert isinstance(stmt, VarDefNode)
-        assert stmt.name == "加法"
+        assert stmt.name == "相加法"
         assert isinstance(stmt.value, FunctionDefNode)
         assert stmt.value.params == ["x", "y"]
         assert len(stmt.value.body) == 1
@@ -810,7 +810,7 @@ class TestParserError:
 
     def test_parse_error_missing_colon(self):
         """测试缺少冒号错误"""
-        source = """遍历 x 遍历 列表
+        source = """循环 x 于 列表
     打印 x
 。"""
         lexer = Lexer(source)
@@ -839,9 +839,9 @@ class TestParserComplex:
 
     def test_parse_nested_if(self):
         """测试嵌套条件"""
-        source = """如果 x 则
-    如果 y 则
-        打印 1
+        source = """如果 x 那么：
+    如果 y 那么：
+        打印 1。
     。
 。"""
         lexer = Lexer(source)
@@ -856,8 +856,8 @@ class TestParserComplex:
 
     def test_parse_function_in_function(self):
         """测试函数内定义函数"""
-        source = """定义 外层 = 函：
-    定义 内层 = 函：
+        source = """定义 外层 = 函数：
+    定义 内层 = 函数：
         返回 1
     。
     返回 内层

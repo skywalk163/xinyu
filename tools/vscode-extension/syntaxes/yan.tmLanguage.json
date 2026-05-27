@@ -1,0 +1,134 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "心语",
+  "scopeName": "source.yan",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.yan",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.block.documentation.yan",
+          "begin": "\"\"\"",
+          "end": "\"\"\"",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.yan"
+            }
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.yan",
+          "match": "\\b(定义|函数|如果|那么|否则|可选|循环|当满足|重复|继续|跳出|结束|遍历|次数|返回|参数)\\b"
+        },
+        {
+          "name": "constant.language.yan",
+          "match": "\\b(真值|假值)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arithmetic.yan",
+          "match": "\\b(相加|相减|相乘|相除|取余)\\b"
+        },
+        {
+          "name": "keyword.operator.comparison.yan",
+          "match": "\\b(等于|不等|大于|小于|大等|小等)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.yan",
+          "match": "\\b(并且|或者|非也)\\b"
+        },
+        {
+          "name": "keyword.operator.assignment.yan",
+          "match": "="
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.yan",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.yan",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.yan",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.yan",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.yan",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.yan",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.yan",
+          "match": "\\b(打印|输入|输出|写入|读取|长度|范围|类型|整数|浮点|字符串|列表|字典|绝对值|最大值|最小值|求和|排序|反转)\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.yan",
+          "match": "\\b[\\u4e00-\\u9fa5a-zA-Z_][\\u4e00-\\u9fa5a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}
