@@ -175,7 +175,7 @@ class TestSemanticAnalyzer(unittest.TestCase):
 
     def test_undefined_function(self):
         """测试未定义函数检测"""
-        code = "求和 1 2。"
+        code = "未定义函数 1 2。"
         success, errors = self._analyze(code)
 
         self.assertFalse(success)
