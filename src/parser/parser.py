@@ -19,6 +19,8 @@ from src.parser.ast_nodes import (
     FunctionDefNode, FunctionCallNode, ReturnNode,
     BlockNode, ASTNode
 )
+from src.parser.verb_registry import VerbRegistry
+from src.parser.arity import Arity
 
 
 class ParseError(Exception):
@@ -69,6 +71,10 @@ class Parser:
         """
         self.tokens = tokens
         self.pos = 0
+        
+        # 初始化动词注册表
+        self.verb_registry = VerbRegistry()
+        self.verb_registry.register_builtin_verbs()
 
     # ============ 核心方法 ============
 
@@ -152,6 +158,114 @@ class Parser:
         if self._check(token_type):
             return self._advance()
         raise ParseError(message, self._current_token())
+
+    # ============ 元数系统辅助方法 ============
+    
+    def _is_at_end(self) -> bool:
+        """检查是否到达Token序列末尾
+        
+        Returns:
+            是否到达末尾
+        """
+        return self._check(TokenType.EOF)
+    
+    def _is_operator_verb(self, name: str) -> bool:
+        """判断是否是操作符动词
+        
+        Args:
+            name: 动词名称
+        
+        Returns:
+            是否是操作符动词
+        """
+        return self.verb_registry.is_operator(name)
+    
+    def _get_verb_arity(self, name: str) -> Optional[Arity]:
+        """获取动词元数
+        
+        Args:
+            name: 动词名称
+        
+        Returns:
+            元数定义，如果未注册则返回None
+        """
+        return self.verb_registry.get(name)
+    
+    def _should_stop_collecting_args(self) -> bool:
+        """判断是否应该停止收集参数
+        
+        Returns:
+            是否应该停止收集
+        """
+        current = self._current_token()
+        
+        # 遇到操作符动词，停止收集
+        if current.type == TokenType.IDENTIFIER:
+            if self._is_operator_verb(current.value):
+                return True
+        
+        # 遇到终止符，停止收集
+        if self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
+                      TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
+                      TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
+                      TokenType.COMMA, TokenType.COLON):
+            return True
+        
+        # 遇到操作符token，停止收集
+        operator_tokens = (TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY,
+                          TokenType.DIVIDE, TokenType.MODULO,
+                          TokenType.EQUALS, TokenType.NOT_EQUALS,
+                          TokenType.LESS, TokenType.GREATER, TokenType.LESS_EQ,
+                          TokenType.GREATER_EQ, 
+                          TokenType.AND, TokenType.OR, TokenType.NOT,
+                          TokenType.ASSIGN)
+        if self._check(*operator_tokens):
+            return True
+        
+        return False
+    
+    def _collect_args_by_arity(self, arity: Arity) -> List[ASTNode]:
+        """根据元数收集参数
+        
+        Args:
+            arity: 元数定义
+        
+        Returns:
+            参数列表
+        """
+        args = []
+        
+        while not self._is_at_end():
+            # 检查是否应该停止收集
+            if self._should_stop_collecting_args():
+                break
+            
+            # 检查元数是否已满足
+            if arity.should_stop_collecting(len(args)):
+                break
+            
+            # 解析参数（只解析基础表达式，不贪婪）
+            try:
+                arg = self._parse_primary()
+                args.append(arg)
+            except ParseError:
+                break
+        
+        # 验证参数数量（对于固定元数和范围元数）
+        if not arity.is_satisfied(len(args)):
+            # 对于可变元数和最小元数，如果参数不足，给出警告但不报错
+            from src.parser.arity import ArityType
+            if arity.type in (ArityType.FIXED, ArityType.RANGE):
+                # 如果完全没有参数，可能是标识符而非函数调用
+                if len(args) == 0:
+                    return []
+                # 否则报错
+                raise ParseError(
+                    f"参数数量错误：期望{arity}，实际{len(args)}",
+                    self._current_token()
+                )
+        
+        return args
 
     # ============ 语句解析 ============
 
@@ -310,46 +424,73 @@ class Parser:
         return left
 
     def _parse_addition(self) -> ASTNode:
-        """解析加减操作（+, -）"""
+        """解析加减操作（+, -, 相加, 相减）"""
         left = self._parse_multiplication()
 
-        while self._check(TokenType.PLUS, TokenType.MINUS):
+        while self._check(TokenType.PLUS, TokenType.MINUS) or \
+              (self._check(TokenType.IDENTIFIER) and 
+               self._current_token().value in ("相加", "相减")):
             op_token = self._advance()
             right = self._parse_multiplication()
 
-            op_map = {
-                TokenType.PLUS: "+",
-                TokenType.MINUS: "-",
-            }
+            # 映射操作符
+            if op_token.type == TokenType.IDENTIFIER:
+                # 操作符动词映射
+                verb_map = {
+                    "相加": "+",
+                    "相减": "-",
+                }
+                op = verb_map.get(op_token.value, op_token.value)
+            else:
+                # Token类型映射
+                op_map = {
+                    TokenType.PLUS: "+",
+                    TokenType.MINUS: "-",
+                }
+                op = op_map[op_token.type]
 
             left = BinaryOpNode(
                 line=left.line,
                 column=left.column,
                 left=left,
-                operator=op_map[op_token.type],
+                operator=op,
                 right=right
             )
 
         return left
 
     def _parse_multiplication(self) -> ASTNode:
-        """解析乘除操作（*, /）"""
+        """解析乘除操作（*, /, 相乘, 相除）"""
         left = self._parse_unary()
 
-        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE):
+        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or \
+              (self._check(TokenType.IDENTIFIER) and 
+               self._current_token().value in ("相乘", "相除", "取余")):
             op_token = self._advance()
             right = self._parse_unary()
 
-            op_map = {
-                TokenType.MULTIPLY: "*",
-                TokenType.DIVIDE: "/",
-            }
+            # 映射操作符
+            if op_token.type == TokenType.IDENTIFIER:
+                # 操作符动词映射
+                verb_map = {
+                    "相乘": "*",
+                    "相除": "/",
+                    "取余": "%",
+                }
+                op = verb_map.get(op_token.value, op_token.value)
+            else:
+                # Token类型映射
+                op_map = {
+                    TokenType.MULTIPLY: "*",
+                    TokenType.DIVIDE: "/",
+                }
+                op = op_map[op_token.type]
 
             left = BinaryOpNode(
                 line=left.line,
                 column=left.column,
                 left=left,
-                operator=op_map[op_token.type],
+                operator=op,
                 right=right
             )
 
@@ -520,7 +661,7 @@ class Parser:
         )
 
     def _parse_identifier_or_call(self) -> ASTNode:
-        """解析标识符或函数调用"""
+        """解析标识符或函数调用（元数驱动）"""
         token = self._advance()
         name = token.value
 
@@ -552,37 +693,27 @@ class Parser:
             )
             return self._parse_postfix(node)
 
-        # 检查是否为无括号函数调用（后面跟着参数）
-        args = []
-        while not self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
-                             TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
-                             TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
-                             TokenType.COMMA, TokenType.COLON):
-            # 检查是否是操作符或关键字（这些不应该作为参数的开始）
-            token_types = (TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY,
-                          TokenType.DIVIDE, TokenType.EQUALS, TokenType.NOT_EQUALS,
-                          TokenType.LESS, TokenType.GREATER, TokenType.LESS_EQ,
-                          TokenType.GREATER_EQ, TokenType.AND, TokenType.OR,
-                          TokenType.NOT, TokenType.ASSIGN)
-            if self._check(*token_types):
-                break
+        # 检查是否是操作符动词（在中缀位置）
+        if self._is_operator_verb(name):
+            # 操作符动词在中缀位置，不应该作为函数调用
+            # 回退，让表达式解析器处理
+            self.pos -= 1
+            return IdentifierNode(
+                line=token.line,
+                column=token.column,
+                name=name
+            )
 
-            # 尝试解析参数（使用_parse_expression而不是_parse_primary，以支持表达式参数）
-            try:
-                # 保存当前位置，用于回溯
-                pos = self.pos
-                arg = self._parse_expression()
-                
-                # 如果解析出的表达式是二元操作，且左操作数是函数调用
-                # 这可能意味着我们解析过头了，需要回溯
-                if isinstance(arg, BinaryOpNode) and isinstance(arg.left, FunctionCallNode):
-                    # 回溯，只解析第一个参数
-                    self.pos = pos
-                    arg = self._parse_primary()
-                
-                args.append(arg)
-            except ParseError:
-                break
+        # 获取动词元数
+        arity = self._get_verb_arity(name)
+        
+        if arity is None:
+            # 未注册的动词，可能是用户定义的函数
+            # 使用可变元数（默认收集到操作符或终止符）
+            arity = Arity.variable(min=0)
+
+        # 根据元数收集参数
+        args = self._collect_args_by_arity(arity)
 
         if args:
             node = FunctionCallNode(
@@ -863,6 +994,12 @@ class Parser:
         # 消费结尾的 。
         if self._check(TokenType.PERIOD):
             self._advance()
+
+        # 推断元数：根据参数数量
+        arity = Arity.fixed(len(params))
+        
+        # 注册到动词注册表
+        self.verb_registry.register(name, arity, is_function=True)
 
         return FunctionDefNode(
             line=line,

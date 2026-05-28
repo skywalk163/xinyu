@@ -130,19 +130,19 @@ class TestMacroExpanderDetailed:
     def test_expand_ast_for_node_with_macro(self):
         """测试展开ForNode（有遍历宏）"""
         system = MacroSystem()
-        
+
         # 注册遍历宏 - 使用简单的宏体
         macro = Macro(
-            name="循环",
+            name="遍历",
             type=MacroType.SYNTAX,
             params=["变量", "列表", "循环体"],
             body="打印 变量。打印 列表。",
             description="遍历列表"
         )
-        system.register("循环", macro)
-        
+        system.register("遍历", macro)
+
         expander = MacroExpander(system)
-        
+
         # 创建For节点
         for_node = ForNode(
             var="元素",
@@ -153,13 +153,13 @@ class TestMacroExpanderDetailed:
             line=1,
             column=1
         )
-        
+
         # 展开AST
         expanded = expander.expand_ast(for_node)
-        
+
         # 验证结果 - 应该被展开为列表（多个语句）
         assert isinstance(expanded, list)
-        assert len(expanded) == 2  # 两个印语句
+        assert len(expanded) == 2  # 两个打印语句
 
     def test_expand_ast_for_node_without_macro(self):
         """测试展开ForNode（没有遍历宏）"""

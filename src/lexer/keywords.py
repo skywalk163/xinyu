@@ -47,6 +47,11 @@ SYNTAX_MARKERS = {
     # 函数语法标记
     "返回": TokenType.RETURN,     # return
     "参数": TokenType.PARAM,      # parameter
+    
+    # 高阶函数
+    "皆": TokenType.MAP,          # map
+    "只": TokenType.FILTER,       # filter
+    "归": TokenType.REDUCE,       # reduce
 }
 
 # 操作符（双字，单义，明确指向运算）

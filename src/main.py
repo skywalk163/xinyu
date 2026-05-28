@@ -59,6 +59,11 @@ class ChineseProgram:
             3. 限制可用的模块和函数
         """
         try:
+            # 增加递归深度限制以支持递归函数
+            import sys
+            old_recursion_limit = sys.getrecursionlimit()
+            sys.setrecursionlimit(10000)
+
             # 1. 词法分析
             lexer = Lexer(source)
             tokens = lexer.tokenize()
@@ -72,6 +77,7 @@ class ChineseProgram:
             if not analyzer.analyze(ast):
                 for error in analyzer.errors:
                     print(f"语义错误: {error.message} (行 {error.line}, 列 {error.column})")
+                sys.setrecursionlimit(old_recursion_limit)
                 return None
 
             # 4. 代码生成
@@ -82,6 +88,8 @@ class ChineseProgram:
             exec_globals = self._create_exec_globals()
             exec(python_code, exec_globals)
 
+            # 恢复递归深度限制
+            sys.setrecursionlimit(old_recursion_limit)
             return exec_globals.get('__result__')
 
         except LexerError as e:

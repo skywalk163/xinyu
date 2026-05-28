@@ -1,0 +1,101 @@
+# 测试失败报告
+生成时间: 2026-05-27
+测试总数: 468
+通过: 457
+失败: 9
+跳过: 2
+覆盖率: 58%
+
+## 失败测试列表
+
+### 1. test_fibonacci (tests/test_integration.py::TestComplexPrograms)
+**错误类型**: AssertionError
+**错误信息**: assert '55' in '运行时错误: maximum recursion depth exceeded\n'
+**根本原因**: 递归深度超过限制，斐波那契函数实现可能存在问题
+**优先级**: 高
+**分类**: 产品代码bug
+
+### 2. test_builtin_function (tests/test_integration_enhanced.py::TestSemanticAnalyzerWithInference)
+**错误类型**: AssertionError
+**错误信息**: assert False
+**根本原因**: 内置函数测试失败，需要进一步分析
+**优先级**: 高
+**分类**: 待分析
+
+### 3. test_full_pipeline (tests/test_integration_enhanced.py::TestIntegration)
+**错误类型**: AssertionError
+**错误信息**: assert False
+**根本原因**: 完整管道测试失败，需要进一步分析
+**优先级**: 高
+**分类**: 待分析
+
+### 4. test_expand_ast_for_node_with_macro (tests/test_macro_expander_detailed.py::TestMacroExpanderDetailed)
+**错误类型**: AssertionError
+**错误信息**: assert isinstance(ForNode(...), list) - 期望返回list，实际返回ForNode
+**根本原因**: 宏展开返回类型错误，应该返回list但返回了AST节点
+**优先级**: 中
+**分类**: 产品代码bug
+
+### 5. test_expand_for_loop_method (tests/test_macro_expander_detailed.py::TestMacroExpanderDetailed)
+**错误类型**: AssertionError
+**错误信息**: assert isinstance(FunctionCallNode(...), list) - 期望返回list，实际返回FunctionCallNode
+**根本原因**: 宏展开返回类型错误，应该返回list但返回了AST节点
+**优先级**: 中
+**分类**: 产品代码bug
+
+### 6. test_execute_print (tests/test_secure_runtime.py::TestSecureRuntime)
+**错误类型**: AssertionError
+**错误信息**: assert False is True
+**根本原因**: 安全运行时打印功能测试失败
+**优先级**: 高
+**分类**: 待分析
+
+### 7. test_execute_with_math_module (tests/test_secure_runtime.py::TestSecureRuntime)
+**错误类型**: AssertionError
+**错误信息**: assert False is True
+**根本原因**: 安全运行时math模块测试失败
+**优先级**: 中
+**分类**: 待分析
+
+### 8. test_execute_with_json_module (tests/test_secure_runtime.py::TestSecureRuntime)
+**错误类型**: AssertionError
+**错误信息**: assert False is True
+**根本原因**: 安全运行时json模块测试失败
+**优先级**: 中
+**分类**: 待分析
+
+### 9. test_function_call (tests/test_semantic.py::TestSemanticAnalyzer)
+**错误类型**: AssertionError
+**错误信息**: False is not true
+**根本原因**: 语义分析器函数调用测试失败
+**优先级**: 高
+**分类**: 待分析
+
+## 跳过的测试
+
+1. 未记录（需要查看详细日志）
+
+## 覆盖率分析
+
+总体覆盖率: 58%
+目标覆盖率: 80%
+差距: 22%
+
+### 低覆盖率模块 (< 50%)
+
+1. src/codegen/multi_track.py: 0%
+2. src/gc/garbage_collector.py: 0%
+3. src/lexer/optimized_lexer.py: 0%
+4. src/parser/function_arity.py: 0%
+5. src/parser/parser_with_error_handler.py: 0%
+6. src/runtime/exception_system.py: 0%
+7. src/runtime/module_system.py: 0%
+8. src/vm/virtual_machine.py: 0%
+9. src/semantic/analyzer_with_inference.py: 47%
+
+## 下一步行动
+
+1. 优先修复高优先级失败测试
+2. 分析宏展开返回类型问题
+3. 修复递归深度问题
+4. 补充低覆盖率模块的测试

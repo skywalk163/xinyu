@@ -249,6 +249,7 @@ class FunctionCallNode(ASTNode):
     """
     name: str
     args: List[ASTNode] = field(default_factory=list)
+    arity: Optional['Arity'] = None  # 元数定义（可选）
 
     def __str__(self) -> str:
         args_str = ", ".join(str(a) for a in self.args)

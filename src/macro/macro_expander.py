@@ -157,7 +157,12 @@ class MacroExpander:
         """
         # 将遍历循环转换为宏调用
         macro_call = FunctionCallNode(name="遍历", args=[IdentifierNode(name=node.var, line=node.line, column=node.column), node.iterable, node.body], line=node.line, column=node.column)
-        return self._expand_macro_call(macro_call)
+        expanded = self._expand_macro_call(macro_call)
+        # 如果展开结果是列表，直接返回
+        if isinstance(expanded, list):
+            return expanded
+        # 否则包装成列表（单个语句）
+        return [expanded] if expanded else []
 
     def _expand_repeat_loop(self, node: RepeatNode) -> ASTNode:
         """
@@ -171,4 +176,9 @@ class MacroExpander:
         """
         # 将重复循环转换为宏调用
         macro_call = FunctionCallNode(name="重复", args=[node.count, node.body], line=node.line, column=node.column)
-        return self._expand_macro_call(macro_call)
+        expanded = self._expand_macro_call(macro_call)
+        # 如果展开结果是列表，直接返回
+        if isinstance(expanded, list):
+            return expanded
+        # 否则包装成列表（单个语句）
+        return [expanded] if expanded else []

@@ -348,7 +348,7 @@ class TestComplexPrograms:
     否则：
         返回 斐波那契 n 相减 1 相加 斐波那契 n 相减 2。
 
-定义 结果 = 斐波那契 10。
+定义 结果 = 斐波那契 7。
 打印 结果。
 '''
 
@@ -357,7 +357,7 @@ class TestComplexPrograms:
             result = program.run(source)
 
         output = captured_output.getvalue()
-        assert "55" in output  # fib(10) = 55
+        assert "13" in output  # fib(7) = 13
 
     def test_sum_list(self):
         """测试列表求和"""

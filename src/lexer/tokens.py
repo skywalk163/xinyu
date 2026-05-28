@@ -30,6 +30,11 @@ class TokenType(Enum):
     PARAM = auto()       # 参数
     IN = auto()          # 遍历
     TIMES = auto()       # 次数
+    
+    # 高阶函数
+    MAP = auto()         # 皆（映射）
+    FILTER = auto()      # 只（筛选）
+    REDUCE = auto()      # 归（归约）
 
     # 操作符（双字）
     PLUS = auto()        # 相加
@@ -50,6 +55,7 @@ class TokenType(Enum):
 
     # 分隔符
     COMMA = auto()       # ，
+    PIPE = auto()        # ，（管道操作符）
     PERIOD = auto()      # 。
     COLON = auto()       # ：
     SEMICOLON = auto()   # ；

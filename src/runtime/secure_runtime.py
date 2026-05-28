@@ -144,8 +144,8 @@ class SecureRuntime:
             # 执行代码
             exec(byte_code, restricted_globals)
             
-            # 返回结果
-            exec_result = restricted_globals.get('__result__')
+            # 返回结果（优先返回result变量，其次__result__）
+            exec_result = restricted_globals.get('result') or restricted_globals.get('__result__')
             return True, exec_result, None
             
         except SyntaxError as e:
@@ -196,6 +196,8 @@ class SecureRuntime:
             # RestrictedPython需要的守卫函数
             '_iter_unpack_sequence': guarded_iter_unpack_sequence,
             '_print_': lambda x: print(x),  # RestrictedPython的print守卫
+            '_getattr_': getattr,  # RestrictedPython的getattr守卫
+            '_write_': lambda x: x,  # RestrictedPython的write守卫
         }
         
         # 创建受限全局环境
