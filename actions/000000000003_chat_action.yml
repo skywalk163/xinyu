@@ -1,0 +1,16 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\249e44a6-eb97-42b8-b73a-0ac05ca18445_20260525-113346.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: 这是一个中文编程语言的项目，项目有详细的说明文档。当前项目pytest测试的时候，有一些报错，16 failed, 225 passed, 2 skipped
+  in 8.66s ，请尝试解决该问题
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []

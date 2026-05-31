@@ -1,0 +1,15 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\ef4eb1f9-d4a0-4e3c-b58b-ff11c10d84a9_20260525-224421.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: /command pwd.md
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []

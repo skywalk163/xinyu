@@ -1,0 +1,15 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\64504622-0e20-473c-ac49-d82e8cef6335_20260525-194409.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: 继续修复剩余的7个测试问题，然后创建自动化代码质量检查脚本，确保未来的开发不引入回归问题。
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []

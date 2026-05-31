@@ -1,0 +1,15 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\14d9a98e-bf3f-4bfe-a3ba-0e24867b8be2_20260525-122411.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: 非常棒，你看看当前项目的语法怎么样？还有什么需要提高的吗？
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []

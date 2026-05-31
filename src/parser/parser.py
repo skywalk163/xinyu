@@ -199,27 +199,22 @@ class Parser:
         """
         current = self._current_token()
         
-        # 遇到操作符动词，停止收集
+        # 遇到操作符动词（标识符形式），停止收集
         if current.type == TokenType.IDENTIFIER:
             if self._is_operator_verb(current.value):
                 return True
+            # 遇到另一个函数调用，停止收集
+            # 如果下一个标识符是已注册动词（非操作符），停止
+            if self.verb_registry.get(current.value) and not self.verb_registry.is_operator(current.value):
+                # 但如果是用户定义的函数，继续收集参数
+                # 只有内置动词才停止
+                pass
         
         # 遇到终止符，停止收集
         if self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
                       TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
                       TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
                       TokenType.COMMA, TokenType.COLON):
-            return True
-        
-        # 遇到操作符token，停止收集
-        operator_tokens = (TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY,
-                          TokenType.DIVIDE, TokenType.MODULO,
-                          TokenType.EQUALS, TokenType.NOT_EQUALS,
-                          TokenType.LESS, TokenType.GREATER, TokenType.LESS_EQ,
-                          TokenType.GREATER_EQ, 
-                          TokenType.AND, TokenType.OR, TokenType.NOT,
-                          TokenType.ASSIGN)
-        if self._check(*operator_tokens):
             return True
         
         return False
@@ -244,9 +239,9 @@ class Parser:
             if arity.should_stop_collecting(len(args)):
                 break
             
-            # 解析参数（只解析基础表达式，不贪婪）
+            # 解析参数（解析包含操作符的子表达式）
             try:
-                arg = self._parse_primary()
+                arg = self._parse_term()
                 args.append(arg)
             except ParseError:
                 break
@@ -352,6 +347,184 @@ class Parser:
         return expr
 
     # ============ 表达式解析（优先级从低到高） ============
+
+    def _parse_term(self) -> ASTNode:
+        """解析项（用于参数收集）
+        
+        解析包含操作符的子表达式，但在遇到函数调用时停止。
+        这允许参数如 "n 相减 1" 被解析为完整表达式。
+        """
+        return self._parse_addition_for_term()
+    
+    def _parse_atom_for_term(self) -> ASTNode:
+        """解析原子表达式（用于项解析，不触发函数调用）"""
+        token = self._current_token()
+        
+        # 数字
+        if self._check(TokenType.NUMBER):
+            self._advance()
+            return NumberNode(
+                line=token.line,
+                column=token.column,
+                value=token.value
+            )
+        
+        # 字符串
+        if self._check(TokenType.STRING):
+            self._advance()
+            return StringNode(
+                line=token.line,
+                column=token.column,
+                value=token.value
+            )
+        
+        # 布尔值
+        if self._check(TokenType.TRUE):
+            self._advance()
+            return IdentifierNode(
+                line=token.line,
+                column=token.column,
+                name="真"
+            )
+        
+        if self._check(TokenType.FALSE):
+            self._advance()
+            return IdentifierNode(
+                line=token.line,
+                column=token.column,
+                name="假"
+            )
+        
+        # 括号表达式
+        if self._check(TokenType.LPAREN):
+            self._advance()  # 消费 (
+            expr = self._parse_expression()
+            self._expect(TokenType.RPAREN, "Expected ')' after expression")
+            return expr
+        
+        # 标识符（不触发函数调用，避免递归）
+        if self._check(TokenType.IDENTIFIER):
+            self._advance()
+            return IdentifierNode(
+                line=token.line,
+                column=token.column,
+                name=token.value
+            )
+        
+        raise ParseError(f"Unexpected token: {token.type.name}", token)
+    
+    def _parse_addition_for_term(self) -> ASTNode:
+        """解析加减操作（用于项解析）"""
+        left = self._parse_multiplication_for_term()
+        
+        while self._check(TokenType.PLUS, TokenType.MINUS) or \
+              (self._check(TokenType.IDENTIFIER) and 
+               self._current_token().value in ("相加", "相减")):
+            op_token = self._advance()
+            right = self._parse_multiplication_for_term()
+            
+            # 映射操作符
+            if op_token.type == TokenType.IDENTIFIER:
+                verb_map = {
+                    "相加": "+",
+                    "相减": "-",
+                }
+                op = verb_map.get(op_token.value, op_token.value)
+            else:
+                op_map = {
+                    TokenType.PLUS: "+",
+                    TokenType.MINUS: "-",
+                }
+                op = op_map[op_token.type]
+            
+            left = BinaryOpNode(
+                line=left.line,
+                column=left.column,
+                left=left,
+                operator=op,
+                right=right
+            )
+        
+        return left
+    
+    def _parse_multiplication_for_term(self) -> ASTNode:
+        """解析乘除操作（用于项解析）"""
+        left = self._parse_comparison_for_term()
+        
+        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or \
+              (self._check(TokenType.IDENTIFIER) and 
+               self._current_token().value in ("相乘", "相除", "取余")):
+            op_token = self._advance()
+            right = self._parse_comparison_for_term()
+            
+            # 映射操作符
+            if op_token.type == TokenType.IDENTIFIER:
+                verb_map = {
+                    "相乘": "*",
+                    "相除": "/",
+                    "取余": "%",
+                }
+                op = verb_map.get(op_token.value, op_token.value)
+            else:
+                op_map = {
+                    TokenType.MULTIPLY: "*",
+                    TokenType.DIVIDE: "/",
+                }
+                op = op_map[op_token.type]
+            
+            left = BinaryOpNode(
+                line=left.line,
+                column=left.column,
+                left=left,
+                operator=op,
+                right=right
+            )
+        
+        return left
+    
+    def _parse_comparison_for_term(self) -> ASTNode:
+        """解析比较操作（用于项解析）"""
+        left = self._parse_atom_for_term()
+        
+        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS,
+                         TokenType.LESS, TokenType.GREATER,
+                         TokenType.LESS_EQ, TokenType.GREATER_EQ) or \
+              (self._check(TokenType.IDENTIFIER) and 
+               self._current_token().value in ("等于", "不等于", "大于", "小于", "大于等于", "小于等于")):
+            op_token = self._advance()
+            right = self._parse_primary()
+            
+            # 转换操作符
+            if op_token.type == TokenType.IDENTIFIER:
+                verb_map = {
+                    "等于": "==",
+                    "不等于": "!=",
+                    "大于": ">",
+                    "小于": "<",
+                    "大于等于": ">=",
+                    "小于等于": "<=",
+                }
+                op = verb_map.get(op_token.value, op_token.value)
+            else:
+                op_map = {
+                    TokenType.EQUALS: "==",
+                    TokenType.NOT_EQUALS: "!=",
+                    TokenType.LESS: "<",
+                    TokenType.GREATER: ">",
+                    TokenType.LESS_EQ: "<=",
+                    TokenType.GREATER_EQ: ">=",
+                }
+                op = op_map[op_token.type]
+            
+            left = BinaryOpNode(
+                line=left.line,
+                column=left.column,
+                left=left,
+                operator=op,
+                right=right
+            )
+        
+        return left
 
     def _parse_expression(self) -> ASTNode:
         """解析表达式"""

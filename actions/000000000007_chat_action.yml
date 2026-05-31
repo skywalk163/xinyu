@@ -1,0 +1,15 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\fa95a4da-238b-44c5-98d7-1a6fe7be993a_20260525-135109.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: 继续
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []

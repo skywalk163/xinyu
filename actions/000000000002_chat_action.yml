@@ -1,0 +1,15 @@
+auto_merge: editblock
+context: ''
+event_file: G:\dumategithub\chineseprogram\.auto-coder\events\e20d302b-aa67-4b7c-8b5c-c3cedd5f778e_20260523-225539.jsonl
+exclude_files: []
+human_as_model: false
+include_file:
+- ./base/base.yml
+include_project_structure: false
+product_mode: lite
+project_type: '*'
+query: v1_model 用的winclaw/v1 ，每天有多少的量？
+silence: true
+skip_build_index: true
+skip_confirm: true
+urls: []
