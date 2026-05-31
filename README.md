@@ -177,8 +177,8 @@ if (user.age >= 18 && user.hasLicense) {
 ### 安装
 
 ```bash
-git clone https://github.com/your-repo/chineseprogram.git
-cd chineseprogram
+git clone https://github.com/skywalk163/xinyu.git
+cd xinyu
 pip install -r requirements.txt
 ```
 
