@@ -15,7 +15,7 @@ from src.parser.ast_nodes import (
     MemberAccessNode, IndexNode, AssignNode, VarDefNode,
     IfNode, ForNode, WhileNode, RepeatNode,
     FunctionDefNode, FunctionCallNode, ReturnNode,
-    BlockNode, ASTNode
+    BlockNode, ASTNode, ImportNode, FromImportNode
 )
 from src.semantic.scope import Scope
 
@@ -69,6 +69,10 @@ class SemanticAnalyzer:
         "求和": {"params": 1},   # sum
         "排序": {"params": 1},   # sorted
         "反转": {"params": 1},   # reversed
+        # 高阶函数
+        "皆": {"params": 2},     # map(func, iterable)
+        "只": {"params": 2},     # filter(func, iterable)
+        "归": {"params": 3},     # reduce(func, iterable, initial)
     }
 
     # 内置模块
@@ -81,6 +85,7 @@ class SemanticAnalyzer:
         self.global_scope = Scope()
         self.current_scope = self.global_scope
         self.errors: List[SemanticError] = []
+        self.in_function = False  # 跟踪是否在函数内部
 
         # 注册内置函数
         for name, info in self.BUILTIN_FUNCTIONS.items():
@@ -171,14 +176,21 @@ class SemanticAnalyzer:
         elif isinstance(node, BinaryOpNode):
             # 表达式语句
             self._visit_expression(node)
+        elif isinstance(node, ImportNode):
+            # 导入语句
+            self._visit_import(node)
+        elif isinstance(node, FromImportNode):
+            # 从...导入语句
+            self._visit_from_import(node)
         else:
             # 其他表达式
             self._visit_expression(node)
 
     def _visit_var_def(self, node: VarDefNode) -> None:
         """访问变量定义节点"""
-        # 检查重复定义
-        if self.current_scope.lookup_local(node.name):
+        # 检查重复定义（允许覆盖内置函数）
+        existing_symbol = self.current_scope.lookup_local(node.name)
+        if existing_symbol and not existing_symbol.get("is_builtin", False):
             self.errors.append(SemanticError(
                 f"重复定义：'{node.name}' 已在此作用域中定义",
                 node.line,
@@ -214,6 +226,10 @@ class SemanticAnalyzer:
 
     def _visit_function_def(self, node: FunctionDefNode) -> None:
         """访问函数定义节点"""
+        # 设置在函数内部标志
+        old_in_function = self.in_function
+        self.in_function = True
+
         # 创建函数作用域
         function_scope = Scope(parent=self.current_scope)
         self.current_scope = function_scope
@@ -230,8 +246,9 @@ class SemanticAnalyzer:
         for stmt in node.body:
             self._visit_statement(stmt)
 
-        # 恢复作用域
+        # 恢复作用域和函数标志
         self.current_scope = self.current_scope.parent
+        self.in_function = old_in_function
 
     def _visit_assign(self, node: AssignNode) -> None:
         """访问赋值节点"""
@@ -330,6 +347,15 @@ class SemanticAnalyzer:
 
     def _visit_return(self, node: ReturnNode) -> None:
         """访问返回节点"""
+        # 检查返回语句是否在函数内部
+        if not self.in_function:
+            self.errors.append(SemanticError(
+                "返回语句只能在函数内部使用",
+                node.line,
+                node.column,
+                "请将返回语句放在函数定义内"
+            ))
+
         if node.value:
             self._visit_expression(node.value)
 
@@ -450,12 +476,24 @@ class SemanticAnalyzer:
 
     def _visit_function_call(self, node: FunctionCallNode) -> str:
         """访问函数调用节点"""
+        # 处理函数名（可能是字符串或AST节点）
+        if isinstance(node.name, str):
+            func_name = node.name
+        else:
+            # 如果name是AST节点（如MemberAccessNode），先分析它
+            func_name = self._visit_expression(node.name)
+            # 对于成员访问（如math.sqrt），不需要在符号表中查找
+            # 直接分析参数即可
+            for arg in node.args:
+                self._visit_expression(arg)
+            return "unknown"  # 返回未知类型，因为我们不知道成员函数的返回类型
+
         # 查找函数
-        symbol = self.current_scope.lookup(node.name)
+        symbol = self.current_scope.lookup(func_name)
 
         if not symbol:
             self.errors.append(SemanticError(
-                f"未定义的函数：'{node.name}'",
+                f"未定义的函数：'{func_name}'",
                 node.line,
                 node.column
             ))
@@ -463,7 +501,7 @@ class SemanticAnalyzer:
 
         if symbol["type"] != "function":
             self.errors.append(SemanticError(
-                f"'{node.name}' 不是函数",
+                f"'{func_name}' 不是函数",
                 node.line,
                 node.column
             ))
@@ -478,7 +516,7 @@ class SemanticAnalyzer:
             actual_params = len(node.args)
             if actual_params != expected_params:
                 self.errors.append(SemanticError(
-                    f"函数 '{node.name}' 期望 {expected_params} 个参数，但提供了 {actual_params} 个",
+                    f"函数 '{func_name}' 期望 {expected_params} 个参数，但提供了 {actual_params} 个",
                     node.line,
                     node.column
                 ))
@@ -489,7 +527,7 @@ class SemanticAnalyzer:
                 actual_params = len(node.args)
                 if actual_params != expected_params:
                     self.errors.append(SemanticError(
-                        f"函数 '{node.name}' 期望 {expected_params} 个参数，但提供了 {actual_params} 个",
+                        f"函数 '{func_name}' 期望 {expected_params} 个参数，但提供了 {actual_params} 个",
                         node.line,
                         node.column
                     ))
@@ -528,3 +566,26 @@ class SemanticAnalyzer:
             return "unknown"
 
         return "unknown"
+
+    def _visit_import(self, node: 'ImportNode') -> None:
+        """访问导入节点"""
+        # 在符号表中定义模块
+        module_name = node.alias if node.alias else node.module
+        self.current_scope.define(
+            module_name,
+            "module",
+            value_type="module"
+        )
+
+    def _visit_from_import(self, node: 'FromImportNode') -> None:
+        """访问从...导入节点"""
+        # 在符号表中定义导入的名称
+        for name in node.names:
+            # 如果有别名，使用别名
+            actual_name = node.aliases.get(name, name)
+            self.current_scope.define(
+                actual_name,
+                "function",  # 假设导入的是函数
+                value_type="unknown",
+                params=-1  # -1 表示可变参数，避免参数数量检查
+            )

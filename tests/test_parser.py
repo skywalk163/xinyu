@@ -621,16 +621,22 @@ class TestParserStatement:
 
     def test_parse_function_call_with_args(self):
         """测试带参数函数调用"""
-        lexer = Lexer("函数名 1 2 3")
+        source = """
+定义 函数名 = 函数 a b c：返回 a。
+定义 结果 = 函数名 1 2 3。
+"""
+        lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
-        stmt = ast.statements[0]
-        assert isinstance(stmt, FunctionCallNode)
-        assert stmt.name == "函数名"
-        assert len(stmt.args) == 3
+        # 第二个语句是函数调用
+        stmt = ast.statements[1]
+        assert isinstance(stmt, VarDefNode)
+        assert isinstance(stmt.value, FunctionCallNode)
+        assert stmt.value.name == "函数名"
+        assert len(stmt.value.args) == 3
 
 
 class TestParserControlFlow:
@@ -675,8 +681,8 @@ class TestParserControlFlow:
 
     def test_parse_for_loop(self):
         """测试遍历循环"""
-        source = """循环 x 遍历 列表：
-    打印 x
+        source = """遍历 x 于 列表：
+    打印 x。
 。"""
         lexer = Lexer(source)
         tokens = lexer.tokenize()

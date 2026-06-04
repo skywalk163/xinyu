@@ -353,13 +353,13 @@ class TestMacroExpanderDetailed:
         
         # 注册遍历宏 - 使用简单的宏体
         macro = Macro(
-            name="循环",
+            name="遍历",
             type=MacroType.SYNTAX,
             params=["变量", "列表", "循环体"],
             body="打印 变量。打印 列表。",
             description="遍历列表"
         )
-        system.register("循环", macro)
+        system.register("遍历", macro)
         
         expander = MacroExpander(system)
         

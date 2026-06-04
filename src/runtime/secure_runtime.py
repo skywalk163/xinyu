@@ -100,10 +100,25 @@ class SecureRuntime:
         Args:
             allowed_modules: 允许的模块集合，默认为安全模块
         """
-        self.allowed_modules = allowed_modules or {
-            'math', 'random', 'json', 're', 
-            'datetime', 'date', 'time', 'timedelta'
+        # 默认允许的安全模块
+        self.DEFAULT_ALLOWED_MODULES = {
+            # 数学相关
+            'math', 'random', 'statistics',
+            # 数据处理
+            'json', 're', 'csv',
+            # 时间日期
+            'datetime', 'date', 'time', 'timedelta',
+            # 集合和迭代
+            'collections', 'itertools', 'functools',
+            # 字符串处理
+            'string', 'textwrap',
+            # 编码
+            'base64', 'hashlib',
+            # 其他安全模块
+            'copy', 'pprint', 'operator',
         }
+        
+        self.allowed_modules = allowed_modules if allowed_modules is not None else self.DEFAULT_ALLOWED_MODULES
         self.validator = InputValidator()
     
     def execute(self, code: str, validate: bool = True) -> Tuple[bool, Optional[Any], Optional[str]]:
@@ -155,7 +170,7 @@ class SecureRuntime:
     
     def _create_restricted_globals(self) -> Dict[str, Any]:
         """创建受限的全局环境
-        
+
         Returns:
             受限的全局环境字典
         """
@@ -165,7 +180,17 @@ class SecureRuntime:
         import json
         import re
         from datetime import datetime, date, time, timedelta
-        
+
+        # 创建打印守卫类
+        class PrintGuard:
+            """打印守卫，用于RestrictedPython"""
+            def _call_print(self, *args, **kwargs):
+                print(*args, **kwargs)
+                return None
+
+        # 创建打印守卫实例
+        print_guard = PrintGuard()
+
         # 创建安全的内置函数集合
         safe_builtins_dict = {
             # 允许的内置函数
@@ -192,21 +217,21 @@ class SecureRuntime:
             'isinstance': isinstance,
             'hasattr': hasattr,
             'getattr': getattr,
-            
+
             # RestrictedPython需要的守卫函数
             '_iter_unpack_sequence': guarded_iter_unpack_sequence,
-            '_print_': lambda x: print(x),  # RestrictedPython的print守卫
+            '_print_': lambda getattr_func: print_guard,  # 返回打印守卫
             '_getattr_': getattr,  # RestrictedPython的getattr守卫
             '_write_': lambda x: x,  # RestrictedPython的write守卫
         }
-        
+
         # 创建受限全局环境
         restricted_globals = {
             '__builtins__': safe_builtins_dict,
             '__name__': '__main__',
             '__doc__': None,
         }
-        
+
         # 添加允许的模块
         if 'math' in self.allowed_modules:
             restricted_globals['math'] = math
@@ -221,11 +246,49 @@ class SecureRuntime:
             restricted_globals['date'] = date
             restricted_globals['time'] = time
             restricted_globals['timedelta'] = timedelta
-        
+
+        # 添加更多安全模块
+        if 'statistics' in self.allowed_modules:
+            import statistics
+            restricted_globals['statistics'] = statistics
+        if 'csv' in self.allowed_modules:
+            import csv
+            restricted_globals['csv'] = csv
+        if 'collections' in self.allowed_modules:
+            import collections
+            restricted_globals['collections'] = collections
+        if 'itertools' in self.allowed_modules:
+            import itertools
+            restricted_globals['itertools'] = itertools
+        if 'functools' in self.allowed_modules:
+            import functools
+            restricted_globals['functools'] = functools
+        if 'string' in self.allowed_modules:
+            import string
+            restricted_globals['string'] = string
+        if 'textwrap' in self.allowed_modules:
+            import textwrap
+            restricted_globals['textwrap'] = textwrap
+        if 'base64' in self.allowed_modules:
+            import base64
+            restricted_globals['base64'] = base64
+        if 'hashlib' in self.allowed_modules:
+            import hashlib
+            restricted_globals['hashlib'] = hashlib
+        if 'copy' in self.allowed_modules:
+            import copy
+            restricted_globals['copy'] = copy
+        if 'pprint' in self.allowed_modules:
+            import pprint
+            restricted_globals['pprint'] = pprint
+        if 'operator' in self.allowed_modules:
+            import operator
+            restricted_globals['operator'] = operator
+
         # 心语内置值
         restricted_globals['真'] = True
         restricted_globals['假'] = False
-        
+
         return restricted_globals
     
     def compile_restricted_code(self, code: str) -> Tuple[bool, Optional[Any], Optional[str]]:

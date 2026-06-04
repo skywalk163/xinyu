@@ -104,15 +104,16 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
-        # 实际解析为：平方根(n) - 1（因为相减是操作符动词）
+
+        # 实际解析为：平方根(n - 1)，即函数调用，参数是二元操作
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
-        assert isinstance(stmt, BinaryOpNode)
-        assert stmt.operator == "-"
-        # 左边是函数调用
-        assert isinstance(stmt.left, FunctionCallNode)
-        assert stmt.left.name == "平方根"
+        assert isinstance(stmt, FunctionCallNode)
+        assert stmt.name == "平方根"
+        assert len(stmt.args) == 1
+        # 参数是二元操作
+        assert isinstance(stmt.args[0], BinaryOpNode)
+        assert stmt.args[0].operator == "-"
 
     def test_multiple_function_calls(self):
         """测试多个函数调用"""
@@ -248,17 +249,19 @@ class TestArityDrivenParsing:
         assert len(stmt.args) == 3
 
     def test_operator_verb_stops_argument_collection(self):
-        """测试操作符动词停止参数收集"""
+        """测试操作符动词在参数中的处理"""
         source = "平方根 16 相加 平方根 25。"
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
+        # 实际解析为：平方根(16 + 平方根(25))，即函数调用，参数是二元操作
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
-        # 应该解析为：平方根(16) + 平方根(25)
-        assert isinstance(stmt, BinaryOpNode)
-        assert stmt.operator == "+"
-        assert isinstance(stmt.left, FunctionCallNode)
-        assert isinstance(stmt.right, FunctionCallNode)
+        assert isinstance(stmt, FunctionCallNode)
+        assert stmt.name == "平方根"
+        assert len(stmt.args) == 1
+        # 参数是二元操作
+        assert isinstance(stmt.args[0], BinaryOpNode)
+        assert stmt.args[0].operator == "+"

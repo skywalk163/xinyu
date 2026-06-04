@@ -63,7 +63,7 @@ class TestSemanticBoundary:
         """测试正确参数的函数调用"""
         source = """
 定义 加法 = 函数 a, b：返回 a 相加 b。
-定义 结果 = 加法 1, 2。
+定义 结果 = 加法 1 2。
 """
         lexer = Lexer(source)
         tokens = lexer.tokenize()

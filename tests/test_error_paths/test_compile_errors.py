@@ -126,7 +126,7 @@ class TestSemanticErrors:
         """测试参数数量错误"""
         source = """
 定义 函数名 = 函数 x：返回 x。
-定义 结果 = 函数名 1, 2。
+定义 结果 = 函数名 1 2。
 """
         lexer = Lexer(source)
         tokens = lexer.tokenize()

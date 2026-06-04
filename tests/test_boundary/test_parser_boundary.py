@@ -5,7 +5,7 @@
 import pytest
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser, ParseError
-from src.parser.ast_nodes import ProgramNode, FunctionDefNode, IfNode
+from src.parser.ast_nodes import ProgramNode, FunctionDefNode, IfNode, VarDefNode
 
 
 class TestParserBoundary:
@@ -88,7 +88,9 @@ class TestParserBoundary:
         ast = parser.parse()
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
-        assert isinstance(ast.statements[0], FunctionDefNode)
+        # 函数定义被包装在VarDefNode中
+        assert isinstance(ast.statements[0], VarDefNode)
+        assert isinstance(ast.statements[0].value, FunctionDefNode)
 
     def test_function_call(self):
         """测试函数调用"""

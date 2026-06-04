@@ -15,7 +15,11 @@ from src.parser.ast_nodes import (
     AssignNode, VarDefNode, IfNode, ForNode, WhileNode,
     RepeatNode, FunctionDefNode, FunctionCallNode, ReturnNode,
     # 特殊节点
-    ProgramNode, BlockNode
+    ProgramNode, BlockNode,
+    # 异常处理节点
+    TryNode, ExceptNode, RaiseNode,
+    # 模块导入节点
+    ImportNode, FromImportNode
 )
 
 
@@ -39,6 +43,23 @@ class PythonCodegen:
         "写入": "print",
         "读取": "input",
         "请读取": "input",  # 别名
+        "长度": "len",
+        "范围": "range",
+        "类型": "type",
+        "整数": "int",
+        "浮点": "float",
+        "字符串": "str",
+        "列表": "list",
+        "字典": "dict",
+        "绝对值": "abs",
+        "最大值": "max",
+        "最小值": "min",
+        "求和": "sum",
+        "排序": "sorted",
+        "反转": "reversed",
+        # 高阶函数
+        "皆": "map",
+        "只": "filter",
         # 旧语法兼容
         "印": "print",
         "读": "input",
@@ -292,8 +313,13 @@ class PythonCodegen:
         Returns:
             函数调用表达式字符串
         """
-        # 映射内置函数名
-        func_name = self.BUILTIN_FUNCTIONS.get(node.name, node.name)
+        # 处理函数名（可能是字符串或AST节点）
+        if isinstance(node.name, str):
+            # 映射内置函数名
+            func_name = self.BUILTIN_FUNCTIONS.get(node.name, node.name)
+        else:
+            # 如果name是AST节点（如MemberAccessNode），生成其代码
+            func_name = self.generate(node.name)
 
         # 生成参数列表
         args = [self.generate(arg) for arg in node.args]
@@ -552,3 +578,128 @@ class PythonCodegen:
             lines.append(f"{self._indent()}{self.generate(stmt)}")
 
         return "\n".join(lines)
+
+    def _generate_try(self, node: TryNode) -> str:
+        """生成try-except-finally语句
+
+        Args:
+            node: try节点
+
+        Returns:
+            try-except-finally语句字符串
+        """
+        lines = ["try:"]
+
+        # 增加缩进
+        self._increase_indent()
+
+        # 生成try块
+        if node.try_body:
+            for stmt in node.try_body:
+                lines.append(f"{self._indent()}{self.generate(stmt)}")
+        else:
+            lines.append(f"{self._indent()}pass")
+
+        # 减少缩进
+        self._decrease_indent()
+
+        # 生成except子句
+        for except_clause in node.except_clauses:
+            lines.append(self._generate_except(except_clause))
+
+        # 生成finally块
+        if node.finally_body:
+            lines.append(f"{self._indent()}finally:")
+            self._increase_indent()
+
+            for stmt in node.finally_body:
+                lines.append(f"{self._indent()}{self.generate(stmt)}")
+
+            self._decrease_indent()
+
+        return "\n".join(lines)
+
+    def _generate_except(self, node: ExceptNode) -> str:
+        """生成except子句
+
+        Args:
+            node: except节点
+
+        Returns:
+            except子句字符串
+        """
+        # 构建except语句
+        if node.exception_type:
+            exception_type = self.generate(node.exception_type)
+            if node.exception_var:
+                except_line = f"except {exception_type} as {node.exception_var}:"
+            else:
+                except_line = f"except {exception_type}:"
+        else:
+            except_line = "except:"
+
+        lines = [f"{self._indent()}{except_line}"]
+
+        # 增加缩进
+        self._increase_indent()
+
+        # 生成except块
+        if node.body:
+            for stmt in node.body:
+                lines.append(f"{self._indent()}{self.generate(stmt)}")
+        else:
+            lines.append(f"{self._indent()}pass")
+
+        # 减少缩进
+        self._decrease_indent()
+
+        return "\n".join(lines)
+
+    def _generate_raise(self, node: RaiseNode) -> str:
+        """生成raise语句
+
+        Args:
+            node: raise节点
+
+        Returns:
+            raise语句字符串
+        """
+        if node.exception:
+            exception = self.generate(node.exception)
+            return f"raise {exception}"
+        else:
+            return "raise"
+
+    def _generate_import(self, node: ImportNode) -> str:
+        """生成import语句
+
+        Args:
+            node: import节点
+
+        Returns:
+            import语句字符串
+        """
+        if node.alias:
+            return f"import {node.module} as {node.alias}"
+        else:
+            return f"import {node.module}"
+
+    def _generate_fromimport(self, node: FromImportNode) -> str:
+        """生成from...import语句
+
+        Args:
+            node: from...import节点
+
+        Returns:
+            from...import语句字符串
+        """
+        # 构建导入列表
+        import_list = []
+        for name in node.names:
+            if name in node.aliases:
+                import_list.append(f"{name} as {node.aliases[name]}")
+            else:
+                import_list.append(name)
+
+        imports_str = ", ".join(import_list)
+        return f"from {node.module} import {imports_str}"

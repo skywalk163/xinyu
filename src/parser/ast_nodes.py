@@ -247,7 +247,7 @@ class FunctionCallNode(ASTNode):
 
     表示函数调用，如 '函数名 参数1 参数2'。
     """
-    name: str
+    name: Any  # 函数名（可以是字符串或AST节点，如MemberAccessNode）
     args: List[ASTNode] = field(default_factory=list)
     arity: Optional['Arity'] = None  # 元数定义（可选）
 
@@ -294,3 +294,79 @@ class BlockNode(ASTNode):
 
     def __str__(self) -> str:
         return f"BlockNode({len(self.statements)} statements)"
+
+
+# ============ 异常处理节点 ============
+
+@dataclass
+class TryNode(ASTNode):
+    """尝试节点
+
+    表示try-except-finally语句。
+    """
+    try_body: List[ASTNode] = field(default_factory=list)
+    except_clauses: List['ExceptNode'] = field(default_factory=list)
+    finally_body: Optional[List[ASTNode]] = None
+
+    def __str__(self) -> str:
+        return f"TryNode(try: {len(self.try_body)}, except: {len(self.except_clauses)}, finally: {len(self.finally_body) if self.finally_body else 0})"
+
+
+@dataclass
+class ExceptNode(ASTNode):
+    """捕获节点
+
+    表示except子句。
+    """
+    exception_type: Optional[ASTNode] = None  # 异常类型
+    exception_var: Optional[str] = None  # 异常变量名
+    body: List[ASTNode] = field(default_factory=list)
+
+    def __str__(self) -> str:
+        return f"ExceptNode(type: {self.exception_type}, var: {self.exception_var}, body: {len(self.body)})"
+
+
+@dataclass
+class RaiseNode(ASTNode):
+    """抛出节点
+
+    表示raise语句。
+    """
+    exception: Optional[ASTNode] = None  # 异常对象
+
+    def __str__(self) -> str:
+        if self.exception:
+            return f"RaiseNode({self.exception})"
+        return "RaiseNode()"
+
+
+# ============ 模块导入节点 ============
+
+@dataclass
+class ImportNode(ASTNode):
+    """导入节点
+
+    表示import语句。
+    """
+    module: str  # 模块名
+    alias: Optional[str] = None  # 别名
+
+    def __str__(self) -> str:
+        if self.alias:
+            return f"ImportNode({self.module} as {self.alias})"
+        return f"ImportNode({self.module})"
+
+
+@dataclass
+class FromImportNode(ASTNode):
+    """从...导入节点
+
+    表示from...import语句。
+    """
+    module: str  # 模块名
+    names: List[str] = field(default_factory=list)  # 导入的名称列表
+    aliases: Dict[str, str] = field(default_factory=dict)  # 名称到别名的映射
+
+    def __str__(self) -> str:
+        names_str = ", ".join(self.names)
+        return f"FromImportNode({self.module}: {names_str})"

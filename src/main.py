@@ -13,6 +13,9 @@ import sys
 import os
 from typing import Any, Dict, Optional, NoReturn
 
+# 添加项目根目录到路径
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.lexer.lexer import Lexer, LexerError
 from src.parser.parser import Parser, ParseError
 from src.semantic.analyzer import SemanticAnalyzer, SemanticError

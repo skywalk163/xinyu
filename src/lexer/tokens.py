@@ -36,6 +36,17 @@ class TokenType(Enum):
     FILTER = auto()      # 只（筛选）
     REDUCE = auto()      # 归（归约）
 
+    # 异常处理
+    TRY = auto()         # 尝试
+    CATCH = auto()       # 捕获
+    FINALLY = auto()     # 最终
+    RAISE = auto()       # 抛出
+    AS = auto()          # 为 (用于异常变量绑定)
+
+    # 模块导入
+    IMPORT = auto()      # 导入
+    FROM = auto()        # 从
+
     # 操作符（双字）
     PLUS = auto()        # 相加
     MINUS = auto()       # 相减

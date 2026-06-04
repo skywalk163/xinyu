@@ -36,12 +36,14 @@ SYNTAX_MARKERS = {
     # 循环语法标记
     "循环": TokenType.FOR,        # for
     "当满足": TokenType.WHILE,    # while
+    "当": TokenType.WHILE,        # while (简化形式)
+    "时": TokenType.THEN,         # then (用于while循环)
     "重复": TokenType.REPEAT,     # repeat
     "继续": TokenType.CONTINUE,   # continue
     "跳出": TokenType.BREAK,      # break
     "结束": TokenType.END,        # end
     "于": TokenType.IN,           # in (用于遍历)
-    "遍历": TokenType.IN,         # in (别名，用于遍历)
+    "遍历": TokenType.FOR,        # for (用于遍历循环)
     "次数": TokenType.TIMES,      # times
 
     # 函数语法标记
@@ -52,6 +54,17 @@ SYNTAX_MARKERS = {
     "皆": TokenType.MAP,          # map
     "只": TokenType.FILTER,       # filter
     "归": TokenType.REDUCE,       # reduce
+
+    # 异常处理
+    "尝试": TokenType.TRY,        # try
+    "捕获": TokenType.CATCH,      # catch/except
+    "最终": TokenType.FINALLY,    # finally
+    "抛出": TokenType.RAISE,      # raise
+    "为": TokenType.AS,           # as (用于异常变量绑定)
+
+    # 模块导入
+    "导入": TokenType.IMPORT,     # import
+    "从": TokenType.FROM,         # from
 }
 
 # 操作符（双字，单义，明确指向运算）
@@ -107,7 +120,9 @@ SYMBOLS = {
     ",": TokenType.COMMA,      # 英文逗号
     "。": TokenType.PERIOD,
     "：": TokenType.COLON,
+    ":": TokenType.COLON,      # 英文冒号（用于字典和类型注解）
     "；": TokenType.SEMICOLON,
+    ";": TokenType.SEMICOLON,  # 英文分号
     "、": TokenType.PAUSE_MARK,  # 顿号
     "（": TokenType.LPAREN,
     "）": TokenType.RPAREN,
