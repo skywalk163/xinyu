@@ -48,3 +48,36 @@ repos:
     hooks:
       - id: bandit
         args: ['-r', 'src/', '-ll']
+
+  # 测试运行
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: Run tests
+        entry: python -m pytest tests/ -xvs --tb=short
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [push]
+
+  # 心语代码格式化
+  - repo: local
+    hooks:
+      - id: xinyu-format
+        name: Format Xinyu code
+        entry: python tools/simple_formatter.py --check
+        language: system
+        types: [file]
+        files: \.xinyu$
+        pass_filenames: true
+        args: [--check]
+      
+      - id: xinyu-format-fix
+        name: Format Xinyu code (auto-fix)
+        entry: python tools/simple_formatter.py --in-place
+        language: system
+        types: [file]
+        files: \.xinyu$
+        pass_filenames: true
+        args: [--in-place]
+        stages: [commit]

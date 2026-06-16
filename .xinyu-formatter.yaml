@@ -1,0 +1,86 @@
+# 心语代码格式化配置
+# 此文件用于配置心语代码格式化工具的规则
+
+# 行长度限制
+line_length: 100
+
+# 缩进大小（空格数）
+indent_size: 4
+
+# 引号风格：single（单引号）或 double（双引号）
+quote_style: "double"
+
+# 是否在多行结构中添加尾随逗号
+trailing_comma: true
+
+# 最大连续空行数
+max_empty_lines: 2
+
+# 操作符周围添加空格
+spaces_around_operators: true
+
+# 逗号后添加空格
+spaces_after_comma: true
+
+# 冒号后添加空格
+spaces_after_colon: true
+
+# 自定义规则
+custom_rules:
+  # 函数定义和调用中的空格
+  function_spacing: true
+  
+  # 列表和字典中的空格
+  collection_spacing: true
+  
+  # 注释格式
+  comment_format: true
+  
+  # 导入语句排序
+  import_sorting: true
+  
+  # 空行位置规则
+  blank_line_rules:
+    # 在函数定义前添加空行
+    before_function: true
+    
+    # 在类定义前添加空行
+    before_class: true
+    
+    # 在导入语句后添加空行
+    after_imports: true
+    
+    # 在逻辑块之间添加空行
+    between_blocks: true
+
+# 文件排除模式
+exclude_patterns:
+  - "**/__pycache__/**"
+  - "**/.git/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+
+# 文件包含模式（默认：所有 .xinyu 文件）
+include_patterns:
+  - "**/*.xinyu"
+
+# 格式化模式
+# auto: 自动检测并应用最佳格式
+# strict: 严格模式，强制所有规则
+# minimal: 最小化模式，只应用基本规则
+format_mode: "auto"
+
+# 是否在格式化时保留原始文件的换行符
+preserve_line_breaks: false
+
+# 是否在格式化时保留原始文件的注释位置
+preserve_comment_positions: true
+
+# 错误处理级别
+# error: 遇到错误时停止
+# warn: 显示警告但继续
+# ignore: 忽略错误
+error_level: "warn"
