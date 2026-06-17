@@ -8,7 +8,7 @@
 from typing import Any, Dict, List, Optional
 
 from src.codegen.python_codegen import PythonCodegen
-from src.error_handling import ErrorCode, ErrorHandler, ErrorType
+from src.error_handling import ErrorHandler, ErrorType
 from src.lexer.lexer_with_error_handler import LexerWithErrorHandler
 from src.parser.parser_with_error_handler import ParserWithErrorHandler
 from src.runtime.secure_executor import SecureExecutor

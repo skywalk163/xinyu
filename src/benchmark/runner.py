@@ -7,23 +7,12 @@
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # 使用统一的导入工具
-from src.utils.imports import (
-    import_optional,
-    with_gc,
-    with_json,
-    with_psutil,
-    with_time,
-    with_tracemalloc,
-)
-from src.utils.logging_utils import Timer, get_logger
-from src.utils.stats_utils import (
-    calculate_confidence_interval,
-    calculate_percentiles,
-    calculate_statistics,
-)
+from src.utils.imports import import_optional
+from src.utils.logging_utils import get_logger
+from src.utils.stats_utils import calculate_percentiles, calculate_statistics
 
 # 导入可选模块
 statistics = import_optional("statistics")
@@ -153,7 +142,7 @@ class BenchmarkRunner:
 
             # 测量执行时间
             start_time = time.perf_counter()
-            result = func(*args, **kwargs)
+            _ = func(*args, **kwargs)  # 忽略返回值，只用于性能测量
             end_time = time.perf_counter()
 
             # 收集测量数据

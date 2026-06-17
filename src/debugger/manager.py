@@ -3,7 +3,6 @@
 管理调试器实例和调试会话
 """
 
-import sys
 import traceback
 from typing import Any, Dict, List, Optional
 
@@ -251,7 +250,7 @@ class DebuggerManager:
             import ast
 
             parsed_value = ast.literal_eval(var_value)
-        except:
+        except Exception:
             # 如果失败，作为字符串处理
             parsed_value = var_value
 
@@ -320,7 +319,8 @@ class DebuggerManager:
         elif "frame" in result:
             frame = result["frame"]
             print(
-                f"当前位置: {frame.get('function', '未知')} at {frame.get('filename', '未知')}:{frame.get('line', '未知')}"
+                f"当前位置: {frame.get('function', '未知')} at "
+                f"{frame.get('filename', '未知')}:{frame.get('line', '未知')}"
             )
             if "code" in frame:
                 print(f"代码: {frame['code']}")

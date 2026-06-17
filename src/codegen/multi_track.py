@@ -12,7 +12,7 @@ import math
 import re
 import subprocess
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 
 class TrackType(Enum):

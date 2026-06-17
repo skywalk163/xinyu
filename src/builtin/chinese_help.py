@@ -4,9 +4,7 @@
 提供内置函数和模块的中文帮助文档查看功能。
 """
 
-from typing import Optional
-
-from .builtin_docs import get_doc, list_documented_functions
+from .builtin_docs import get_doc
 from .name_mapper import NameMapper
 
 
@@ -140,7 +138,7 @@ class ChineseHelp:
         print("  全局变量, 局部变量")
 
         print("\n" + "=" * 60)
-        print(f"总计: 69个内置函数")
+        print("总计: 69个内置函数")
 
     def list_all_modules(self) -> None:
         """列出所有可用模块"""

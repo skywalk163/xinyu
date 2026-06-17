@@ -13,7 +13,7 @@ import time
 import tracemalloc
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 # 使用统一的日志工具
 from src.utils.logging_utils import get_logger
@@ -97,7 +97,7 @@ class PerformanceProfiler:
         # 运行性能分析
         self.profiler.enable()
         start_time = time.perf_counter()
-        result = func(*args, **kwargs)
+        _ = func(*args, **kwargs)  # 忽略返回值，只用于性能分析
         end_time = time.perf_counter()
         self.profiler.disable()
 
@@ -199,7 +199,7 @@ class PerformanceProfiler:
             line_number = inspect.getsourcelines(func)[1]
             data["file_name"] = file_name
             data["line_number"] = line_number
-        except:
+        except Exception:
             pass
 
         # 解析输出行

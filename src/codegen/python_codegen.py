@@ -3,7 +3,7 @@
 
 将AST节点转换为可执行的Python代码。
 """
-from typing import Dict, Type
+from typing import Dict
 
 from src.parser.ast_nodes import (  # 基础节点; 表达式节点; 语句节点; 特殊节点; 异常处理节点; 模块导入节点
     AssignNode,

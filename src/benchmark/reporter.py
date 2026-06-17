@@ -6,12 +6,8 @@
 
 import json
 import os
-from dataclasses import asdict
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-
-import matplotlib.pyplot as plt
-import numpy as np
+from typing import Any, Dict, List
 
 from .runner import BenchmarkResult
 
@@ -61,13 +57,13 @@ class BenchmarkReporter:
             report_lines.append(
                 f"   执行时间: {stats.get('time_mean', 0):.6f}s ± {stats.get('time_std', 0):.6f}s"
             )
-            report_lines.append(
-                f"   内存使用: {stats.get('memory_mean', 0) / 1024:.2f}KB ± {stats.get('memory_std', 0) / 1024:.2f}KB"
-            )
+            memory_mean = stats.get("memory_mean", 0) / 1024
+            memory_std = stats.get("memory_std", 0) / 1024
+            report_lines.append(f"   内存使用: {memory_mean:.2f}KB ± {memory_std:.2f}KB")
             if "cpu_mean" in stats:
-                report_lines.append(
-                    f"   CPU使用率: {stats.get('cpu_mean', 0):.2f}% ± {stats.get('cpu_std', 0):.2f}%"
-                )
+                cpu_mean = stats.get("cpu_mean", 0)
+                cpu_std = stats.get("cpu_std", 0)
+                report_lines.append(f"   CPU使用率: {cpu_mean:.2f}% ± {cpu_std:.2f}%")
             report_lines.append(f"   测试次数: {len(result.execution_times)}")
             report_lines.append(f"   时间戳: {result.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
             report_lines.append("")
@@ -92,12 +88,10 @@ class BenchmarkReporter:
             min_memory = min(results, key=lambda r: r.statistics.get("memory_mean", float("inf")))
             max_memory = max(results, key=lambda r: r.statistics.get("memory_mean", 0))
 
-            report_lines.append(
-                f"最少内存: {min_memory.name} ({min_memory.statistics.get('memory_mean', 0) / 1024:.2f}KB)"
-            )
-            report_lines.append(
-                f"最多内存: {max_memory.name} ({max_memory.statistics.get('memory_mean', 0) / 1024:.2f}KB)"
-            )
+            min_memory_kb = min_memory.statistics.get("memory_mean", 0) / 1024
+            max_memory_kb = max_memory.statistics.get("memory_mean", 0) / 1024
+            report_lines.append(f"最少内存: {min_memory.name} ({min_memory_kb:.2f}KB)")
+            report_lines.append(f"最多内存: {max_memory.name} ({max_memory_kb:.2f}KB)")
 
             # 总体统计
             total_time = sum(r.statistics.get("time_mean", 0) for r in results)
@@ -543,8 +537,11 @@ class BenchmarkReporter:
                 report_lines.append(
                     f"  执行时间: {baseline_time:.6f}s -> {current_time:.6f}s ({time_change:+.2f}%)"
                 )
+                baseline_memory_kb = baseline_memory / 1024
+                current_memory_kb = current_memory / 1024
                 report_lines.append(
-                    f"  内存使用: {baseline_memory / 1024:.2f}KB -> {current_memory / 1024:.2f}KB ({memory_change:+.2f}%)"
+                    f"  内存使用: {baseline_memory_kb:.2f}KB -> "
+                    f"{current_memory_kb:.2f}KB ({memory_change:+.2f}%)"
                 )
 
                 if time_change > 5:
