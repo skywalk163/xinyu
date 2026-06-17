@@ -36,7 +36,7 @@ jobs:
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
         cache: 'pip'
 
     - name: 安装依赖
@@ -190,7 +190,7 @@ jobs:
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
         cache: 'pip'
 
     - name: 安装依赖
@@ -249,7 +249,7 @@ jobs:
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
         cache: 'pip'
 
     - name: 安装文档检查工具
