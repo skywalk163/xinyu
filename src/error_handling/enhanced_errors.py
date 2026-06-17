@@ -264,7 +264,7 @@ class EnhancedErrorMessages:
                 lines.append("\n[代码] 相关代码：")
                 for i in range(start_line, end_line + 1):
                     prefix = ">>> " if i == line else "    "
-                    lines.append(f"{prefix}{i:4d}: {source_lines[i-1]}")
+                    lines.append(f"{prefix}{i:4d}: {source_lines[i - 1]}")
 
                 # 添加指针
                 if column > 0:
@@ -420,7 +420,7 @@ def format_error(
         if line <= len(source_lines):
             lines.append("")
             lines.append("相关代码：")
-            lines.append(f"  {line}: {source_lines[line-1]}")
+            lines.append(f"  {line}: {source_lines[line - 1]}")
             if column > 0:
                 lines.append(f"  {' ' * (len(str(line)) + 2 + column - 1)}^")
 

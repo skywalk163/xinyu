@@ -4,12 +4,13 @@
 提供统一的错误处理功能，减少重复的错误处理代码。
 """
 
+import functools
 import inspect
-import sys
+import time
 import traceback
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 
 class ErrorSeverity(Enum):
@@ -97,7 +98,7 @@ class BaseError(Exception):
                     stack_lines.append(f"    {code_context}")
 
             return "\n".join(stack_lines)
-        except:
+        except Exception:
             return traceback.format_exc()
 
     def _format_message(self) -> str:
@@ -463,11 +464,6 @@ def retry_on_error(
         return decorator
     return decorator(func)
 
-
-import functools
-
-# 导入必要的模块
-import time
 
 # 预定义一些常见的错误信息
 _common_errors = [

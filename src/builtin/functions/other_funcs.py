@@ -1,7 +1,9 @@
 """
 其他内置函数实现
 
-包含：id, hash, repr, ascii, bin, oct, hex, chr, ord, callable, help, eval, exec, compile, globals, locals
+包含：
+    id, hash, repr, ascii, bin, oct, hex, chr, ord, callable, help, eval, exec,
+    compile, globals, locals
 """
 
 # 占位实现，将在任务9中完善

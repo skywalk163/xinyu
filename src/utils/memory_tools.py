@@ -5,13 +5,11 @@
 """
 
 import gc
-import sys
 import time
 import tracemalloc
-import weakref
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 
 @dataclass

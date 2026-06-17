@@ -8,9 +8,7 @@ import math
 import statistics
 import time
 from collections import Counter
-from typing import Any, Dict, List, Optional, Tuple, Union
-
-import numpy as np
+from typing import Any, Dict, List, Optional, Tuple
 
 
 def calculate_statistics(data: List[float]) -> Dict[str, float]:

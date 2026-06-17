@@ -4,9 +4,17 @@
 将Python异常转换为心语异常。
 """
 
-from typing import Optional
-
-from .xinyu_exceptions import *
+from .xinyu_exceptions import (
+    XinyuAttributeError,
+    XinyuException,
+    XinyuImportError,
+    XinyuIndexError,
+    XinyuKeyError,
+    XinyuNameError,
+    XinyuRuntimeError,
+    XinyuTypeError,
+    XinyuValueError,
+)
 
 
 class ExceptionTranslator:

@@ -87,7 +87,7 @@ class Error:
                 result += "\n\n📄 相关代码："
                 for i in range(start_line, end_line + 1):
                     prefix = ">>> " if i == self.line else "    "
-                    result += f"\n{prefix}{i:4d}: {lines[i-1]}"
+                    result += f"\n{prefix}{i:4d}: {lines[i - 1]}"
 
                 # 添加指针
                 if self.column > 0:

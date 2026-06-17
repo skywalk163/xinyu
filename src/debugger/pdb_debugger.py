@@ -6,7 +6,7 @@ PDB调试器实现
 import pdb
 import sys
 import traceback
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from .interface import DebuggerBase
 
@@ -168,7 +168,7 @@ class PdbDebugger(DebuggerBase):
                     # 简化显示
                     try:
                         filtered_vars[name] = str(value)[:100]  # 限制长度
-                    except:
+                    except Exception:
                         filtered_vars[name] = "<无法显示>"
 
             return filtered_vars
@@ -233,7 +233,7 @@ class PdbDebugger(DebuggerBase):
         """计算表达式"""
         try:
             if not self.current_frame:
-                return f"错误: 没有活动的执行帧"
+                return "错误: 没有活动的执行帧"
 
             frame = self.current_frame
 
@@ -323,5 +323,5 @@ class PdbDebugger(DebuggerBase):
             line_no = frame.f_lineno
             line = linecache.getline(filename, line_no)
             return line.strip()
-        except:
+        except Exception:
             return "<无法获取代码行>"

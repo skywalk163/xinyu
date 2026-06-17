@@ -5,9 +5,8 @@
 提供错误消息生成、格式化、建议等实用功能。
 """
 
-import re
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 
 class ErrorSeverity(Enum):
