@@ -1,21 +1,21 @@
-# -*- coding: utf-8 -*-
-"""安全模块
-
-提供输入验证和安全检查功能。
+"""
+安全模块
+提供权限控制和审计功能
 """
 
-from src.security.input_validator import (
-    SourceCodeValidator,
-    InputSanitizer,
-    ValidationResult,
-    validate_source,
-    sanitize_source,
-)
+from .permission_manager import PermissionManager, PermissionType, Permission, Role
+from .permission_interceptor import PermissionInterceptor, SecureContext
+from .audit_logger import AuditLogger, AuditEvent, AuditedPermissionManager
+
 
 __all__ = [
-    'SourceCodeValidator',
-    'InputSanitizer',
-    'ValidationResult',
-    'validate_source',
-    'sanitize_source',
+    "PermissionManager",
+    "PermissionType",
+    "Permission",
+    "Role",
+    "PermissionInterceptor",
+    "SecureContext",
+    "AuditLogger",
+    "AuditEvent",
+    "AuditedPermissionManager"
 ]

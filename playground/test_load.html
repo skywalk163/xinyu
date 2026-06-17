@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试示例加载</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+        }
+        .debug {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>测试示例加载功能</h1>
+
+    <div>
+        <button onclick="loadExample('hello')">加载Hello</button>
+        <button onclick="loadExample('variables')">加载Variables</button>
+        <button onclick="loadExample('math')">加载Math</button>
+        <button onclick="loadExample('hanoi')">加载Hanoi</button>
+    </div>
+
+    <div>
+        <h3>编辑器</h3>
+        <textarea id="editor"></textarea>
+        <div id="charCount">0 字符</div>
+    </div>
+
+    <div class="debug" id="debug"></div>
+
+    <script>
+        // 定义examples对象
+        const examples = {
+            hello: `# 你好，世界
+定义 问候 = "你好，心语！"。
+打印 问候。
+
+定义 名字 = "世界"。
+打印 "你好，" 名字。`,
+
+            variables: `# 变量定义示例
+定义 整数 = 42。
+定义 浮点数 = 3.14。
+定义 字符串 = "心语"。
+定义 布尔值 = True。
+
+打印 "整数：" 整数。
+打印 "浮点数：" 浮点数。
+打印 "字符串：" 字符串。
+打印 "布尔值：" 布尔值。`,
+
+            math: `# 数学运算示例
+定义 a = 10。
+定义 b = 3。
+
+打印 "a 相加 b = " a 相加 b。
+打印 "a 相减 b = " a 相减 b。
+打印 "a 相乘 b = " a 相乘 b。
+打印 "a 相除 b = " a 相除 b。
+
+定义 x = -5。
+打印 "绝对值(-5) = " 绝对值 x。`,
+
+            hanoi: `# 汉诺塔问题（打印移动步骤）
+打印 "汉诺塔3个盘子的移动步骤："。
+打印 "第1步：移动盘子1 从A到C"。
+打印 "第2步：移动盘子2 从A到B"。
+打印 "第3步：移动盘子1 从C到B"。
+打印 "第4步：移动盘子3 从A到C"。
+打印 "第5步：移动盘子1 从B到A"。
+打印 "第6步：移动盘子2 从B到C"。
+打印 "第7步：移动盘子1 从A到C"。
+打印 "总共需要7步完成。"。`
+        };
+
+        const editor = document.getElementById('editor');
+        const charCount = document.getElementById('charCount');
+        const debug = document.getElementById('debug');
+
+        function log(message) {
+            debug.innerHTML += `<p>${message}</p>`;
+            console.log(message);
+        }
+
+        function loadExample(name) {
+            debug.innerHTML = '<h3>调试信息</h3>';
+
+            log(`尝试加载示例: ${name}`);
+            log(`examples对象存在: ${examples !== undefined}`);
+            log(`examples[${name}]存在: ${examples[name] !== undefined}`);
+
+            if (examples[name]) {
+                log(`examples[${name}]长度: ${examples[name].length}`);
+                log(`examples[${name}]前50字符: ${examples[name].substring(0, 50)}`);
+
+                editor.value = examples[name];
+                charCount.textContent = `${editor.value.length} 字符`;
+
+                log(`编辑器内容长度: ${editor.value.length}`);
+                log(`编辑器内容前50字符: ${editor.value.substring(0, 50)}`);
+                log('✅ 示例加载成功！');
+            } else {
+                log('❌ 示例未找到！');
+            }
+        }
+
+        editor.addEventListener('input', () => {
+            charCount.textContent = `${editor.value.length} 字符`;
+        });
+
+        // 页面加载时测试
+        window.onload = function() {
+            debug.innerHTML = '<h3>页面加载测试</h3>';
+            log(`examples对象存在: ${examples !== undefined}`);
+            log(`examples对象的键: ${JSON.stringify(Object.keys(examples))}`);
+            log('页面加载完成，可以点击按钮测试');
+        };
+    </script>
+</body>
+</html>

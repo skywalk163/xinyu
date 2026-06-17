@@ -6,29 +6,45 @@
 """
 
 from typing import List, Optional
+
+from src.error_handling import ErrorCode, ErrorHandler, ErrorType
 from src.lexer.tokens import Token, TokenType
 from src.parser.ast_nodes import (
-    ProgramNode, NumberNode, StringNode, IdentifierNode,
-    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
-    MemberAccessNode, IndexNode, AssignNode, VarDefNode,
-    IfNode, ForNode, WhileNode, RepeatNode,
-    FunctionDefNode, FunctionCallNode, ReturnNode,
-    BlockNode, ASTNode
+    AssignNode,
+    ASTNode,
+    BinaryOpNode,
+    BlockNode,
+    DictNode,
+    ForNode,
+    FunctionCallNode,
+    FunctionDefNode,
+    IdentifierNode,
+    IfNode,
+    IndexNode,
+    ListNode,
+    MemberAccessNode,
+    NumberNode,
+    ProgramNode,
+    RepeatNode,
+    ReturnNode,
+    StringNode,
+    UnaryOpNode,
+    VarDefNode,
+    WhileNode,
 )
-from src.error_handling import ErrorHandler, ErrorType
 
 
 class ParserWithErrorHandler:
     """语法分析器（集成错误处理）
-    
+
     这是 Parser 的增强版本，使用 ErrorHandler 统一处理错误，
     而不是抛出异常。这样可以收集多个错误，提供更好的错误报告。
-    
+
     Attributes:
         tokens: Token序列
         pos: 当前解析位置
         error_handler: 错误处理器
-    
+
     Example:
         >>> from src.lexer.lexer import Lexer
         >>> from src.error_handling import ErrorHandler
@@ -43,7 +59,7 @@ class ParserWithErrorHandler:
 
     def __init__(self, tokens: List[Token], error_handler: Optional[ErrorHandler] = None):
         """初始化语法分析器
-        
+
         Args:
             tokens: Token序列（由词法分析器生成）
             error_handler: 错误处理器（可选，默认创建新实例）
@@ -52,36 +68,27 @@ class ParserWithErrorHandler:
         self.pos = 0
         self.error_handler = error_handler or ErrorHandler()
 
-    def _report_error(
-        self,
-        message: str,
-        token: Token,
-        suggestion: Optional[str] = None
-    ) -> None:
+    def _report_error(self, message: str, token: Token, suggestion: Optional[str] = None) -> None:
         """报告错误
-        
+
         使用 error_handler 统一报告错误，而不是抛出异常。
-        
+
         Args:
             message: 错误消息
             token: 发生错误的Token
             suggestion: 修复建议（可选）
         """
         self.error_handler.report(
-            ErrorType.PARSER_ERROR,
-            message,
-            token.line,
-            token.column,
-            suggestion=suggestion
+            ErrorType.PARSER_ERROR, message, token.line, token.column, suggestion=suggestion
         )
 
     def parse(self) -> ProgramNode:
         """解析Token序列生成抽象语法树
-        
+
         主解析方法，遍历Token序列，解析所有语句，
         构建完整的抽象语法树。遇到错误时不抛出异常，
         而是通过 error_handler 报告错误。
-        
+
         Returns:
             ProgramNode: 程序根节点，包含所有语句
         """
@@ -102,9 +109,7 @@ class ParserWithErrorHandler:
             except Exception as e:
                 # 报告错误并尝试恢复
                 self._report_error(
-                    f"解析语句时发生错误: {str(e)}",
-                    self._current_token(),
-                    suggestion="请检查语法是否正确"
+                    f"解析语句时发生错误: {str(e)}", self._current_token(), suggestion="请检查语法是否正确"
                 )
                 # 跳过当前token，尝试继续解析
                 self._advance()
@@ -130,25 +135,21 @@ class ParserWithErrorHandler:
 
     def _expect(self, token_type: TokenType, message: str) -> Optional[Token]:
         """期望特定token类型
-        
+
         检查当前Token是否为期望的类型，如果是则前进，否则报告错误。
-        
+
         Args:
             token_type: 期望的Token类型
             message: 错误消息
-        
+
         Returns:
             Token: 匹配的Token，如果类型不匹配则返回None
         """
         if self._check(token_type):
             return self._advance()
-        
+
         # 报告错误而不是抛出异常
-        self._report_error(
-            message,
-            self._current_token(),
-            suggestion=f"期望 {token_type.name}"
-        )
+        self._report_error(message, self._current_token(), suggestion=f"期望 {token_type.name}")
         return None
 
     def _parse_statement(self) -> Optional[ASTNode]:
@@ -212,11 +213,9 @@ class ParserWithErrorHandler:
                     line=name_token.line,
                     column=name_token.column,
                     target=IdentifierNode(
-                        line=name_token.line,
-                        column=name_token.column,
-                        name=name_token.value
+                        line=name_token.line, column=name_token.column, name=name_token.value
                     ),
-                    value=value
+                    value=value,
                 )
             else:
                 # 不是赋值，回退并解析表达式
@@ -244,11 +243,7 @@ class ParserWithErrorHandler:
             right = self._parse_and()
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator="or",
-                right=right
+                line=left.line, column=left.column, left=left, operator="or", right=right
             )
 
         return left
@@ -262,11 +257,7 @@ class ParserWithErrorHandler:
             right = self._parse_comparison()
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator="and",
-                right=right
+                line=left.line, column=left.column, left=left, operator="and", right=right
             )
 
         return left
@@ -275,9 +266,14 @@ class ParserWithErrorHandler:
         """解析比较操作"""
         left = self._parse_addition()
 
-        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS,
-                         TokenType.LESS, TokenType.GREATER,
-                         TokenType.LESS_EQ, TokenType.GREATER_EQ):
+        while self._check(
+            TokenType.EQUALS,
+            TokenType.NOT_EQUALS,
+            TokenType.LESS,
+            TokenType.GREATER,
+            TokenType.LESS_EQ,
+            TokenType.GREATER_EQ,
+        ):
             op_token = self._advance()
             right = self._parse_addition()
 
@@ -295,7 +291,7 @@ class ParserWithErrorHandler:
                 column=left.column,
                 left=left,
                 operator=op_map[op_token.type],
-                right=right
+                right=right,
             )
 
         return left
@@ -310,11 +306,7 @@ class ParserWithErrorHandler:
 
             op = "+" if op_token.type == TokenType.PLUS else "-"
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
 
         return left
@@ -329,11 +321,7 @@ class ParserWithErrorHandler:
 
             op = "*" if op_token.type == TokenType.MULTIPLY else "/"
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
 
         return left
@@ -344,20 +332,14 @@ class ParserWithErrorHandler:
             op_token = self._advance()
             operand = self._parse_unary()
             return UnaryOpNode(
-                line=op_token.line,
-                column=op_token.column,
-                operator="not",
-                operand=operand
+                line=op_token.line, column=op_token.column, operator="not", operand=operand
             )
 
         if self._check(TokenType.MINUS):
             op_token = self._advance()
             operand = self._parse_unary()
             return UnaryOpNode(
-                line=op_token.line,
-                column=op_token.column,
-                operator="-",
-                operand=operand
+                line=op_token.line, column=op_token.column, operator="-", operand=operand
             )
 
         return self._parse_primary()
@@ -369,37 +351,21 @@ class ParserWithErrorHandler:
         # 数字
         if self._check(TokenType.NUMBER):
             self._advance()
-            return NumberNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            return NumberNode(line=token.line, column=token.column, value=token.value)
 
         # 字符串
         if self._check(TokenType.STRING):
             self._advance()
-            return StringNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            return StringNode(line=token.line, column=token.column, value=token.value)
 
         # 布尔值
         if self._check(TokenType.TRUE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="真"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="真")
 
         if self._check(TokenType.FALSE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="假"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="假")
 
         # 列表字面量
         if self._check(TokenType.LBRACKET):
@@ -417,11 +383,7 @@ class ParserWithErrorHandler:
             return self._parse_identifier_or_call()
 
         # 报告错误
-        self._report_error(
-            f"意外的token: {token.type.name}",
-            token,
-            suggestion="请检查语法是否正确"
-        )
+        self._report_error(f"意外的token: {token.type.name}", token, suggestion="请检查语法是否正确")
         # 返回一个空的标识符节点以继续解析
         return IdentifierNode(line=token.line, column=token.column, name="")
 
@@ -433,19 +395,10 @@ class ParserWithErrorHandler:
         # 检查是否是函数调用
         if self._check(TokenType.LPAREN, TokenType.PAUSE_MARK):
             args = self._parse_arguments()
-            return FunctionCallNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                args=args
-            )
+            return FunctionCallNode(line=token.line, column=token.column, name=name, args=args)
 
         # 否则返回标识符
-        return IdentifierNode(
-            line=token.line,
-            column=token.column,
-            name=name
-        )
+        return IdentifierNode(line=token.line, column=token.column, name=name)
 
     def _parse_arguments(self) -> List[ASTNode]:
         """解析函数参数"""
@@ -484,11 +437,7 @@ class ParserWithErrorHandler:
 
         self._expect(TokenType.RBRACKET, "Expected ']' after list elements")
 
-        return ListNode(
-            line=token.line,
-            column=token.column,
-            elements=elements
-        )
+        return ListNode(line=token.line, column=token.column, elements=elements)
 
     def _parse_var_def(self) -> VarDefNode:
         """解析变量定义"""
@@ -496,17 +445,8 @@ class ParserWithErrorHandler:
 
         # 获取变量名
         if not self._check(TokenType.IDENTIFIER):
-            self._report_error(
-                "期望变量名",
-                self._current_token(),
-                suggestion="变量定义格式：定 变量名 = 值"
-            )
-            return VarDefNode(
-                line=var_token.line,
-                column=var_token.column,
-                name="",
-                value=None
-            )
+            self._report_error("期望变量名", self._current_token(), suggestion="变量定义格式：定 变量名 = 值")
+            return VarDefNode(line=var_token.line, column=var_token.column, name="", value=None)
 
         name_token = self._advance()
         name = name_token.value
@@ -521,12 +461,7 @@ class ParserWithErrorHandler:
         while self._check(TokenType.PERIOD):
             self._advance()
 
-        return VarDefNode(
-            line=var_token.line,
-            column=var_token.column,
-            name=name,
-            value=value
-        )
+        return VarDefNode(line=var_token.line, column=var_token.column, name=name, value=value)
 
     def _parse_if(self) -> IfNode:
         """解析条件语句"""
@@ -560,7 +495,7 @@ class ParserWithErrorHandler:
             column=if_token.column,
             condition=condition,
             then_branch=then_branch,
-            else_branch=else_branch
+            else_branch=else_branch,
         )
 
     def _parse_for(self) -> ForNode:
@@ -569,17 +504,9 @@ class ParserWithErrorHandler:
 
         # 获取循环变量
         if not self._check(TokenType.IDENTIFIER):
-            self._report_error(
-                "期望循环变量名",
-                self._current_token(),
-                suggestion="遍历循环格式：遍历 变量 于 列表：循环体"
-            )
+            self._report_error("期望循环变量名", self._current_token(), suggestion="遍历循环格式：遍历 变量 于 列表：循环体")
             return ForNode(
-                line=for_token.line,
-                column=for_token.column,
-                var="",
-                iterable=None,
-                body=[]
+                line=for_token.line, column=for_token.column, var="", iterable=None, body=[]
             )
 
         var_token = self._advance()
@@ -602,11 +529,7 @@ class ParserWithErrorHandler:
                 body.append(stmt)
 
         return ForNode(
-            line=for_token.line,
-            column=for_token.column,
-            var=var,
-            iterable=iterable,
-            body=body
+            line=for_token.line, column=for_token.column, var=var, iterable=iterable, body=body
         )
 
     def _parse_while(self) -> WhileNode:
@@ -627,10 +550,7 @@ class ParserWithErrorHandler:
                 body.append(stmt)
 
         return WhileNode(
-            line=while_token.line,
-            column=while_token.column,
-            condition=condition,
-            body=body
+            line=while_token.line, column=while_token.column, condition=condition, body=body
         )
 
     def _parse_repeat(self) -> RepeatNode:
@@ -654,10 +574,7 @@ class ParserWithErrorHandler:
                 body.append(stmt)
 
         return RepeatNode(
-            line=repeat_token.line,
-            column=repeat_token.column,
-            count=count,
-            body=body
+            line=repeat_token.line, column=repeat_token.column, count=count, body=body
         )
 
     def _parse_return(self) -> ReturnNode:
@@ -673,8 +590,4 @@ class ParserWithErrorHandler:
         while self._check(TokenType.PERIOD):
             self._advance()
 
-        return ReturnNode(
-            line=return_token.line,
-            column=return_token.column,
-            value=value
-        )
+        return ReturnNode(line=return_token.line, column=return_token.column, value=value)

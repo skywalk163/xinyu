@@ -1,0 +1,246 @@
+# 依赖更新配置
+version: 2
+updates:
+  # 更新Python依赖
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    reviewers:
+      - "maintainers"
+    assignees:
+      - "maintainers"
+    # 忽略主要版本更新，需要手动审查
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    
+  # 更新GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    reviewers:
+      - "maintainers"
+    assignees:
+      - "maintainers"
+    
+  # 更新预提交钩子
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "first monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "pre-commit"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    reviewers:
+      - "maintainers"
+    assignees:
+      - "maintainers"
+    # 只更新预提交相关的包
+    target-branch: "develop"
+    pull-request-branch-name:
+      separator: "-"
+    groups:
+      pre-commit:
+        patterns:
+          - "pre-commit"
+          - "black"
+          - "isort"
+          - "flake8"
+          - "mypy"
+          - "bandit"
+
+# 安全更新配置
+security-updates:
+  # 自动创建安全更新的PR
+  enabled: true
+  
+  # 安全更新的标签
+  labels:
+    - "security"
+    - "dependencies"
+  
+  # 安全更新的审查者
+  reviewers:
+    - "security-team"
+  
+  # 安全更新的分配者
+  assignees:
+    - "security-maintainer"
+  
+  # 安全更新的提交信息
+  commit-message:
+    prefix: "security"
+    include: "scope"
+
+# 版本更新策略
+versioning-strategy:
+  # 对于0.x版本，允许自动更新
+  - match:
+      dependency-name: "*"
+      version_requirement: ">=0.a, <1"
+    versioning: "semver"
+    update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+  
+  # 对于1.x及以上版本，只允许补丁更新
+  - match:
+      dependency-name: "*"
+      version_requirement: ">=1"
+    versioning: "semver"
+    update-types: ["version-update:semver-patch"]
+
+# 分组策略
+groups:
+  # 测试依赖分组
+  test-dependencies:
+    patterns:
+      - "pytest"
+      - "pytest-*"
+      - "coverage"
+    update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+  
+  # 开发工具分组
+  dev-tools:
+    patterns:
+      - "black"
+      - "isort"
+      - "flake8"
+      - "mypy"
+      - "bandit"
+    update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+  
+  # 运行时依赖分组
+  runtime-dependencies:
+    patterns:
+      - "ply"
+      - "RestrictedPython"
+      - "flask"
+      - "flask-cors"
+      - "psutil"
+      - "objgraph"
+    update-types: ["version-update:semver-patch"]
+
+# 忽略特定依赖
+ignored-dependencies:
+  # 忽略有已知问题的版本
+  - dependency-name: "some-problematic-package"
+    versions: ["1.2.3", "1.2.4"]
+  
+  # 忽略不兼容的版本
+  - dependency-name: "incompatible-package"
+    versions: [">=2.0.0"]
+
+# PR配置
+pull-request-branch-name:
+  separator: "/"
+
+# 自动合并配置
+auto-merge:
+  # 启用自动合并
+  enabled: true
+  
+  # 自动合并的条件
+  conditions:
+    # 所有检查通过
+    - "status-success=test"
+    - "status-success=quality"
+    
+    # 至少有一个审查通过
+    - "approved-reviews-by>=1"
+    
+    # 没有请求更改
+    - "dismissed-stale-reviews"
+    
+    # 没有冲突
+    - "mergeable"
+  
+  # 自动合并的方法
+  method: "squash"
+  
+  # 自动合并的提交信息
+  commit-message:
+    title: "chore(deps): update {{depName}} to {{newVersion}}"
+    body: |
+      Bumps {{depName}} from {{currentVersion}} to {{newVersion}}.
+      
+      ### Release Notes
+      {{#each releases}}
+        ### {{title}}
+        {{#each commits}}
+          - {{message}}
+        {{/each}}
+      {{/each}}
+      
+      ### Dependencies
+      {{#each dependencies}}
+        - {{name}}: {{version}}
+      {{/each}}
+
+# 通知配置
+notifications:
+  # Slack通知
+  - type: "slack"
+    channel: "#dependencies"
+    username: "Dependabot"
+    icon_emoji: ":robot_face:"
+    template: |
+      {{#if isSecurityUpdate}}
+      :warning: *安全更新*: {{package}} 从 {{currentVersion}} 更新到 {{newVersion}}
+      {{else}}
+      :arrow_up: *依赖更新*: {{package}} 从 {{currentVersion}} 更新到 {{newVersion}}
+      {{/if}}
+      
+      仓库: {{repository}}
+      PR: {{prUrl}}
+      状态: {{status}}
+      
+      {{#if isSecurityUpdate}}
+      :rotating_light: *这是一个安全更新，请尽快审查和合并*
+      {{/if}}
+  
+  # 邮件通知
+  - type: "email"
+    recipients:
+      - "maintainers@xinyu-lang.org"
+    template: |
+      主题: [Dependabot] {{#if isSecurityUpdate}}[安全] {{/if}}{{package}} 更新
+      
+      内容:
+      依赖: {{package}}
+      版本: {{currentVersion}} -> {{newVersion}}
+      仓库: {{repository}}
+      PR: {{prUrl}}
+      
+      {{#if isSecurityUpdate}}
+      注意: 这是一个安全更新，包含重要的安全修复。
+      {{/if}}
+      
+      请及时审查和合并此更新。

@@ -13,6 +13,7 @@
 """
 
 from typing import Dict, Optional, Set
+
 from .arity import Arity
 
 
@@ -44,11 +45,7 @@ class VerbRegistry:
         self._function_verbs: Set[str] = set()  # 函数动词
 
     def register(
-        self,
-        name: str,
-        arity: Arity,
-        is_operator: bool = False,
-        is_function: bool = False
+        self, name: str, arity: Arity, is_operator: bool = False, is_function: bool = False
     ) -> None:
         """注册动词
 
@@ -122,9 +119,19 @@ class VerbRegistry:
         """
         # 操作符动词（固定2个参数，中缀）
         operators = [
-            "相加", "相减", "相乘", "相除", "取余",
-            "等于", "不等", "大于", "小于", "大于等于", "小于等于",
-            "并且", "或者"
+            "相加",
+            "相减",
+            "相乘",
+            "相除",
+            "取余",
+            "等于",
+            "不等",
+            "大于",
+            "小于",
+            "大于等于",
+            "小于等于",
+            "并且",
+            "或者",
         ]
         for op in operators:
             self.register(op, Arity.fixed(2), is_operator=True)

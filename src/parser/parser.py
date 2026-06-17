@@ -10,49 +10,66 @@
 """
 
 from typing import List, Optional
+
 from src.lexer.tokens import Token, TokenType
+from src.parser.arity import Arity
 from src.parser.ast_nodes import (
-    ProgramNode, NumberNode, StringNode, IdentifierNode,
-    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
-    MemberAccessNode, IndexNode, AssignNode, VarDefNode,
-    IfNode, ForNode, WhileNode, RepeatNode,
-    FunctionDefNode, FunctionCallNode, ReturnNode,
-    BlockNode, ASTNode
+    AssignNode,
+    ASTNode,
+    BinaryOpNode,
+    BlockNode,
+    DictNode,
+    ForNode,
+    FunctionCallNode,
+    FunctionDefNode,
+    IdentifierNode,
+    IfNode,
+    IndexNode,
+    ListNode,
+    MemberAccessNode,
+    NumberNode,
+    ProgramNode,
+    RepeatNode,
+    ReturnNode,
+    StringNode,
+    UnaryOpNode,
+    VarDefNode,
+    WhileNode,
 )
 from src.parser.verb_registry import VerbRegistry
-from src.parser.arity import Arity
 
 
 class ParseError(Exception):
     """解析错误异常类"""
+
     def __init__(self, message: str, token: Token, suggestion: str = None):
         self.message = message
         self.token = token
         self.suggestion = suggestion
-        
+
         # 构建详细的错误信息
         error_msg = f"语法错误: {message} (行 {token.line}, 列 {token.column})"
         if suggestion:
             error_msg += f"\n  💡 建议: {suggestion}"
-        
+
         super().__init__(error_msg)
 
 
 class Parser:
     """语法分析器类
-    
+
     使用递归下降解析方法，将Token序列转换为抽象语法树（AST）。
-    
+
     支持特性：
     - 中文关键字和操作符
     - 缩进块（Python风格）
     - 单行和多行语句
     - 变量定义、函数定义、控制流语句
-    
+
     Attributes:
         tokens: Token序列
         pos: 当前解析位置
-    
+
     Example:
         >>> from src.lexer.lexer import Lexer
         >>> lexer = Lexer("定 x 为 42")
@@ -65,13 +82,13 @@ class Parser:
 
     def __init__(self, tokens: List[Token]):
         """初始化语法分析器
-        
+
         Args:
             tokens: Token序列（由词法分析器生成）
         """
         self.tokens = tokens
         self.pos = 0
-        
+
         # 初始化动词注册表
         self.verb_registry = VerbRegistry()
         self.verb_registry.register_builtin_verbs()
@@ -80,13 +97,13 @@ class Parser:
 
     def parse(self) -> ProgramNode:
         """解析Token序列生成抽象语法树
-        
+
         主解析方法，遍历Token序列，解析所有语句，
         构建完整的抽象语法树。
-        
+
         Returns:
             ProgramNode: 程序根节点，包含所有语句
-        
+
         Raises:
             ParseError: 当遇到语法错误时
         """
@@ -108,7 +125,7 @@ class Parser:
 
     def _current_token(self) -> Token:
         """获取当前token
-        
+
         Returns:
             Token: 当前位置的Token，如果超出范围则返回EOF
         """
@@ -118,10 +135,10 @@ class Parser:
 
     def _check(self, *types: TokenType) -> bool:
         """检查当前token类型
-        
+
         Args:
             *types: 要检查的TokenType列表
-        
+
         Returns:
             bool: 如果当前token类型在给定类型列表中返回True
         """
@@ -129,9 +146,9 @@ class Parser:
 
     def _advance(self) -> Token:
         """前进到下一个token
-        
+
         移动解析位置到下一个Token，并返回当前Token。
-        
+
         Returns:
             Token: 当前Token
         """
@@ -142,16 +159,16 @@ class Parser:
 
     def _expect(self, token_type: TokenType, message: str) -> Token:
         """期望特定token类型
-        
+
         检查当前Token是否为期望的类型，如果是则前进，否则抛出错误。
-        
+
         Args:
             token_type: 期望的Token类型
             message: 错误消息
-        
+
         Returns:
             Token: 匹配的Token
-        
+
         Raises:
             ParseError: 当当前Token不是期望类型时
         """
@@ -160,37 +177,37 @@ class Parser:
         raise ParseError(message, self._current_token())
 
     # ============ 元数系统辅助方法 ============
-    
+
     def _is_at_end(self) -> bool:
         """检查是否到达Token序列末尾
-        
+
         Returns:
             是否到达末尾
         """
         return self._check(TokenType.EOF)
-    
+
     def _is_operator_verb(self, name: str) -> bool:
         """判断是否是操作符动词
-        
+
         Args:
             name: 动词名称
-        
+
         Returns:
             是否是操作符动词
         """
         return self.verb_registry.is_operator(name)
-    
+
     def _get_verb_arity(self, name: str) -> Optional[Arity]:
         """获取动词元数
-        
+
         Args:
             name: 动词名称
-        
+
         Returns:
             元数定义，如果未注册则返回None
         """
         return self.verb_registry.get(name)
-    
+
     def _should_stop_collecting_args(self) -> bool:
         """判断是否应该停止收集参数
 
@@ -205,61 +222,79 @@ class Parser:
                 return True
             # 遇到另一个函数调用，停止收集
             # 如果下一个标识符是已注册动词（非操作符），停止
-            if self.verb_registry.get(current.value) and not self.verb_registry.is_operator(current.value):
+            if self.verb_registry.get(current.value) and not self.verb_registry.is_operator(
+                current.value
+            ):
                 # 但如果是用户定义的函数，继续收集参数
                 # 只有内置动词才停止
                 pass
 
         # 遇到终止符，停止收集
-        if self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
-                      TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
-                      TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
-                      TokenType.COMMA, TokenType.COLON):
+        if self._check(
+            TokenType.NEWLINE,
+            TokenType.EOF,
+            TokenType.PERIOD,
+            TokenType.THEN,
+            TokenType.ELSE,
+            TokenType.ELIF,
+            TokenType.RPAREN,
+            TokenType.RBRACKET,
+            TokenType.RBRACE,
+            TokenType.COMMA,
+            TokenType.COLON,
+        ):
             return True
 
         return False
-    
+
     def _collect_args_by_arity(self, arity: Arity) -> List[ASTNode]:
         """根据元数收集参数
-        
+
         Args:
             arity: 元数定义
-        
+
         Returns:
             参数列表
         """
         args = []
-        
+
         while not self._is_at_end():
             # 检查是否应该停止收集
             if self._should_stop_collecting_args():
                 break
-            
+
             # 检查元数是否已满足
             if arity.should_stop_collecting(len(args)):
                 break
-            
+
             # 解析参数（解析包含操作符的子表达式）
             try:
-                arg = self._parse_term()
+                # 支持括号表达式作为参数
+                if self._check(TokenType.LPAREN):
+                    self._advance()  # 消费 (
+                    arg = self._parse_term()  # 使用 _parse_term 而不是 _parse_expression
+                    self._expect(TokenType.RPAREN, "Expected ')' after expression")
+                    args.append(arg)
+                    # 解析括号表达式后，继续收集下一个参数
+                    continue
+                else:
+                    arg = self._parse_term()
                 args.append(arg)
             except ParseError:
                 break
-        
+
         # 验证参数数量（对于固定元数和范围元数）
         if not arity.is_satisfied(len(args)):
             # 对于可变元数和最小元数，如果参数不足，给出警告但不报错
             from src.parser.arity import ArityType
+
             if arity.type in (ArityType.FIXED, ArityType.RANGE):
                 # 如果完全没有参数，可能是标识符而非函数调用
                 if len(args) == 0:
                     return []
                 # 否则报错
-                raise ParseError(
-                    f"参数数量错误：期望{arity}，实际{len(args)}",
-                    self._current_token()
-                )
-        
+                raise ParseError(f"参数数量错误：期望{arity}，实际{len(args)}", self._current_token())
+
         return args
 
     # ============ 语句解析 ============
@@ -342,11 +377,9 @@ class Parser:
                     line=name_token.line,
                     column=name_token.column,
                     target=IdentifierNode(
-                        line=name_token.line,
-                        column=name_token.column,
-                        name=name_token.value
+                        line=name_token.line, column=name_token.column, name=name_token.value
                     ),
-                    value=value
+                    value=value,
                 )
             else:
                 # 不是赋值，回退并解析表达式
@@ -376,9 +409,9 @@ class Parser:
         left = self._parse_multiplication_for_term()
 
         # 只解析一层加减操作符
-        if self._check(TokenType.PLUS, TokenType.MINUS) or \
-          (self._check(TokenType.IDENTIFIER) and
-           self._current_token().value in ("相加", "相减")):
+        if self._check(TokenType.PLUS, TokenType.MINUS) or (
+            self._check(TokenType.IDENTIFIER) and self._current_token().value in ("相加", "相减")
+        ):
             op_token = self._advance()
             right = self._parse_multiplication_for_term()
 
@@ -397,15 +430,11 @@ class Parser:
                 op = op_map[op_token.type]
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
 
         return left
-    
+
     def _parse_atom_for_term(self) -> ASTNode:
         """解析原子表达式（用于项解析，支持函数调用）"""
         token = self._current_token()
@@ -413,42 +442,26 @@ class Parser:
         # 数字
         if self._check(TokenType.NUMBER):
             self._advance()
-            return NumberNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            return NumberNode(line=token.line, column=token.column, value=token.value)
 
         # 字符串
         if self._check(TokenType.STRING):
             self._advance()
-            return StringNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            return StringNode(line=token.line, column=token.column, value=token.value)
 
         # 布尔值
         if self._check(TokenType.TRUE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="真"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="真")
 
         if self._check(TokenType.FALSE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="假"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="假")
 
         # 括号表达式
         if self._check(TokenType.LPAREN):
             self._advance()  # 消费 (
-            expr = self._parse_expression()
+            expr = self._parse_term()  # 使用 _parse_term 而不是 _parse_expression
             self._expect(TokenType.RPAREN, "Expected ')' after expression")
             return expr
 
@@ -466,11 +479,7 @@ class Parser:
             if self._is_operator_verb(token.value):
                 # 操作符动词，返回标识符
                 self._advance()
-                return IdentifierNode(
-                    line=token.line,
-                    column=token.column,
-                    name=token.value
-                )
+                return IdentifierNode(line=token.line, column=token.column, name=token.value)
 
             # 检查下一个token，判断是否是函数调用
             saved_pos = self.pos
@@ -485,31 +494,32 @@ class Parser:
             # 检查是否是无括号函数调用
             # 如果下一个token不是操作符、终止符，则可能是函数调用
             next_token = self._current_token()
-            if (next_token.type in (TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER) and
-                not self._is_operator_verb(next_token.value if next_token.type == TokenType.IDENTIFIER else "")):
+            if next_token.type in (
+                TokenType.NUMBER,
+                TokenType.STRING,
+                TokenType.IDENTIFIER,
+            ) and not self._is_operator_verb(
+                next_token.value if next_token.type == TokenType.IDENTIFIER else ""
+            ):
                 # 回退，使用正常的函数调用解析
                 self.pos = saved_pos
                 return self._parse_identifier_or_call_in_term()
 
             # 否则，返回普通标识符
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name=token.value
-            )
+            return IdentifierNode(line=token.line, column=token.column, name=token.value)
 
         raise ParseError(f"Unexpected token: {token.type.name}", token)
-    
+
     def _parse_addition_for_term(self) -> ASTNode:
         """解析加减操作（用于项解析）"""
         left = self._parse_multiplication_for_term()
-        
-        while self._check(TokenType.PLUS, TokenType.MINUS) or \
-              (self._check(TokenType.IDENTIFIER) and 
-               self._current_token().value in ("相加", "相减")):
+
+        while self._check(TokenType.PLUS, TokenType.MINUS) or (
+            self._check(TokenType.IDENTIFIER) and self._current_token().value in ("相加", "相减")
+        ):
             op_token = self._advance()
             right = self._parse_multiplication_for_term()
-            
+
             # 映射操作符
             if op_token.type == TokenType.IDENTIFIER:
                 verb_map = {
@@ -523,27 +533,23 @@ class Parser:
                     TokenType.MINUS: "-",
                 }
                 op = op_map[op_token.type]
-            
+
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
-        
+
         return left
-    
+
     def _parse_multiplication_for_term(self) -> ASTNode:
         """解析乘除操作（用于项解析）"""
         left = self._parse_comparison_for_term()
-        
-        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or \
-              (self._check(TokenType.IDENTIFIER) and 
-               self._current_token().value in ("相乘", "相除", "取余")):
+
+        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or (
+            self._check(TokenType.IDENTIFIER) and self._current_token().value in ("相乘", "相除", "取余")
+        ):
             op_token = self._advance()
             right = self._parse_comparison_for_term()
-            
+
             # 映射操作符
             if op_token.type == TokenType.IDENTIFIER:
                 verb_map = {
@@ -558,29 +564,31 @@ class Parser:
                     TokenType.DIVIDE: "/",
                 }
                 op = op_map[op_token.type]
-            
+
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
-        
+
         return left
-    
+
     def _parse_comparison_for_term(self) -> ASTNode:
         """解析比较操作（用于项解析）"""
         left = self._parse_atom_for_term()
-        
-        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS,
-                         TokenType.LESS, TokenType.GREATER,
-                         TokenType.LESS_EQ, TokenType.GREATER_EQ) or \
-              (self._check(TokenType.IDENTIFIER) and 
-               self._current_token().value in ("等于", "不等于", "大于", "小于", "大于等于", "小于等于")):
+
+        while self._check(
+            TokenType.EQUALS,
+            TokenType.NOT_EQUALS,
+            TokenType.LESS,
+            TokenType.GREATER,
+            TokenType.LESS_EQ,
+            TokenType.GREATER_EQ,
+        ) or (
+            self._check(TokenType.IDENTIFIER)
+            and self._current_token().value in ("等于", "不等于", "大于", "小于", "大于等于", "小于等于")
+        ):
             op_token = self._advance()
             right = self._parse_primary()
-            
+
             # 转换操作符
             if op_token.type == TokenType.IDENTIFIER:
                 verb_map = {
@@ -602,15 +610,11 @@ class Parser:
                     TokenType.GREATER_EQ: ">=",
                 }
                 op = op_map[op_token.type]
-            
+
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
-        
+
         return left
 
     def _parse_expression(self) -> ASTNode:
@@ -629,8 +633,9 @@ class Parser:
 
             # 检查下一个token，如果是数字、字符串、左括号等，可能是列表元素
             # 只有当下一个token是标识符或关键字（函数名）时，才处理管道操作
-            if not self._check(TokenType.IDENTIFIER, TokenType.MAP, TokenType.FILTER,
-                              TokenType.REDUCE):
+            if not self._check(
+                TokenType.IDENTIFIER, TokenType.MAP, TokenType.FILTER, TokenType.REDUCE
+            ):
                 # 回退并退出
                 self.pos = pos
                 break
@@ -642,10 +647,7 @@ class Parser:
             if isinstance(func, IdentifierNode):
                 # 简单函数名：f -> f(expr)
                 expr = FunctionCallNode(
-                    line=func.line,
-                    column=func.column,
-                    name=func.name,
-                    args=[expr]
+                    line=func.line, column=func.column, name=func.name, args=[expr]
                 )
             elif isinstance(func, FunctionCallNode):
                 # 函数调用：f x -> f(expr, x) 或 f(x) -> f(expr)
@@ -654,12 +656,7 @@ class Parser:
                 expr = func
             else:
                 # 其他情况，创建函数调用
-                expr = FunctionCallNode(
-                    line=func.line,
-                    column=func.column,
-                    name=func,
-                    args=[expr]
-                )
+                expr = FunctionCallNode(line=func.line, column=func.column, name=func, args=[expr])
 
         return expr
 
@@ -672,11 +669,7 @@ class Parser:
             right = self._parse_and()
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator="or",
-                right=right
+                line=left.line, column=left.column, left=left, operator="or", right=right
             )
 
         return left
@@ -690,11 +683,7 @@ class Parser:
             right = self._parse_comparison()
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator="and",
-                right=right
+                line=left.line, column=left.column, left=left, operator="and", right=right
             )
 
         return left
@@ -703,9 +692,14 @@ class Parser:
         """解析比较操作（==, !=, <, >, <=, >=）"""
         left = self._parse_addition()
 
-        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS,
-                         TokenType.LESS, TokenType.GREATER,
-                         TokenType.LESS_EQ, TokenType.GREATER_EQ):
+        while self._check(
+            TokenType.EQUALS,
+            TokenType.NOT_EQUALS,
+            TokenType.LESS,
+            TokenType.GREATER,
+            TokenType.LESS_EQ,
+            TokenType.GREATER_EQ,
+        ):
             op_token = self._advance()
             right = self._parse_addition()
 
@@ -724,7 +718,7 @@ class Parser:
                 column=left.column,
                 left=left,
                 operator=op_map[op_token.type],
-                right=right
+                right=right,
             )
 
         return left
@@ -733,9 +727,9 @@ class Parser:
         """解析加减操作（+, -, 相加, 相减）"""
         left = self._parse_multiplication()
 
-        while self._check(TokenType.PLUS, TokenType.MINUS) or \
-              (self._check(TokenType.IDENTIFIER) and 
-               self._current_token().value in ("相加", "相减")):
+        while self._check(TokenType.PLUS, TokenType.MINUS) or (
+            self._check(TokenType.IDENTIFIER) and self._current_token().value in ("相加", "相减")
+        ):
             op_token = self._advance()
             right = self._parse_multiplication()
 
@@ -756,11 +750,7 @@ class Parser:
                 op = op_map[op_token.type]
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
 
         return left
@@ -769,9 +759,9 @@ class Parser:
         """解析乘除操作（*, /, 相乘, 相除）"""
         left = self._parse_unary()
 
-        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or \
-              (self._check(TokenType.IDENTIFIER) and 
-               self._current_token().value in ("相乘", "相除", "取余")):
+        while self._check(TokenType.MULTIPLY, TokenType.DIVIDE) or (
+            self._check(TokenType.IDENTIFIER) and self._current_token().value in ("相乘", "相除", "取余")
+        ):
             op_token = self._advance()
             right = self._parse_unary()
 
@@ -793,11 +783,7 @@ class Parser:
                 op = op_map[op_token.type]
 
             left = BinaryOpNode(
-                line=left.line,
-                column=left.column,
-                left=left,
-                operator=op,
-                right=right
+                line=left.line, column=left.column, left=left, operator=op, right=right
             )
 
         return left
@@ -808,20 +794,14 @@ class Parser:
             op_token = self._advance()
             operand = self._parse_unary()
             return UnaryOpNode(
-                line=op_token.line,
-                column=op_token.column,
-                operator="not",
-                operand=operand
+                line=op_token.line, column=op_token.column, operator="not", operand=operand
             )
 
         if self._check(TokenType.MINUS):
             op_token = self._advance()
             operand = self._parse_unary()
             return UnaryOpNode(
-                line=op_token.line,
-                column=op_token.column,
-                operator="-",
-                operand=operand
+                line=op_token.line, column=op_token.column, operator="-", operand=operand
             )
 
         return self._parse_primary()
@@ -833,11 +813,7 @@ class Parser:
         # 数字
         if self._check(TokenType.NUMBER):
             self._advance()
-            node = NumberNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            node = NumberNode(line=token.line, column=token.column, value=token.value)
             # 检查是否是意合式调用
             if self._check(TokenType.PAUSE_MARK):
                 return self._parse_intentional_call_from_literal(node)
@@ -846,11 +822,7 @@ class Parser:
         # 字符串
         if self._check(TokenType.STRING):
             self._advance()
-            node = StringNode(
-                line=token.line,
-                column=token.column,
-                value=token.value
-            )
+            node = StringNode(line=token.line, column=token.column, value=token.value)
             # 检查是否是意合式调用
             if self._check(TokenType.PAUSE_MARK):
                 return self._parse_intentional_call_from_literal(node)
@@ -859,19 +831,11 @@ class Parser:
         # 布尔值
         if self._check(TokenType.TRUE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="真"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="真")
 
         if self._check(TokenType.FALSE):
             self._advance()
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name="假"
-            )
+            return IdentifierNode(line=token.line, column=token.column, name="假")
 
         # 列表字面量 [1, 2, 3] 或 【1，2，3】
         if self._check(TokenType.LBRACKET):
@@ -896,11 +860,7 @@ class Parser:
         if self._check(TokenType.MAP, TokenType.FILTER, TokenType.REDUCE):
             token = self._advance()
             # 将关键字转换为标识符节点
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name=token.value
-            )
+            return IdentifierNode(line=token.line, column=token.column, name=token.value)
 
         raise ParseError(f"Unexpected token: {token.type.name}", token)
 
@@ -947,16 +907,14 @@ class Parser:
                     self._advance()
 
                 return FunctionCallNode(
-                    line=first_arg.line,
-                    column=first_arg.column,
-                    name=func_name,
-                    args=args
+                    line=first_arg.line, column=first_arg.column, name=func_name, args=args
                 )
 
         # 如果没有逗号和函数名，说明不是意合式调用
         # 这种情况不应该发生，因为我们是在看到顿号后才调用这个方法的
-        raise ParseError("Expected function name after intentional call arguments",
-                        self._current_token())
+        raise ParseError(
+            "Expected function name after intentional call arguments", self._current_token()
+        )
 
     def _parse_list(self) -> ListNode:
         """解析列表字面量"""
@@ -974,11 +932,7 @@ class Parser:
 
         self._expect(TokenType.RBRACKET, "Expected ']' or '】' after list elements")
 
-        return ListNode(
-            line=token.line,
-            column=token.column,
-            elements=elements
-        )
+        return ListNode(line=token.line, column=token.column, elements=elements)
 
     def _parse_dict(self) -> DictNode:
         """解析字典字面量"""
@@ -1004,11 +958,7 @@ class Parser:
 
         self._expect(TokenType.RBRACE, "Expected '}' after dictionary pairs")
 
-        return DictNode(
-            line=token.line,
-            column=token.column,
-            pairs=pairs
-        )
+        return DictNode(line=token.line, column=token.column, pairs=pairs)
 
     def _parse_identifier_or_call(self) -> ASTNode:
         """解析标识符或函数调用（元数驱动）"""
@@ -1035,12 +985,7 @@ class Parser:
 
             self._expect(TokenType.RPAREN, "Expected '）' after arguments")
 
-            node = FunctionCallNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                args=args
-            )
+            node = FunctionCallNode(line=token.line, column=token.column, name=name, args=args)
             return self._parse_postfix(node)
 
         # 检查是否是操作符动词（在中缀位置）
@@ -1048,11 +993,7 @@ class Parser:
             # 操作符动词在中缀位置，不应该作为函数调用
             # 回退，让表达式解析器处理
             self.pos -= 1
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name=name
-            )
+            return IdentifierNode(line=token.line, column=token.column, name=name)
 
         # 获取动词元数
         arity = self._get_verb_arity(name)
@@ -1067,19 +1008,10 @@ class Parser:
         args = self._collect_args_by_arity(arity)
 
         if args:
-            node = FunctionCallNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                args=args
-            )
+            node = FunctionCallNode(line=token.line, column=token.column, name=name, args=args)
             return self._parse_postfix(node)
 
-        node = IdentifierNode(
-            line=token.line,
-            column=token.column,
-            name=name
-        )
+        node = IdentifierNode(line=token.line, column=token.column, name=name)
         return self._parse_postfix(node)
 
     def _parse_identifier_or_call_in_term(self) -> ASTNode:
@@ -1096,60 +1028,64 @@ class Parser:
             return self._parse_intentional_call(token)
 
         # 检查是否为括号函数调用：（参数）
+        # 在项解析中，我们不处理括号函数调用，让 _collect_args_by_arity 处理
+        # 因为 函数名 (表达式) 参数 应该被解析为函数调用，参数为 (表达式) 和 参数
+        # 而不是 函数名(表达式, 参数)
+        # 所以这里直接跳过，让后面的逻辑处理
         if self._check(TokenType.LPAREN):
-            self._advance()  # 消费 （
-            args = []
-
-            # 解析参数列表
-            while not self._check(TokenType.RPAREN):
-                arg = self._parse_expression()
-                args.append(arg)
-
-                # 跳过逗号
-                if self._check(TokenType.COMMA):
-                    self._advance()
-
-            self._expect(TokenType.RPAREN, "Expected '）' after arguments")
-
-            node = FunctionCallNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                args=args
-            )
-            return self._parse_postfix(node)
+            # 如果是左括号，不处理括号函数调用，让 _collect_args_by_arity 处理
+            pass
 
         # 检查是否是操作符动词（在中缀位置）
         if self._is_operator_verb(name):
             # 操作符动词在中缀位置，不应该作为函数调用
             # 回退，让表达式解析器处理
             self.pos -= 1
-            return IdentifierNode(
-                line=token.line,
-                column=token.column,
-                name=name
-            )
+            return IdentifierNode(line=token.line, column=token.column, name=name)
 
-        # 使用固定元数（1个参数），避免收集过多参数
-        arity = Arity.fixed(1)
+        # 获取动词元数
+        arity = self._get_verb_arity(name)
+
+        if arity is None:
+            # 未注册的动词，可能是用户定义的函数
+            # 使用可变元数，允许收集多个参数
+            # 这样可以正确处理 "自定义函数 1 2 3" 的情况
+            arity = Arity.variable()
 
         # 根据元数收集参数
         args = self._collect_args_by_arity(arity)
 
         if args:
-            node = FunctionCallNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                args=args
-            )
+            node = FunctionCallNode(line=token.line, column=token.column, name=name, args=args)
             return self._parse_postfix(node)
 
-        node = IdentifierNode(
-            line=token.line,
-            column=token.column,
-            name=name
-        )
+        node = IdentifierNode(line=token.line, column=token.column, name=name)
+        return self._parse_postfix(node)
+
+        # 检查是否是操作符动词（在中缀位置）
+        if self._is_operator_verb(name):
+            # 操作符动词在中缀位置，不应该作为函数调用
+            # 回退，让表达式解析器处理
+            self.pos -= 1
+            return IdentifierNode(line=token.line, column=token.column, name=name)
+
+        # 获取动词元数
+        arity = self._get_verb_arity(name)
+
+        if arity is None:
+            # 未注册的动词，可能是用户定义的函数
+            # 使用可变元数，允许收集多个参数
+            # 这样可以正确处理 "自定义函数 1 2 3" 的情况
+            arity = Arity.variable()
+
+        # 根据元数收集参数
+        args = self._collect_args_by_arity(arity)
+
+        if args:
+            node = FunctionCallNode(line=token.line, column=token.column, name=name, args=args)
+            return self._parse_postfix(node)
+
+        node = IdentifierNode(line=token.line, column=token.column, name=name)
         return self._parse_postfix(node)
 
     def _parse_intentional_call(self, first_token: Token) -> ASTNode:
@@ -1162,11 +1098,9 @@ class Parser:
         args = []
 
         # 第一个参数已经解析过了（first_token对应的标识符）
-        args.append(IdentifierNode(
-            line=first_token.line,
-            column=first_token.column,
-            name=first_token.value
-        ))
+        args.append(
+            IdentifierNode(line=first_token.line, column=first_token.column, name=first_token.value)
+        )
 
         # 收集顿号分隔的参数
         while self._check(TokenType.PAUSE_MARK):
@@ -1190,10 +1124,7 @@ class Parser:
                     self._advance()
 
                 return FunctionCallNode(
-                    line=first_token.line,
-                    column=first_token.column,
-                    name=func_name,
-                    args=args
+                    line=first_token.line, column=first_token.column, name=func_name, args=args
                 )
 
         # 如果没有逗号和函数名，说明不是意合式调用
@@ -1209,10 +1140,7 @@ class Parser:
                 if self._check(TokenType.IDENTIFIER):
                     member_token = self._advance()
                     node = MemberAccessNode(
-                        line=node.line,
-                        column=node.column,
-                        obj=node,
-                        member=member_token.value
+                        line=node.line, column=node.column, obj=node, member=member_token.value
                     )
                 else:
                     raise ParseError("Expected identifier after '.'", self._current_token())
@@ -1221,12 +1149,7 @@ class Parser:
                 self._advance()  # 消费 [
                 index = self._parse_expression()
                 self._expect(TokenType.RBRACKET, "Expected ']' after index")
-                node = IndexNode(
-                    line=node.line,
-                    column=node.column,
-                    obj=node,
-                    index=index
-                )
+                node = IndexNode(line=node.line, column=node.column, obj=node, index=index)
             # 函数调用：func(args)
             elif self._check(TokenType.LPAREN):
                 self._advance()  # 消费 (
@@ -1243,7 +1166,7 @@ class Parser:
                     line=node.line,
                     column=node.column,
                     name=node,  # 将整个node作为name（可以是IdentifierNode或MemberAccessNode）
-                    args=args
+                    args=args,
                 )
             else:
                 break
@@ -1287,7 +1210,7 @@ class Parser:
             column=token.column,
             condition=condition,
             then_branch=then_branch,
-            else_branch=else_branch
+            else_branch=else_branch,
         )
 
     def _parse_for(self) -> ForNode:
@@ -1314,13 +1237,7 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return ForNode(
-            line=token.line,
-            column=token.column,
-            var=var,
-            iterable=iterable,
-            body=body
-        )
+        return ForNode(line=token.line, column=token.column, var=var, iterable=iterable, body=body)
 
     def _parse_while(self) -> WhileNode:
         """解析当循环（当 条件 时：... 或 当满足 条件：...）"""
@@ -1343,12 +1260,7 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return WhileNode(
-            line=token.line,
-            column=token.column,
-            condition=condition,
-            body=body
-        )
+        return WhileNode(line=token.line, column=token.column, condition=condition, body=body)
 
     def _parse_repeat(self) -> RepeatNode:
         """解析重复语句（重复 N 次：...）"""
@@ -1370,12 +1282,7 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return RepeatNode(
-            line=token.line,
-            column=token.column,
-            count=count,
-            body=body
-        )
+        return RepeatNode(line=token.line, column=token.column, count=count, body=body)
 
     # ============ 函数解析 ============
 
@@ -1394,12 +1301,7 @@ class Parser:
         if self._check(TokenType.FUNCTION):
             func_def = self._parse_function_def(name, token.line, token.column)
             # 函数定义应该包装在 VarDefNode 中
-            return VarDefNode(
-                line=token.line,
-                column=token.column,
-                name=name,
-                value=func_def
-            )
+            return VarDefNode(line=token.line, column=token.column, name=name, value=func_def)
 
         # 解析值
         value = self._parse_expression()
@@ -1408,12 +1310,7 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return VarDefNode(
-            line=token.line,
-            column=token.column,
-            name=name,
-            value=value
-        )
+        return VarDefNode(line=token.line, column=token.column, name=name, value=value)
 
     def _parse_function_def(self, name: str, line: int, column: int) -> FunctionDefNode:
         """解析函数定义"""
@@ -1447,13 +1344,7 @@ class Parser:
         # 注册到动词注册表
         self.verb_registry.register(name, arity, is_function=True)
 
-        return FunctionDefNode(
-            line=line,
-            column=column,
-            name=name,
-            params=params,
-            body=body
-        )
+        return FunctionDefNode(line=line, column=column, name=name, params=params, body=body)
 
     def _parse_return(self) -> ReturnNode:
         """解析返回语句"""
@@ -1468,13 +1359,9 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return ReturnNode(
-            line=token.line,
-            column=token.column,
-            value=value
-        )
+        return ReturnNode(line=token.line, column=token.column, value=value)
 
-    def _parse_try(self) -> 'TryNode':
+    def _parse_try(self) -> "TryNode":
         """解析try-except-finally语句
 
         语法：
@@ -1486,7 +1373,7 @@ class Parser:
             finally块。
         。
         """
-        from src.parser.ast_nodes import TryNode, ExceptNode
+        from src.parser.ast_nodes import ExceptNode, TryNode
 
         token = self._advance()  # 消费 尝试
 
@@ -1520,10 +1407,10 @@ class Parser:
             column=token.column,
             try_body=try_body,
             except_clauses=except_clauses,
-            finally_body=finally_body
+            finally_body=finally_body,
         )
 
-    def _parse_except(self) -> 'ExceptNode':
+    def _parse_except(self) -> "ExceptNode":
         """解析except子句
 
         语法：
@@ -1568,12 +1455,12 @@ class Parser:
             column=token.column,
             exception_type=exception_type,
             exception_var=exception_var,
-            body=body
+            body=body,
         )
 
-    def _parse_raise(self) -> 'RaiseNode':
+    def _parse_raise(self) -> "RaiseNode":
         """解析raise语句
-        
+
         语法：
         抛出 异常对象。
         或
@@ -1592,13 +1479,9 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return RaiseNode(
-            line=token.line,
-            column=token.column,
-            exception=exception
-        )
+        return RaiseNode(line=token.line, column=token.column, exception=exception)
 
-    def _parse_import(self) -> 'ImportNode':
+    def _parse_import(self) -> "ImportNode":
         """解析import语句
 
         语法：
@@ -1629,14 +1512,9 @@ class Parser:
         if self._check(TokenType.PERIOD):
             self._advance()
 
-        return ImportNode(
-            line=token.line,
-            column=token.column,
-            module=module_name,
-            alias=alias
-        )
+        return ImportNode(line=token.line, column=token.column, module=module_name, alias=alias)
 
-    def _parse_from_import(self) -> 'FromImportNode':
+    def _parse_from_import(self) -> "FromImportNode":
         """解析from...import语句
 
         语法：
@@ -1693,11 +1571,7 @@ class Parser:
             self._advance()
 
         return FromImportNode(
-            line=token.line,
-            column=token.column,
-            module=module_name,
-            names=names,
-            aliases=aliases
+            line=token.line, column=token.column, module=module_name, names=names, aliases=aliases
         )
 
     # ============ 块解析 ============

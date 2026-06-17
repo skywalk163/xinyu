@@ -1,0 +1,386 @@
+﻿python : Traceback (most recent call last):
+At line:1 char:160
++ ... chineseprogram\playground" ; python test_all_examples.py 2>&1 | Out-F ...
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
+    exec(python_code)
+  File "<string>", line 4, in <module>
+NameError: name '��' is not defined
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
+    exec(python_code)
+  File "<string>", line 9, in <module>
+TypeError: ����֮��() missing 1 required positional argument: 'b'
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 150, in <module>
+    ast = parser.parse()
+          ^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 103, in parse
+    stmt = self._parse_statement()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 321, in _parse_statement
+    return self._parse_expression_statement()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 356, in _parse_expression_statement
+    expr = self._parse_expression()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 618, in _parse_expression
+    return self._parse_pipe()
+           ^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 622, in _parse_pipe
+    expr = self._parse_or()
+           ^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 668, in _parse_or
+    left = self._parse_and()
+           ^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 686, in _parse_and
+    left = self._parse_comparison()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 704, in _parse_comparison
+    left = self._parse_addition()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 734, in _parse_addition
+    left = self._parse_multiplication()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 770, in _parse_multiplication
+    left = self._parse_unary()
+           ^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 827, in _parse_unary
+    return self._parse_primary()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 905, in _parse_primary
+    raise ParseError(f"Unexpected token: {token.type.name}", token)
+src.parser.parser.ParseError: �﷨����: Unexpected token: ELIF (�� 6, �� 0)
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
+    exec(python_code)
+  File "<string>", line 1, in <module>
+TypeError: list expected at most 1 argument, got 3
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
+    exec(python_code)
+  File "<string>", line 7, in <module>
+TypeError: 'int' object is not callable
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
+    exec(python_code)
+  File "<string>", line 1, in <module>
+TypeError: list expected at most 1 argument, got 5
+Traceback (most recent call last):
+  File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 150, in <module>
+    ast = parser.parse()
+          ^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 103, in parse
+    stmt = self._parse_statement()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 321, in _parse_statement
+    return self._parse_expression_statement()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 356, in _parse_expression_statement
+    expr = self._parse_expression()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 618, in _parse_expression
+    return self._parse_pipe()
+           ^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 622, in _parse_pipe
+    expr = self._parse_or()
+           ^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 668, in _parse_or
+    left = self._parse_and()
+           ^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 686, in _parse_and
+    left = self._parse_comparison()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 704, in _parse_comparison
+    left = self._parse_addition()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 734, in _parse_addition
+    left = self._parse_multiplication()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 770, in _parse_multiplication
+    left = self._parse_unary()
+           ^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 827, in _parse_unary
+    return self._parse_primary()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "G:\dumategithub\chineseprogram\src\parser\parser.py", line 905, in _parse_primary
+    raise ParseError(f"Unexpected token: {token.type.name}", token)
+src.parser.parser.ParseError: �﷨����: Unexpected token: MODULO (�� 10, �� 17)
+================================================================================
+��������Playgroundʾ��
+================================================================================
+
+
+================================================================================
+����ʾ��: hello
+================================================================================
+
+�������:
+# ��ã�����
+���� �ʺ� = "��ã����"��
+��ӡ �ʺ�
+
+���� ���� = "����"��
+��ӡ "��ã�" ���֡�
+
+���ɵ�Python����:
+�ʺ� = '��ã����'
+print(�ʺ�)
+���� = '����'
+print('��ã�', ����)
+
+ִ�н��:
+��ã����
+��ã� ����
+
+[PASS] ����ͨ��
+
+================================================================================
+����ʾ��: variables
+================================================================================
+
+�������:
+# ��������ʾ��
+���� ���� = 42��
+���� ������ = 3.14��
+���� �ַ��� = "����"��
+���� ����ֵ = ��ֵ��
+
+��ӡ "������" ������
+��ӡ "��������" ��������
+��ӡ "�ַ�����" �ַ�����
+��ӡ "����ֵ��" ����ֵ��
+
+���ɵ�Python����:
+���� = 42
+������ = 3.14
+�ַ��� = '����'
+����ֵ = ��
+print('������', ����)
+print('��������', ������)
+print('�ַ�����', �ַ���)
+print('����ֵ��', ����ֵ)
+
+ִ�н��:
+[FAIL] ����ʧ��: name '��' is not defined
+
+================================================================================
+����ʾ��: function
+================================================================================
+
+�������:
+# ��������ʾ��
+���� ƽ�� = �� x��
+  ���� x ��� x��
+��
+
+���� ���� = �� x��
+  ���� x ��� x ��� x��
+��
+
+���� ����֮�� = �� a b��
+  ���� a ��� b��
+��
+
+��ӡ "ƽ��(5) = " ƽ�� 5��
+��ӡ "����(3) = " ���� 3��
+��ӡ "����֮��(10, 20) = " ����֮�� 10 20��
+
+���ɵ�Python����:
+def ƽ��(x):
+    return (x * x)
+def ����(x):
+    return ((x * x) * x)
+def ����֮��(a, b):
+    return (a + b)
+print('ƽ��(5) = ', ƽ��(5))
+print('����(3) = ', ����(3))
+print('����֮��(10, 20) = ', ����֮��(10), 20)
+
+ִ�н��:
+ƽ��(5) =  25
+����(3) =  27
+[FAIL] ����ʧ��: ����֮��() missing 1 required positional argument: 'b'
+
+================================================================================
+����ʾ��: condition
+================================================================================
+
+�������:
+# �����ж�ʾ��
+���� �ɼ� = 85��
+
+��� �ɼ� ���ڵ��� 90 ��ô��
+  ��ӡ "����"��
+��ѡ �ɼ� ���ڵ��� 80 ��ô��
+  ��ӡ "����"��
+��ѡ �ɼ� ���ڵ��� 70 ��ô��
+  ��ӡ "�е�"��
+��ѡ �ɼ� ���ڵ��� 60 ��ô��
+  ��ӡ "����"��
+����
+  ��ӡ "������"��
+��
+
+[FAIL] ����ʧ��: �﷨����: Unexpected token: ELIF (�� 6, �� 0)
+
+================================================================================
+����ʾ��: loop
+================================================================================
+
+�������:
+# ѭ������ʾ��
+���� ˮ�� = �б� "ƻ��" "�㽶" "����"��
+
+��ӡ "����ˮ���б��"��
+���� ˮ�� �� ˮ����
+  ��ӡ ˮ����
+��
+
+��ӡ "�������ַ�Χ��"��
+���� ���� �� ��Χ 1 6��
+  ��ӡ ���֡�
+��
+
+���ɵ�Python����:
+ˮ�� = list('ƻ��', '�㽶', '����')
+print('����ˮ���б��')
+for ˮ�� in ˮ��:
+    print(ˮ��)
+print('�������ַ�Χ��')
+for ���� in range(1, 6):
+    print(����)
+
+ִ�н��:
+[FAIL] ����ʧ��: list expected at most 1 argument, got 3
+
+================================================================================
+����ʾ��: fibonacci
+================================================================================
+
+�������:
+# 쳲���������
+���� 쳲����� = �� n��
+  ��� n С�� 2 ��ô��
+    ���� n��
+  ��
+  ���� 쳲����� n ��� 1 ��� 쳲����� n ��� 2��
+��
+
+��ӡ "쳲���������ǰ10�"��
+���� i �� ��Χ 1 11��
+  ��ӡ "쳲�����(" i ") = " 쳲����� i��
+��
+
+���ɵ�Python����:
+def 쳲�����(n):
+    if (n < 2):
+        return n
+    return (쳲�����((n - 1)) + 쳲�����((n - 2)))
+print('쳲���������ǰ10�')
+for i in range(1, 11):
+    print('쳲�����(', i(') = '), 쳲�����(i))
+
+ִ�н��:
+쳲���������ǰ10�
+[FAIL] ����ʧ��: 'int' object is not callable
+
+================================================================================
+����ʾ��: list
+================================================================================
+
+�������:
+# �б����ʾ��
+���� ���� = �б� 1 2 3 4 5��
+
+��ӡ "ԭʼ�б��" ���֡�
+��ӡ "�б���ȣ�" ���� ���֡�
+
+���� ��� = �� �б��
+  ���� �ܺ� = 0��
+  ���� Ԫ�� �� �б��
+    ���� �ܺ� = �ܺ� ��� Ԫ�ء�
+  ��
+  ���� �ܺ͡�
+��
+
+��ӡ "�б���ͣ�" ��� ���֡�
+
+���ɵ�Python����:
+���� = list(1, 2, 3, 4, 5)
+print('ԭʼ�б��', ����)
+print('�б���ȣ�', len(����))
+def ���(�б�):
+    �ܺ� = 0
+    for Ԫ�� in �б�:
+        �ܺ� = (�ܺ� + Ԫ��)
+    return �ܺ�
+print('�б���ͣ�', sum(����))
+
+ִ�н��:
+[FAIL] ����ʧ��: list expected at most 1 argument, got 5
+
+================================================================================
+����ʾ��: dict
+================================================================================
+
+�������:
+# �ֵ����ʾ��
+���� ѧ�� = {"����": "����", "����": 20, "�ɼ�": 85}��
+
+��ӡ "ѧ����Ϣ��" ѧ����
+��ӡ "������" ѧ��["����"]��
+��ӡ "���䣺" ѧ��["����"]��
+
+���ɵ�Python����:
+ѧ�� = {'����': '����', '����': 20, '�ɼ�': 85}
+print('ѧ����Ϣ��', ѧ��)
+print('������', ѧ��, ['����'])
+print('���䣺', ѧ��, ['����'])
+
+ִ�н��:
+ѧ����Ϣ�� {'����': '����', '����': 20, '�ɼ�': 85}
+������ {'����': '����', '����': 20, '�ɼ�': 85} ['����']
+���䣺 {'����': '����', '����': 20, '�ɼ�': 85} ['����']
+
+[PASS] ����ͨ��
+
+================================================================================
+����ʾ��: math
+================================================================================
+
+�������:
+# ��ѧ����ʾ��
+���� a = 10��
+���� b = 3��
+
+��ӡ "a = " a ", b = " b��
+��ӡ "a ��� b = " a ��� b��
+��ӡ "a ��� b = " a ��� b��
+��ӡ "a ��� b = " a ��� b��
+��ӡ "a ��� b = " a ��� b��
+��ӡ "a ȡ�� b = " a ȡ�� b��
+
+��ӡ "ƽ����(16) = " ƽ���� 16��
+��ӡ "����ֵ(-5) = " ����ֵ -5��
+��ӡ "���ֵ(1, 5, 3, 2) = " ���ֵ 1 5 3 2��
+
+[FAIL] ����ʧ��: �﷨����: Unexpected token: MODULO (�� 10, �� 17)
+
+================================================================================
+�����ܽ�
+================================================================================
+[PASS] hello: ͨ��
+[FAIL] variables: ʧ�� - name '��' is not defined
+[FAIL] function: ʧ�� - ����֮��() missing 1 required positional argument: 'b'
+[FAIL] condition: ʧ�� - �﷨����: Unexpected token: ELIF (�� 6, �� 0)
+[FAIL] loop: ʧ�� - list expected at most 1 argument, got 3
+[FAIL] fibonacci: ʧ�� - 'int' object is not callable
+[FAIL] list: ʧ�� - list expected at most 1 argument, got 5
+[PASS] dict: ͨ��
+[FAIL] math: ʧ�� - �﷨����: Unexpected token: MODULO (�� 10, �� 17)
+
+�ܼ�: 2/9 ͨ��

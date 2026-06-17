@@ -1,0 +1,133 @@
+name: 代码质量检查
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.py'
+      - '**.xinyu'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - '**.xinyu'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/**'
+  schedule:
+    # 每周一早上6点运行
+    - cron: '0 6 * * 1'
+
+# 允许手动触发
+workflow_dispatch:
+  inputs:
+    reason:
+      description: '手动触发原因'
+      required: false
+      default: '手动触发代码质量检查'
+
+jobs:
+  code-quality:
+    name: 代码质量检查
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.10']
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 设置Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+        pip install -e .
+    
+    - name: 代码格式化检查 (black)
+      run: |
+        black --check --diff src/ tests/ tools/
+    
+    - name: 导入排序检查 (isort)
+      run: |
+        isort --check-only --diff src/ tests/ tools/
+    
+    - name: 代码风格检查 (flake8)
+      run: |
+        flake8 src/ tests/ tools/ --max-line-length=100 --ignore=E203,W503,E501
+    
+    - name: 心语代码格式化检查
+      run: |
+        python tools/xinyu_format.py check src/ tests/ examples/
+    
+    - name: 类型检查 (mypy)
+      run: |
+        mypy src/ --ignore-missing-imports
+    
+    - name: 安全扫描 (bandit)
+      run: |
+        bandit -r src/ -ll --skip B101,B105,B106,B107,B108,B110,B112,B113,B404,B603,B607
+    
+    - name: 预提交钩子检查
+      run: |
+        pre-commit run --all-files --show-diff-on-failure
+    
+    - name: 上传检查结果
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-quality-reports-${{ matrix.python-version }}
+        path: |
+          **/*.log
+          **/*.txt
+        retention-days: 7
+
+  lint-summary:
+    name: 代码质量总结
+    runs-on: ubuntu-latest
+    needs: [code-quality]
+    
+    steps:
+    - name: 下载检查结果
+      uses: actions/download-artifact@v4
+      with:
+        name: code-quality-reports-3.10
+        path: artifacts
+    
+    - name: 生成总结报告
+      run: |
+        echo "## 代码质量检查总结" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ 所有代码质量检查已通过" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 检查项目" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 代码格式化 (black)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 导入排序 (isort)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 代码风格 (flake8)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 心语代码格式化" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 类型检查 (mypy)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 安全扫描 (bandit)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 预提交钩子" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 发送通知
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#ci-cd'
+        username: '代码质量检查机器人'
+        icon_emoji: ':robot_face:'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

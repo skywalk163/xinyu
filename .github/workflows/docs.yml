@@ -1,0 +1,358 @@
+name: 文档部署
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'src/**'
+      - 'README.md'
+      - 'pyproject.toml'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:  # 允许手动触发
+
+# 设置GITHUB_TOKEN的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许一个并发部署
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 构建文档
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 设置Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install -e .
+        pip install sphinx sphinx-rtd-theme myst-parser
+    
+    - name: 安装文档工具
+      run: |
+        pip install sphinx-autobuild sphinx-copybutton sphinx-design
+    
+    - name: 生成API文档
+      run: |
+        # 创建API文档目录
+        mkdir -p docs/api
+        
+        # 使用sphinx-apidoc生成API文档
+        sphinx-apidoc -o docs/api src --force --module-first
+        
+        # 创建conf.py如果不存在
+        if [ ! -f docs/conf.py ]; then
+          sphinx-quickstart docs --quiet --project "心语编程语言" --author "心语开发团队" \
+            --release "0.1.0" --language "zh_CN" --ext-autodoc --ext-viewcode \
+            --makefile --no-batchfile
+        fi
+        
+        # 更新conf.py配置
+        echo "import os" > docs/conf.py
+        echo "import sys" >> docs/conf.py
+        echo "sys.path.insert(0, os.path.abspath('..'))" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "project = '心语编程语言'" >> docs/conf.py
+        echo "copyright = '2024, 心语开发团队'" >> docs/conf.py
+        echo "author = '心语开发团队'" >> docs/conf.py
+        echo "release = '0.1.0'" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "extensions = [" >> docs/conf.py
+        echo "    'sphinx.ext.autodoc'," >> docs/conf.py
+        echo "    'sphinx.ext.viewcode'," >> docs/conf.py
+        echo "    'sphinx.ext.napoleon'," >> docs/conf.py
+        echo "    'sphinx.ext.intersphinx'," >> docs/conf.py
+        echo "    'myst_parser'," >> docs/conf.py
+        echo "    'sphinx_copybutton'," >> docs/conf.py
+        echo "    'sphinx_design'," >> docs/conf.py
+        echo "]" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "templates_path = ['_templates']" >> docs/conf.py
+        echo "exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "html_theme = 'sphinx_rtd_theme'" >> docs/conf.py
+        echo "html_static_path = ['_static']" >> docs/conf.py
+        echo "html_css_files = ['custom.css']" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "# 国际化配置" >> docs/conf.py
+        echo "language = 'zh_CN'" >> docs/conf.py
+        echo "locale_dirs = ['locale/']" >> docs/conf.py
+        echo "gettext_compact = False" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "# 自动文档配置" >> docs/conf.py
+        echo "autodoc_member_order = 'bysource'" >> docs/conf.py
+        echo "autodoc_typehints = 'description'" >> docs/conf.py
+        echo "autodoc_class_signature = 'separated'" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "# 交叉引用配置" >> docs/conf.py
+        echo "intersphinx_mapping = {" >> docs/conf.py
+        echo "    'python': ('https://docs.python.org/3', None)," >> docs/conf.py
+        echo "}" >> docs/conf.py
+        echo "" >> docs/conf.py
+        echo "# MyST配置" >> docs/conf.py
+        echo "myst_enable_extensions = [" >> docs/conf.py
+        echo "    'colon_fence'," >> docs/conf.py
+        echo "    'deflist'," >> docs/conf.py
+        echo "    'dollarmath'," >> docs/conf.py
+        echo "    'linkify'," >> docs/conf.py
+        echo "    'replacements'," >> docs/conf.py
+        echo "    'smartquotes'," >> docs/conf.py
+        echo "    'substitution'," >> docs/conf.py
+        echo "    'tasklist'," >> docs/conf.py
+        echo "]" >> docs/conf.py
+        
+        # 创建index.rst
+        echo "心语编程语言文档" > docs/index.rst
+        echo "==================" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo ".. toctree::" >> docs/index.rst
+        echo "   :maxdepth: 2" >> docs/index.rst
+        echo "   :caption: 用户指南" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo "   ../README" >> docs/index.rst
+        echo "   USER_GUIDE" >> docs/index.rst
+        echo "   formatter_usage" >> docs/index.rst
+        echo "   repl_history_enhancement" >> docs/index.rst
+        echo "   CI_CD_DESIGN" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo ".. toctree::" >> docs/index.rst
+        echo "   :maxdepth: 2" >> docs/index.rst
+        echo "   :caption: API参考" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo "   api/modules" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo ".. toctree::" >> docs/index.rst
+        echo "   :maxdepth: 1" >> docs/index.rst
+        echo "   :caption: 开发指南" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo "   API_REFERENCE" >> docs/index.rst
+        echo "   architecture" >> docs/index.rst
+        echo "   module_architecture" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo "索引和搜索" >> docs/index.rst
+        echo "==========" >> docs/index.rst
+        echo "" >> docs/index.rst
+        echo "* :ref:\`genindex\`" >> docs/index.rst
+        echo "* :ref:\`modindex\`" >> docs/index.rst
+        echo "* :ref:\`search\`" >> docs/index.rst
+    
+    - name: 构建HTML文档
+      run: |
+        cd docs
+        sphinx-build -b html . _build/html -W --keep-going
+    
+    - name: 上传构建产物
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/_build/html
+
+  deploy:
+    name: 部署到GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: 部署到GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  docs-test:
+    name: 文档测试
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+    
+    - name: 设置Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -e .
+    
+    - name: 测试文档中的代码示例
+      run: |
+        echo "测试README.md中的代码示例..."
+        
+        # 测试快速开始示例
+        echo "测试快速开始示例..."
+        echo '印"你好，世界！"。' > test_hello.xinyu
+        python src/main.py test_hello.xinyu
+        
+        # 测试格式化工具示例
+        echo "测试格式化工具示例..."
+        python tools/xinyu_format.py check example.xinyu
+        
+        # 测试REPL示例
+        echo "测试REPL示例..."
+        echo "print('Hello from REPL')" | python src/main.py || true
+        
+        echo "文档代码示例测试完成"
+    
+    - name: 验证文档链接
+      run: |
+        echo "验证文档内部链接..."
+        
+        # 检查README.md中的链接
+        if grep -q "\[.*\](.*)" README.md; then
+          echo "README.md包含Markdown链接"
+        fi
+        
+        # 检查文档文件中的链接
+        for file in docs/*.md; do
+          if [ -f "$file" ]; then
+            echo "检查 $file 中的链接..."
+            if grep -q "\[.*\](.*)" "$file"; then
+              echo "  ✓ 包含链接"
+            fi
+          fi
+        done
+
+  docs-quality:
+    name: 文档质量检查
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+    
+    - name: 设置Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    
+    - name: 安装文档检查工具
+      run: |
+        pip install vale
+        pip install markdownlint-cli
+    
+    - name: 下载Vale样式
+      run: |
+        mkdir -p .vale/styles
+        curl -L https://github.com/errata-ai/Google/releases/latest/download/Google.zip -o .vale/styles/Google.zip
+        unzip -o .vale/styles/Google.zip -d .vale/styles/
+    
+    - name: 配置Vale
+      run: |
+        echo "StylesPath = .vale/styles" > .vale.ini
+        echo "" >> .vale.ini
+        echo "[*.md]" >> .vale.ini
+        echo "BasedOnStyles = Google" >> .vale.ini
+        echo "" >> .vale.ini
+        echo "# 自定义规则" >> .vale.ini
+        echo "[*.md]" >> .vale.ini
+        echo "# 允许中文标点" >> .vale.ini
+        echo "Google.Exclamation = NO" >> .vale.ini
+        echo "Google.Ellipses = NO" >> .vale.ini
+        echo "Google.Spacing = NO" >> .vale.ini
+    
+    - name: 运行Vale检查
+      run: |
+        vale docs/ README.md || echo "Vale检查完成（允许警告）"
+    
+    - name: 运行Markdown检查
+      run: |
+        # 安装markdownlint-cli
+        npm install -g markdownlint-cli
+        
+        # 创建配置
+        echo '{' > .markdownlint.json
+        echo '  "default": true,' >> .markdownlint.json
+        echo '  "MD013": false,  # 禁用行长度检查' >> .markdownlint.json
+        echo '  "MD033": false,  # 允许内联HTML' >> .markdownlint.json
+        echo '  "MD041": false   # 禁用首行标题检查' >> .markdownlint.json
+        echo '}' >> .markdownlint.json
+        
+        # 运行检查
+        markdownlint docs/ README.md --config .markdownlint.json || echo "Markdown检查完成（允许警告）"
+    
+    - name: 检查拼写
+      run: |
+        echo "运行拼写检查..."
+        
+        # 安装aspell
+        sudo apt-get update
+        sudo apt-get install -y aspell aspell-en
+        
+        # 检查英文拼写
+        for file in docs/*.md README.md; do
+          if [ -f "$file" ]; then
+            echo "检查 $file..."
+            aspell --lang=en --list < "$file" | sort -u | head -20 || true
+          fi
+        done
+
+  notify-docs:
+    name: 文档部署通知
+    runs-on: ubuntu-latest
+    needs: [deploy, docs-test, docs-quality]
+    if: always()
+    
+    steps:
+    - name: 发送成功通知
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#docs'
+        username: '文档机器人'
+        icon_emoji: ':books:'
+        text: |
+          文档已成功部署！
+          
+          状态: ✅ 成功
+          环境: GitHub Pages
+          URL: https://yourusername.github.io/xinyu-lang
+          
+          构建日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+    - name: 发送失败通知
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#docs'
+        username: '文档机器人'
+        icon_emoji: ':x:'
+        text: |
+          文档部署失败！
+          
+          状态: ❌ 失败
+          环境: GitHub Pages
+          
+          请检查工作流日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

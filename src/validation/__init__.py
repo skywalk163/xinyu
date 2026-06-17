@@ -7,4 +7,4 @@
 from .param_validator import ParamValidator, ValidationResult
 from .type_inference import TypeInference
 
-__all__ = ['ParamValidator', 'ValidationResult', 'TypeInference']
+__all__ = ["ParamValidator", "ValidationResult", "TypeInference"]

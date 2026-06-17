@@ -9,18 +9,16 @@
 - 文件模式：执行.心语文件
 """
 
-import sys
 import os
-from typing import Any, Dict, Optional, NoReturn
+import sys
+from typing import Any, Dict, NoReturn, Optional
 
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.lexer.lexer import Lexer, LexerError
-from src.parser.parser import Parser, ParseError
-from src.semantic.analyzer import SemanticAnalyzer, SemanticError
-from src.codegen.python_codegen import PythonCodegen, CodegenError
-
+from src.core.compiler import XinyuCompiler, CompilationError
+from src.runtime.secure_executor import SecureExecutor
+from src.repl import EnhancedREPL
 
 # 常量定义
 VERSION = "1.0"
@@ -40,9 +38,15 @@ class ChineseProgram:
         env: 执行环境（包含内置模块和函数）
     """
 
-    def __init__(self):
-        """初始化心语语言环境"""
-        self.env = self._create_exec_globals()
+    def __init__(self, enable_safety: bool = True):
+        """初始化心语语言环境
+        
+        Args:
+            enable_safety: 是否启用安全限制
+        """
+        self.enable_safety = enable_safety
+        self.compiler = XinyuCompiler(enable_safety=enable_safety)
+        self.runtime = SecureExecutor() if enable_safety else None
 
     def run(self, source: str) -> Optional[Any]:
         """编译并执行心语代码
@@ -54,55 +58,16 @@ class ChineseProgram:
             执行结果（如果有），或 None（如果出错）
 
         Security Warning:
-            本方法使用 exec() 执行生成的 Python 代码。
-            请勿执行不可信的代码来源，可能存在安全风险。
-            在生产环境中，建议：
-            1. 仅执行经过审查的代码
-            2. 使用沙箱环境隔离执行
-            3. 限制可用的模块和函数
+            本方法使用安全执行器执行生成的 Python 代码。
+            如果启用安全限制，会限制可用的模块和函数。
         """
         try:
-            # 增加递归深度限制以支持递归函数
-            import sys
-            old_recursion_limit = sys.getrecursionlimit()
-            sys.setrecursionlimit(10000)
-
-            # 1. 词法分析
-            lexer = Lexer(source)
-            tokens = lexer.tokenize()
-
-            # 2. 语法分析
-            parser = Parser(tokens)
-            ast = parser.parse()
-
-            # 3. 语义分析
-            analyzer = SemanticAnalyzer()
-            if not analyzer.analyze(ast):
-                for error in analyzer.errors:
-                    print(f"语义错误: {error.message} (行 {error.line}, 列 {error.column})")
-                sys.setrecursionlimit(old_recursion_limit)
-                return None
-
-            # 4. 代码生成
-            codegen = PythonCodegen()
-            python_code = codegen.generate(ast)
-
-            # 5. 执行
-            exec_globals = self._create_exec_globals()
-            exec(python_code, exec_globals)
-
-            # 恢复递归深度限制
-            sys.setrecursionlimit(old_recursion_limit)
-            return exec_globals.get('__result__')
-
-        except LexerError as e:
-            print(f"词法错误: {e.message} (行 {e.line}, 列 {e.column})")
-            return None
-        except ParseError as e:
-            print(f"语法错误: {e.message} (行 {e.token.line}, 列 {e.token.column})")
-            return None
-        except CodegenError as e:
-            print(f"代码生成错误: {e}")
+            # 使用编译器进行编译
+            result = self.compiler.execute(source)
+            return result
+            
+        except CompilationError as e:
+            print(f"编译错误: {e}")
             return None
         except Exception as e:
             print(f"运行时错误: {e}")
@@ -118,72 +83,33 @@ class ChineseProgram:
             生成的 Python 代码字符串，如果出错则返回空字符串
         """
         try:
-            # 1. 词法分析
-            lexer = Lexer(source)
-            tokens = lexer.tokenize()
-
-            # 2. 语法分析
-            parser = Parser(tokens)
-            ast = parser.parse()
-
-            # 3. 语义分析（可选，只检查错误）
-            analyzer = SemanticAnalyzer()
-            if not analyzer.analyze(ast):
-                for error in analyzer.errors:
-                    print(f"语义警告: {error.message} (行 {error.line}, 列 {error.column})")
-
-            # 4. 代码生成
-            codegen = PythonCodegen()
-            python_code = codegen.generate(ast)
-
+            python_code = self.compiler.compile(source)
+            
+            # 输出诊断信息
+            for diagnostic in self.compiler.get_diagnostics():
+                print(diagnostic)
+            
             return python_code
-
-        except (LexerError, ParseError, CodegenError) as e:
+            
+        except CompilationError as e:
             print(f"编译错误: {e}")
             return ""
 
     def _create_exec_globals(self) -> Dict[str, Any]:
-        """创建执行环境
-
-        包含：
-        - Python 内置函数
-        - Python 标准模块（math, random, json, re, datetime）
-        - 心语内置函数
-
-        Returns:
-            执行环境字典
+        """创建执行环境（已弃用，使用安全执行器替代）
+        
+        注意：此方法已不再使用，保留用于向后兼容。
+        新的实现使用 SecureExecutor 提供安全执行环境。
         """
-        import math
-        import random
-        import json
-        import re
-        from datetime import datetime, date, time, timedelta
-
-        # 基础环境
-        exec_globals = {
-            '__builtins__': __builtins__,
-            '__name__': '__main__',
-            '__doc__': None,
-            '__package__': None,
-            '__loader__': None,
-            '__spec__': None,
-        }
-
-        # Python 标准模块
-        exec_globals['math'] = math
-        exec_globals['random'] = random
-        exec_globals['json'] = json
-        exec_globals['re'] = re
-        exec_globals['datetime'] = datetime
-        exec_globals['date'] = date
-        exec_globals['time'] = time
-        exec_globals['timedelta'] = timedelta
-
-        # 心语内置值
-        exec_globals['真'] = True
-        exec_globals['假'] = False
-
-        return exec_globals
+        import warnings
+        warnings.warn(
+            "_create_exec_globals 已弃用，请使用 SecureExecutor",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        
+        # 返回空字典，实际执行由 SecureExecutor 处理
+        return {}
 
 
 def main() -> None:
@@ -191,37 +117,34 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='心语语言 - 极简中文编程语言',
+        description="心语语言 - 极简中文编程语言",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='''
+        epilog="""
 示例：
-  python -m src.main                    # 交互式模式
-  python -m src.main program.心语       # 执行文件
-  python -m src.main -c '印"你好"。'    # 执行代码
+  python -m src.main                    # 交互式模式（安全）
+  python -m src.main program.心语       # 执行文件（安全）
+  python -m src.main -c '印"你好"。'    # 执行代码（安全）
   python -m src.main --compile program.心语  # 编译为 Python
-        '''
+  python -m src.main --unsafe program.心语  # 禁用安全限制（不推荐）
+        """,
     )
 
-    parser.add_argument(
-        'file',
-        nargs='?',
-        help='要执行的心语文件'
-    )
+    parser.add_argument("file", nargs="?", help="要执行的心语文件")
 
-    parser.add_argument(
-        '-c', '--code',
-        help='直接执行代码字符串'
-    )
+    parser.add_argument("-c", "--code", help="直接执行代码字符串")
 
-    parser.add_argument(
-        '--compile',
-        action='store_true',
-        help='只编译为 Python 代码，不执行'
-    )
+    parser.add_argument("--compile", action="store_true", help="只编译为 Python 代码，不执行")
 
+    parser.add_argument("--unsafe", action="store_true", help="禁用安全限制（不推荐）")
+    
     args = parser.parse_args()
 
-    program = ChineseProgram()
+    # 根据参数决定是否启用安全限制
+    enable_safety = not args.unsafe
+    if not enable_safety:
+        print("⚠️  警告：已禁用安全限制，可能存在安全风险！")
+    
+    program = ChineseProgram(enable_safety=enable_safety)
 
     # 直接执行代码字符串
     if args.code:
@@ -235,7 +158,7 @@ def main() -> None:
     # 执行文件
     if args.file:
         try:
-            with open(args.file, 'r', encoding='utf-8') as f:
+            with open(args.file, "r", encoding="utf-8") as f:
                 source = f.read()
 
             if args.compile:
@@ -249,41 +172,21 @@ def main() -> None:
             print(f"错误：{e}")
         return
 
-    # 交互式模式（REPL）
+    # 交互式模式（增强REPL）
     print(WELCOME_MESSAGE)
-    print()
-
-    while True:
-        try:
-            # 读取输入
-            line = input(REPL_PROMPT)
-
-            # 检查退出命令
-            if line.strip() in ('退出', 'exit', 'quit'):
-                print("再见！")
-                break
-
-            # 检查帮助命令
-            if line.strip() in ('帮助', 'help'):
-                print_help()
-                continue
-
-            # 执行代码
-            if line.strip():
-                program.run(line)
-
-        except EOFError:
-            print("\n再见！")
-            break
-        except KeyboardInterrupt:
-            print("\n使用 '退出' 或 'exit' 退出")
-        except Exception as e:
-            print(f"错误：{e}")
+    print("提示: 使用增强REPL，支持语法高亮、代码补全和历史记录")
+    print("-" * 50)
+    
+    # 创建增强REPL
+    repl = EnhancedREPL(program.compiler, history_file=".xinyu_history")
+    
+    # 运行REPL
+    repl.run_interactive()
 
 
 def print_help() -> None:
     """打印帮助信息"""
-    help_text = '''
+    help_text = """
 心语语言帮助
 
 核心关键字（5个）：
@@ -319,9 +222,9 @@ def print_help() -> None:
 
   遍历 i 于 [1, 2, 3]：
       印i。
-'''
+"""
     print(help_text)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

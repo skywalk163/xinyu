@@ -258,6 +258,59 @@ pre-commit run xinyu-format --all-files
 - `mypy`: 类型检查
 - `pytest`: 运行测试
 
+### CI/CD 流水线
+
+项目配置了完整的CI/CD流水线，自动化构建、测试和发布流程：
+
+#### 状态徽章
+[![代码质量检查](https://github.com/yourusername/xinyu-lang/actions/workflows/quality.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/quality.yml)
+[![测试套件](https://github.com/yourusername/xinyu-lang/actions/workflows/test.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/test.yml)
+[![发布状态](https://github.com/yourusername/xinyu-lang/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/release.yml)
+[![文档部署](https://github.com/yourusername/xinyu-lang/actions/workflows/docs.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/docs.yml)
+[![测试覆盖率](https://codecov.io/gh/yourusername/xinyu-lang/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/xinyu-lang)
+[![PyPI版本](https://img.shields.io/pypi/v/xinyu-lang)](https://pypi.org/project/xinyu-lang/)
+[![Python版本](https://img.shields.io/pypi/pyversions/xinyu-lang)](https://pypi.org/project/xinyu-lang/)
+
+#### 工作流
+1. **代码质量检查** (`quality.yml`): 每次提交时运行代码格式化、风格检查和类型检查
+2. **测试套件** (`test.yml`): 在多个Python版本上运行单元测试、集成测试和功能测试
+3. **构建和发布** (`release.yml`): 创建版本标签时自动构建和发布到PyPI
+4. **文档部署** (`docs.yml`): 自动构建和部署文档到GitHub Pages
+5. **依赖更新** (`dependabot.yml`): 自动更新依赖并创建Pull Request
+
+#### 本地部署
+```bash
+# 运行完整部署流程
+python scripts/deploy.py --environment test --version 0.1.0
+
+# 只运行代码质量检查
+python scripts/deploy.py --check-only
+
+# 只运行测试
+python scripts/deploy.py --test-only
+
+# 只构建包
+python scripts/deploy.py --build-only
+
+# 发布到生产环境
+python scripts/deploy.py --environment production --version 1.0.0
+```
+
+#### 自动化构建脚本
+```bash
+# 运行完整构建流程
+python build.py --all
+
+# 只运行测试
+python build.py --test
+
+# 只格式化代码
+python build.py --format
+
+# 只安装依赖
+python build.py --install
+```
+
 ## 📚 文档
 
 - [用户指南](docs/USER_GUIDE.md) - 完整的使用教程和示例

@@ -5,7 +5,7 @@
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, List, Optional, Dict
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -14,6 +14,7 @@ class ASTNode(ABC):
 
     所有AST节点都继承此类，提供位置信息和调试输出。
     """
+
     line: int
     column: int
 
@@ -25,12 +26,14 @@ class ASTNode(ABC):
 
 # ============ 基础节点 ============
 
+
 @dataclass
 class NumberNode(ASTNode):
     """数字节点
 
     表示整数或浮点数字面量。
     """
+
     value: Any  # int 或 float
 
     def __str__(self) -> str:
@@ -43,6 +46,7 @@ class StringNode(ASTNode):
 
     表示字符串字面量。
     """
+
     value: str
 
     def __str__(self) -> str:
@@ -55,6 +59,7 @@ class IdentifierNode(ASTNode):
 
     表示变量名、函数名等标识符。
     """
+
     name: str
 
     def __str__(self) -> str:
@@ -63,12 +68,14 @@ class IdentifierNode(ASTNode):
 
 # ============ 表达式节点 ============
 
+
 @dataclass
 class BinaryOpNode(ASTNode):
     """二元操作节点
 
     表示二元运算，如加减乘除、比较等。
     """
+
     left: ASTNode
     operator: str
     right: ASTNode
@@ -83,6 +90,7 @@ class UnaryOpNode(ASTNode):
 
     表示一元运算，如负号、逻辑非等。
     """
+
     operator: str
     operand: ASTNode
 
@@ -96,6 +104,7 @@ class ListNode(ASTNode):
 
     表示列表字面量。
     """
+
     elements: List[ASTNode] = field(default_factory=list)
 
     def __str__(self) -> str:
@@ -109,6 +118,7 @@ class DictNode(ASTNode):
 
     表示字典字面量。
     """
+
     pairs: List[tuple] = field(default_factory=list)  # List[(ASTNode, ASTNode)]
 
     def __str__(self) -> str:
@@ -122,6 +132,7 @@ class MemberAccessNode(ASTNode):
 
     表示对象成员访问，如 obj.member。
     """
+
     obj: ASTNode
     member: str
 
@@ -135,6 +146,7 @@ class IndexNode(ASTNode):
 
     表示索引访问，如 list[index]。
     """
+
     obj: ASTNode
     index: ASTNode
 
@@ -144,12 +156,14 @@ class IndexNode(ASTNode):
 
 # ============ 语句节点 ============
 
+
 @dataclass
 class AssignNode(ASTNode):
     """赋值节点
 
     表示变量赋值语句。
     """
+
     target: ASTNode  # 通常是 IdentifierNode
     value: ASTNode
 
@@ -163,6 +177,7 @@ class VarDefNode(ASTNode):
 
     表示变量定义语句，如 '定 x = 1'。
     """
+
     name: str
     value: Optional[ASTNode] = None
 
@@ -178,6 +193,7 @@ class IfNode(ASTNode):
 
     表示条件语句，如 '若 x 则 ... 否则 ...'。
     """
+
     condition: ASTNode
     then_branch: List[ASTNode]
     else_branch: Optional[List[ASTNode]] = None
@@ -192,6 +208,7 @@ class ForNode(ASTNode):
 
     表示遍历循环，如 '遍历 x 于 列表：...'。
     """
+
     var: str
     iterable: ASTNode
     body: List[ASTNode]
@@ -206,6 +223,7 @@ class WhileNode(ASTNode):
 
     表示当循环，如 '当 条件：...'。
     """
+
     condition: ASTNode
     body: List[ASTNode]
 
@@ -219,6 +237,7 @@ class RepeatNode(ASTNode):
 
     表示重复执行，如 '重复 10 次：...'。
     """
+
     count: ASTNode
     body: List[ASTNode]
 
@@ -232,6 +251,7 @@ class FunctionDefNode(ASTNode):
 
     表示函数定义，如 '定 函数名 = 函 参数：...'。
     """
+
     name: str
     params: List[str]
     body: List[ASTNode]
@@ -247,9 +267,10 @@ class FunctionCallNode(ASTNode):
 
     表示函数调用，如 '函数名 参数1 参数2'。
     """
+
     name: Any  # 函数名（可以是字符串或AST节点，如MemberAccessNode）
     args: List[ASTNode] = field(default_factory=list)
-    arity: Optional['Arity'] = None  # 元数定义（可选）
+    arity: Optional["Arity"] = None  # 元数定义（可选）
 
     def __str__(self) -> str:
         args_str = ", ".join(str(a) for a in self.args)
@@ -262,6 +283,7 @@ class ReturnNode(ASTNode):
 
     表示返回语句。
     """
+
     value: Optional[ASTNode] = None
 
     def __str__(self) -> str:
@@ -272,12 +294,14 @@ class ReturnNode(ASTNode):
 
 # ============ 特殊节点 ============
 
+
 @dataclass
 class ProgramNode(ASTNode):
     """程序根节点
 
     表示整个程序的根节点。
     """
+
     statements: List[ASTNode] = field(default_factory=list)
 
     def __str__(self) -> str:
@@ -290,6 +314,7 @@ class BlockNode(ASTNode):
 
     表示一个代码块，通常用于缩进块。
     """
+
     statements: List[ASTNode] = field(default_factory=list)
 
     def __str__(self) -> str:
@@ -298,14 +323,16 @@ class BlockNode(ASTNode):
 
 # ============ 异常处理节点 ============
 
+
 @dataclass
 class TryNode(ASTNode):
     """尝试节点
 
     表示try-except-finally语句。
     """
+
     try_body: List[ASTNode] = field(default_factory=list)
-    except_clauses: List['ExceptNode'] = field(default_factory=list)
+    except_clauses: List["ExceptNode"] = field(default_factory=list)
     finally_body: Optional[List[ASTNode]] = None
 
     def __str__(self) -> str:
@@ -318,6 +345,7 @@ class ExceptNode(ASTNode):
 
     表示except子句。
     """
+
     exception_type: Optional[ASTNode] = None  # 异常类型
     exception_var: Optional[str] = None  # 异常变量名
     body: List[ASTNode] = field(default_factory=list)
@@ -332,6 +360,7 @@ class RaiseNode(ASTNode):
 
     表示raise语句。
     """
+
     exception: Optional[ASTNode] = None  # 异常对象
 
     def __str__(self) -> str:
@@ -342,12 +371,14 @@ class RaiseNode(ASTNode):
 
 # ============ 模块导入节点 ============
 
+
 @dataclass
 class ImportNode(ASTNode):
     """导入节点
 
     表示import语句。
     """
+
     module: str  # 模块名
     alias: Optional[str] = None  # 别名
 
@@ -363,6 +394,7 @@ class FromImportNode(ASTNode):
 
     表示from...import语句。
     """
+
     module: str  # 模块名
     names: List[str] = field(default_factory=list)  # 导入的名称列表
     aliases: Dict[str, str] = field(default_factory=dict)  # 名称到别名的映射

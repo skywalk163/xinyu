@@ -4,27 +4,40 @@
 将AST节点转换为可执行的Python代码。
 """
 from typing import Dict, Type
-from src.parser.ast_nodes import (
+
+from src.parser.ast_nodes import (  # 基础节点; 表达式节点; 语句节点; 特殊节点; 异常处理节点; 模块导入节点
+    AssignNode,
     ASTNode,
-    # 基础节点
-    NumberNode, StringNode, IdentifierNode,
-    # 表达式节点
-    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
-    MemberAccessNode, IndexNode,
-    # 语句节点
-    AssignNode, VarDefNode, IfNode, ForNode, WhileNode,
-    RepeatNode, FunctionDefNode, FunctionCallNode, ReturnNode,
-    # 特殊节点
-    ProgramNode, BlockNode,
-    # 异常处理节点
-    TryNode, ExceptNode, RaiseNode,
-    # 模块导入节点
-    ImportNode, FromImportNode
+    BinaryOpNode,
+    BlockNode,
+    DictNode,
+    ExceptNode,
+    ForNode,
+    FromImportNode,
+    FunctionCallNode,
+    FunctionDefNode,
+    IdentifierNode,
+    IfNode,
+    ImportNode,
+    IndexNode,
+    ListNode,
+    MemberAccessNode,
+    NumberNode,
+    ProgramNode,
+    RaiseNode,
+    RepeatNode,
+    ReturnNode,
+    StringNode,
+    TryNode,
+    UnaryOpNode,
+    VarDefNode,
+    WhileNode,
 )
 
 
 class CodegenError(Exception):
     """代码生成错误"""
+
     pass
 
 
@@ -210,9 +223,22 @@ class PythonCodegen:
         if operator is None:
             # 如果不是中文操作符，可能是英文操作符（语法分析器已转换）
             # 直接使用英文操作符
-            if node.operator in ["+", "-", "*", "/", "%", "//",
-                                "==", "!=", "<", ">", "<=", ">=",
-                                "and", "or"]:
+            if node.operator in [
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "//",
+                "==",
+                "!=",
+                "<",
+                ">",
+                "<=",
+                ">=",
+                "and",
+                "or",
+            ]:
                 operator = node.operator
             else:
                 raise CodegenError(f"未知的二元操作符: {node.operator}")

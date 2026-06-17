@@ -5,19 +5,21 @@
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 
 class MacroType(Enum):
     """宏类型"""
-    SYNTAX = "syntax"      # 语法宏
-    IDIOM = "idiom"        # 成语宏
+
+    SYNTAX = "syntax"  # 语法宏
+    IDIOM = "idiom"  # 成语宏
 
 
 @dataclass
 class Macro:
     """宏定义"""
+
     name: str
     type: MacroType
     params: List[str]
@@ -79,9 +81,10 @@ class MacroSystem:
                 if param in args:
                     # 获取参数的实际值（如果是AST节点，提取其值）
                     arg_value = args[param]
-                    
+
                     # 修改：检查节点类型，正确处理字符串字面量
-                    from src.parser.ast_nodes import StringNode, NumberNode, IdentifierNode
+                    from src.parser.ast_nodes import IdentifierNode, NumberNode, StringNode
+
                     if isinstance(arg_value, StringNode):
                         # 对于StringNode，保留引号，确保展开后仍是字符串字面量
                         replacement = f'"{arg_value.value}"'
@@ -91,15 +94,16 @@ class MacroSystem:
                     elif isinstance(arg_value, IdentifierNode):
                         # 对于IdentifierNode，使用其name属性
                         replacement = arg_value.name
-                    elif hasattr(arg_value, 'value'):
+                    elif hasattr(arg_value, "value"):
                         # 其他有value属性的节点
                         replacement = str(arg_value.value)
-                    elif hasattr(arg_value, 'name'):
+                    elif hasattr(arg_value, "name"):
                         # 其他有name属性的节点
                         replacement = arg_value.name
                     elif isinstance(arg_value, list):
                         # 对于AST节点列表（如循环体），生成代码字符串
                         from src.codegen.python_codegen import PythonCodegen
+
                         codegen = PythonCodegen()
                         # 为每个语句生成代码
                         statements_code = []
@@ -119,7 +123,6 @@ class MacroSystem:
             return result
         finally:
             self.macro_stack.pop()
-
 
     def list_macros(self) -> List[str]:
         """列出所有宏"""

@@ -104,8 +104,9 @@ class TestHighOrderFunctions:
 
     def test_filter_function(self):
         """测试filter函数"""
-        # 跳过这个测试，因为需要更复杂的函数定义支持
-        pytest.skip("需要更复杂的函数定义支持")
+        # TODO: 需要实现lambda函数语法支持
+        # 当前语法不支持匿名函数，暂时跳过
+        pytest.skip("需要lambda函数语法支持，当前语法不支持匿名函数")
 
 
 class TestBuiltinFunctions:

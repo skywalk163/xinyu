@@ -1,0 +1,56 @@
+﻿================================================================================
+Playwright �Զ������� - Playgroundʾ������
+================================================================================
+
+��ʾ����ȷ��Playground�������������У�python server.py��
+
+1. ��������...
+
+2. ����Playgroundҳ��...
+[OK] ҳ����سɹ�
+
+3. ���ҳ��Ԫ��...
+����̨: [error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+[OK] �ҵ��༭��Ԫ��
+[OK] ��ʼ�ַ���: 0 �ַ�
+
+4. ���ʾ����ť...
+�ҵ� 13 ��ʾ����ť
+
+5. ���Ե��'��ã�����'ʾ��...
+[OK] �ѵ��ʾ����ť
+
+�༭�����ݳ���: 0
+�༭��ǰ100�ַ�: 
+[FAIL] �༭��Ϊ�գ�ʾ��δ����
+python : Traceback (most recent call last):
+At line:1 char:160
++ ... b\chineseprogram\playground" ; python test_playwright.py 2>&1 | Out-F ...
++                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "G:\dumategithub\chineseprogram\playground\test_playwright.py", line 189, in <module>
+��ǰ�ַ���: 0 �ַ�
+
+����̨��Ϣ����: 0
+
+6. ��������ʾ��...
+
+���� '��������' ʾ��:
+  [FAIL] ����ʧ�ܣ��༭��Ϊ��
+
+���� '��������' ʾ��:
+  [FAIL] ����ʧ�ܣ��༭��Ϊ��
+
+���� '��ѧ����' ʾ��:
+  [FAIL] ����ʧ�ܣ��༭��Ϊ��
+
+7. �������д���...
+[OK] �ѵ�����а�ť
+
+�������:
+    test_playground()
+  File "G:\dumategithub\chineseprogram\playground\test_playwright.py", line 168, in test_playground
+    print(output_text[:200])
+UnicodeEncodeError: 'gbk' codec can't encode character '\u25b6' in position 0: illegal multibyte sequence

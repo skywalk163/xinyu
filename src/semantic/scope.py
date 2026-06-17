@@ -17,7 +17,7 @@ class Scope:
         symbols: 符号表 {name: {type, value_type, ...}}
     """
 
-    def __init__(self, parent: Optional['Scope'] = None):
+    def __init__(self, parent: Optional["Scope"] = None):
         """初始化作用域
 
         Args:
@@ -34,10 +34,7 @@ class Scope:
             symbol_type: 符号类型（variable, function, parameter等）
             **attrs: 其他属性（value_type, params等）
         """
-        self.symbols[name] = {
-            "type": symbol_type,
-            **attrs
-        }
+        self.symbols[name] = {"type": symbol_type, **attrs}
 
     def has(self, name: str) -> bool:
         """检查符号是否存在
@@ -52,10 +49,10 @@ class Scope:
         """
         if name in self.symbols:
             return True
-        
+
         if self.parent:
             return self.parent.has(name)
-        
+
         return False
 
     def lookup(self, name: str) -> Optional[Dict[str, Any]]:

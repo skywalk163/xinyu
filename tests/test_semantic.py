@@ -202,15 +202,10 @@ class TestSemanticAnalyzer(unittest.TestCase):
         self.assertTrue(success)
         self.assertEqual(len(errors), 0)
 
-    @unittest.skip("列表字面量语法暂不支持，需要运行时支持")
     def test_for_loop(self):
         """测试遍历循环"""
-        # 注意：列表语法需要使用【】而不是[]
-        code = """循环 i 于 列表：
-  打印 i。"""
-        # 由于列表字面量语法可能不支持，我们跳过这个测试
-        # 或者者使用变量
-        code = """定义 列表 = 创建列表。
+        # 使用range函数创建列表
+        code = """定义 列表 = 范围 1 5。
 循环 i 于 列表：
   打印 i。"""
         success, errors = self._analyze(code)

@@ -7,22 +7,27 @@
 - 错误统计
 """
 
-from enum import Enum, auto
 from dataclasses import dataclass
-from typing import List, Dict, Optional
+from enum import Enum, auto
+from typing import Dict, List, Optional
+
+# 使用统一的日志工具
+from src.utils.logging_utils import get_logger
 
 
 class ErrorType(Enum):
     """错误类型枚举"""
-    LEXER_ERROR = auto()      # 词法错误
-    PARSER_ERROR = auto()     # 语法错误
-    SEMANTIC_ERROR = auto()   # 语义错误
-    RUNTIME_ERROR = auto()    # 运行时错误
+
+    LEXER_ERROR = auto()  # 词法错误
+    PARSER_ERROR = auto()  # 语法错误
+    SEMANTIC_ERROR = auto()  # 语义错误
+    RUNTIME_ERROR = auto()  # 运行时错误
 
 
 @dataclass
 class Error:
     """错误信息"""
+
     error_type: ErrorType
     message: str
     line: int
@@ -39,23 +44,24 @@ class Error:
             ErrorType.RUNTIME_ERROR: "运行时错误",
         }
         type_name = type_names.get(self.error_type, "错误")
-        
+
         # 基本错误信息
         result = f"{type_name}：第 {self.line} 行，第 {self.column} 列：{self.message}"
-        
+
         # 添加建议
         if self.suggestion:
             result += f"\n  💡 建议：{self.suggestion}"
-        
+
         return result
 
 
 class ErrorHandler:
     """错误处理器"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """初始化错误处理器"""
         self.errors: List[Error] = []
+        self.logger = get_logger("error_handling")
 
     def report(
         self,
@@ -64,7 +70,7 @@ class ErrorHandler:
         line: int,
         column: int,
         source: Optional[str] = None,
-        suggestion: Optional[str] = None
+        suggestion: Optional[str] = None,
     ) -> None:
         """报告错误
 
@@ -82,7 +88,7 @@ class ErrorHandler:
             line=line,
             column=column,
             source=source,
-            suggestion=suggestion
+            suggestion=suggestion,
         )
         self.errors.append(error)
 
@@ -111,7 +117,7 @@ class ErrorHandler:
 
         # 如果有源代码，添加上下文
         if error.source:
-            lines = error.source.split('\n')
+            lines = error.source.split("\n")
             if error.line <= len(lines):
                 source_line = lines[error.line - 1]
                 result += f"\n  {source_line}"
@@ -147,4 +153,5 @@ class ErrorHandler:
     def print_errors(self) -> None:
         """打印所有错误"""
         for i in range(len(self.errors)):
-            print(self.format_error(i))
+            error_str = self.format_error(i)
+            self.logger.error(error_str)

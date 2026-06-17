@@ -1,0 +1,122 @@
+{
+  "version": "1.0",
+  "export_time": "2026-06-16T20:35:58.240758",
+  "count": 10,
+  "entries": [
+    {
+      "timestamp": "2026-06-16T19:38:00.415831",
+      "command": "错误命令",
+      "result": null,
+      "command_type": "statement",
+      "execution_time": null,
+      "success": false,
+      "tags": [],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.430878",
+      "command": "原始命令",
+      "result": "原始结果",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "原始"
+      ],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.431934",
+      "command": "编辑后的命令",
+      "result": null,
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "原始"
+      ],
+      "metadata": {
+        "edited_from": "原始命令",
+        "original_timestamp": "2026-06-16T19:38:00.430878"
+      }
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.471176",
+      "command": "命令1",
+      "result": "结果1",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "测试"
+      ],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.472175",
+      "command": "命令2",
+      "result": "结果2",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "测试"
+      ],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.499827",
+      "command": "测试命令0",
+      "result": "测试结果0",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.500835",
+      "command": "测试命令1",
+      "result": "测试结果1",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:38:00.502453",
+      "command": "测试命令2",
+      "result": "测试结果2",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:48:32.950889",
+      "command": "命令1",
+      "result": "结果1",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "测试"
+      ],
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-06-16T19:48:32.952061",
+      "command": "命令2",
+      "result": "结果2",
+      "command_type": "statement",
+      "execution_time": null,
+      "success": true,
+      "tags": [
+        "测试"
+      ],
+      "metadata": {}
+    }
+  ]
+}

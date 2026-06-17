@@ -1,0 +1,111 @@
+# 心语编程语言安全策略配置
+# 基于角色的访问控制（RBAC）
+
+# 角色定义
+roles:
+  admin:
+    permissions:
+      - resource: "*"
+        operations: ["all"]
+        description: "管理员拥有所有权限"
+    parent_roles: []
+    
+  developer:
+    permissions:
+      - resource: "/home/*"
+        operations: ["read", "write"]
+        description: "开发者可以读写home目录"
+      - resource: "/tmp/*"
+        operations: ["read", "write", "execute"]
+        description: "开发者可以读写执行tmp目录"
+      - resource: "*.py"
+        operations: ["read", "execute"]
+        description: "开发者可以执行Python文件"
+      - resource: "*.心语"
+        operations: ["read", "write", "execute"]
+        description: "开发者可以读写执行心语文件"
+      - resource: "http://api.example.com/*"
+        operations: ["network"]
+        description: "开发者可以访问示例API"
+      - resource: "os"
+        operations: ["import"]
+        description: "开发者可以导入os模块"
+      - resource: "sys"
+        operations: ["import"]
+        description: "开发者可以导入sys模块"
+      - resource: "subprocess"
+        operations: ["import"]
+        description: "开发者可以导入subprocess模块"
+    parent_roles: ["user"]
+    
+  user:
+    permissions:
+      - resource: "/home/user/*"
+        operations: ["read", "write"]
+        description: "用户可以读写自己的home目录"
+      - resource: "/tmp/*"
+        operations: ["read"]
+        description: "用户可以读取tmp目录"
+      - resource: "*.txt"
+        operations: ["read"]
+        description: "用户可以读取文本文件"
+      - resource: "*.心语"
+        operations: ["read", "execute"]
+        description: "用户可以执行心语文件"
+      - resource: "math"
+        operations: ["import"]
+        description: "用户可以导入math模块"
+      - resource: "datetime"
+        operations: ["import"]
+        description: "用户可以导入datetime模块"
+      - resource: "random"
+        operations: ["import"]
+        description: "用户可以导入random模块"
+      - resource: "json"
+        operations: ["import"]
+        description: "用户可以导入json模块"
+      - resource: "http://*.example.com/api/*"
+        operations: ["network"]
+        description: "用户可以访问example.com的API"
+    parent_roles: ["guest"]
+    
+  guest:
+    permissions:
+      - resource: "/tmp/*"
+        operations: ["read"]
+        description: "访客可以读取tmp目录"
+      - resource: "*.txt"
+        operations: ["read"]
+        description: "访客可以读取文本文件"
+      - resource: "*.心语"
+        operations: ["read"]
+        description: "访客可以读取心语文件"
+      - resource: "math"
+        operations: ["import"]
+        description: "访客可以导入math模块"
+      - resource: "datetime"
+        operations: ["import"]
+        description: "访客可以导入datetime模块"
+      - resource: "https://*.example.com/public/*"
+        operations: ["network"]
+        description: "访客可以访问example.com的公开API"
+    parent_roles: []
+    
+  restricted:
+    permissions:
+      - resource: "/tmp/restricted/*"
+        operations: ["read"]
+        description: "受限用户只能读取特定目录"
+      - resource: "math"
+        operations: ["import"]
+        description: "受限用户可以导入math模块"
+      - resource: "*.心语"
+        operations: ["read"]
+        description: "受限用户可以读取心语文件"
+    parent_roles: []
+
+# 角色层次结构
+role_hierarchy:
+  developer: ["user"]
+  user: ["guest"]
+  # restricted角色没有父角色，权限最严格

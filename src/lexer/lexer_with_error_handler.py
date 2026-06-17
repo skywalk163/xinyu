@@ -6,17 +6,18 @@
 """
 
 from typing import List, Optional
+
+from src.error_handling import ErrorCode, ErrorHandler, ErrorType
+from src.lexer.keywords import ALL_KEYWORDS, BUILTIN_FUNCTIONS, OPERATORS, SYMBOLS
 from src.lexer.tokens import Token, TokenType
-from src.lexer.keywords import ALL_KEYWORDS, OPERATORS, SYMBOLS, BUILTIN_FUNCTIONS
-from src.error_handling import ErrorHandler, ErrorType
 
 
 class LexerWithErrorHandler:
     """词法分析器（集成错误处理）
-    
+
     这是 Lexer 的增强版本，使用 ErrorHandler 统一处理错误，
     而不是抛出异常。这样可以收集多个错误，提供更好的错误报告。
-    
+
     Attributes:
         source: 源代码字符串
         pos: 当前位置索引
@@ -25,7 +26,7 @@ class LexerWithErrorHandler:
         indent_stack: 缩进栈
         tokens: 已识别的Token列表
         error_handler: 错误处理器
-    
+
     Example:
         >>> from src.error_handling import ErrorHandler
         >>> error_handler = ErrorHandler()
@@ -37,7 +38,7 @@ class LexerWithErrorHandler:
 
     def __init__(self, source: str, error_handler: Optional[ErrorHandler] = None):
         """初始化词法分析器
-        
+
         Args:
             source: 要分析的源代码字符串
             error_handler: 错误处理器（可选，默认创建新实例）
@@ -52,13 +53,13 @@ class LexerWithErrorHandler:
 
     def tokenize(self) -> List[Token]:
         """将源代码转换为Token序列
-        
+
         对源代码进行词法分析，识别并提取所有的词法单元（Token）。
         遇到错误时不抛出异常，而是通过 error_handler 报告错误。
-        
+
         Returns:
             List[Token]: Token序列列表，以EOF标记结束
-        
+
         Example:
             >>> lexer = LexerWithErrorHandler("变量 x 为 42")
             >>> tokens = lexer.tokenize()
@@ -74,13 +75,14 @@ class LexerWithErrorHandler:
             char = self.source[self.pos]
 
             # 处理换行和缩进
-            if char == '\n':
+            if char == "\n":
                 self._handle_newline()
             # 处理注释
-            elif (char == '-' and self.pos + 1 < len(self.source) and
-                  self.source[self.pos + 1] == '-'):
+            elif (
+                char == "-" and self.pos + 1 < len(self.source) and self.source[self.pos + 1] == "-"
+            ):
                 self._skip_comment()
-            elif char == '#':
+            elif char == "#":
                 self._skip_comment()
             # 处理字符串
             elif char == '"':
@@ -95,15 +97,16 @@ class LexerWithErrorHandler:
             elif self._is_chinese(char):
                 self._read_chinese()
             # 处理英文标识符
-            elif char.isalpha() or char == '_':
+            elif char.isalpha() or char == "_":
                 self._read_identifier()
             else:
                 # 报告错误而不是抛出异常
-                self._report_error(
-                    f"非法字符: {char}",
-                    self.line,
-                    self.column,
-                    suggestion="请检查是否使用了不支持的字符"
+                self.error_handler.report_with_code(
+                    ErrorCode.LEXER_INVALID_CHAR,
+                    line=self.line,
+                    column=self.column,
+                    source=self.source,
+                    char=repr(char),
                 )
                 self.pos += 1
                 self.column += 1
@@ -117,16 +120,12 @@ class LexerWithErrorHandler:
         return self.tokens
 
     def _report_error(
-        self,
-        message: str,
-        line: int,
-        column: int,
-        suggestion: Optional[str] = None
+        self, message: str, line: int, column: int, suggestion: Optional[str] = None
     ) -> None:
         """报告错误
-        
+
         使用 error_handler 统一报告错误，而不是抛出异常。
-        
+
         Args:
             message: 错误消息
             line: 行号
@@ -134,40 +133,35 @@ class LexerWithErrorHandler:
             suggestion: 修复建议（可选）
         """
         self.error_handler.report(
-            ErrorType.LEXER_ERROR,
-            message,
-            line,
-            column,
-            source=self.source,
-            suggestion=suggestion
+            ErrorType.LEXER_ERROR, message, line, column, source=self.source, suggestion=suggestion
         )
 
     def _skip_whitespace(self):
         """跳过空白字符（不包括换行）"""
-        while self.pos < len(self.source) and self.source[self.pos] in ' \t':
+        while self.pos < len(self.source) and self.source[self.pos] in " \t":
             self.pos += 1
             self.column += 1
 
     def _skip_comment(self):
         """跳过注释"""
-        while self.pos < len(self.source) and self.source[self.pos] != '\n':
+        while self.pos < len(self.source) and self.source[self.pos] != "\n":
             self.pos += 1
 
     def _handle_newline(self):
         """处理换行和缩进"""
-        self.tokens.append(Token(TokenType.NEWLINE, '\n', self.line, self.column))
+        self.tokens.append(Token(TokenType.NEWLINE, "\n", self.line, self.column))
         self.line += 1
         self.column = 0
         self.pos += 1
 
         # 计算缩进
         indent = 0
-        while self.pos < len(self.source) and self.source[self.pos] == ' ':
+        while self.pos < len(self.source) and self.source[self.pos] == " ":
             indent += 1
             self.pos += 1
 
         # 跳过空行
-        if self.pos < len(self.source) and self.source[self.pos] == '\n':
+        if self.pos < len(self.source) and self.source[self.pos] == "\n":
             return
 
         # 生成INDENT/DEDENT
@@ -186,30 +180,30 @@ class LexerWithErrorHandler:
         start = self.pos
 
         while self.pos < len(self.source) and self.source[self.pos] != '"':
-            if self.source[self.pos] == '\\':
+            if self.source[self.pos] == "\\":
                 self.pos += 1  # 跳过转义字符
             self.pos += 1
 
         if self.pos >= len(self.source):
             # 报告错误而不是抛出异常
-            self._report_error(
-                "字符串未终止",
-                self.line,
-                start_col,
-                suggestion="请确保字符串以双引号结尾"
+            self.error_handler.report_with_code(
+                ErrorCode.LEXER_UNTERMINATED_STRING,
+                line=self.line,
+                column=start_col,
+                source=self.source,
             )
             return
 
-        value = self.source[start:self.pos]
+        value = self.source[start : self.pos]
         self.pos += 1  # 跳过结尾的 "
         self.column += self.pos - start + 1
 
         # 处理转义字符
-        value = value.replace('\\\\', '\x00')
-        value = value.replace('\\n', '\n')
-        value = value.replace('\\t', '\t')
+        value = value.replace("\\\\", "\x00")
+        value = value.replace("\\n", "\n")
+        value = value.replace("\\t", "\t")
         value = value.replace('\\"', '"')
-        value = value.replace('\x00', '\\')
+        value = value.replace("\x00", "\\")
 
         self.tokens.append(Token(TokenType.STRING, value, self.line, start_col))
 
@@ -223,22 +217,19 @@ class LexerWithErrorHandler:
             char = self.source[self.pos]
             if char.isdigit():
                 self.pos += 1
-            elif char == '.':
+            elif char == ".":
                 dot_count += 1
                 if dot_count > 1:
                     # 报告错误
                     self._report_error(
-                        "数字格式错误：多个小数点",
-                        self.line,
-                        start_col,
-                        suggestion="请检查数字格式，确保最多只有一个小数点"
+                        "数字格式错误：多个小数点", self.line, start_col, suggestion="请检查数字格式，确保最多只有一个小数点"
                     )
                     return
                 self.pos += 1
             else:
                 break
 
-        value_str = self.source[start:self.pos]
+        value_str = self.source[start : self.pos]
         self.column += self.pos - start
 
         if dot_count == 0:
@@ -258,7 +249,7 @@ class LexerWithErrorHandler:
 
     def _is_chinese(self, char: str) -> bool:
         """判断字符是否为中文"""
-        return '\u4e00' <= char <= '\u9fff'
+        return "\u4e00" <= char <= "\u9fff"
 
     def _read_chinese(self):
         """读取中文（关键字、操作符或标识符）"""
@@ -267,7 +258,7 @@ class LexerWithErrorHandler:
 
         # 先尝试匹配内置函数
         for func_name in BUILTIN_FUNCTIONS:
-            if self.source[start:start + len(func_name)] == func_name:
+            if self.source[start : start + len(func_name)] == func_name:
                 self.pos = start + len(func_name)
                 self.column = start_col + len(func_name)
                 self.tokens.append(Token(TokenType.IDENTIFIER, func_name, self.line, start_col))
@@ -277,24 +268,30 @@ class LexerWithErrorHandler:
         best_op_match = None
         best_op_len = 0
         for op in OPERATORS.keys():
-            if self.source[start:start + len(op)] == op:
+            if self.source[start : start + len(op)] == op:
                 if len(op) > best_op_len:
                     best_op_match = op
                     best_op_len = len(op)
-        
+
         # 如果找到操作符匹配，检查上下文
         if best_op_match:
             prev_is_operand = False
             prev_is_declaration = False
-            
+
             if self.tokens:
                 last_token = self.tokens[-1]
-                if last_token.type in (TokenType.NUMBER, TokenType.IDENTIFIER, TokenType.STRING, 
-                                      TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE):
+                if last_token.type in (
+                    TokenType.NUMBER,
+                    TokenType.IDENTIFIER,
+                    TokenType.STRING,
+                    TokenType.RPAREN,
+                    TokenType.RBRACKET,
+                    TokenType.RBRACE,
+                ):
                     prev_is_operand = True
                 elif last_token.type in (TokenType.VAR, TokenType.FUNCTION, TokenType.ASSIGN):
                     prev_is_declaration = True
-            
+
             # 如果前面是声明关键字，则不识别为操作符
             if prev_is_declaration:
                 pass  # 继续作为标识符处理
@@ -302,28 +299,31 @@ class LexerWithErrorHandler:
             else:
                 self.pos = start + best_op_len
                 self.column = start_col + best_op_len
-                self.tokens.append(Token(OPERATORS[best_op_match], best_op_match, self.line, start_col))
+                self.tokens.append(
+                    Token(OPERATORS[best_op_match], best_op_match, self.line, start_col)
+                )
                 return
-        
+
         # 如果不是操作符，读取所有连续的中文字符作为标识符
         while self.pos < len(self.source) and self._is_chinese(self.source[self.pos]):
             self.pos += 1
-        
+
         # 继续读取后面的英文/数字/下划线
-        while (self.pos < len(self.source) and
-               (self.source[self.pos].isalnum() or self.source[self.pos] == '_')):
+        while self.pos < len(self.source) and (
+            self.source[self.pos].isalnum() or self.source[self.pos] == "_"
+        ):
             self.pos += 1
-        
+
         # 获取完整的标识符
-        value = self.source[start:self.pos]
-        
+        value = self.source[start : self.pos]
+
         # 检查是否为关键字
         if value in ALL_KEYWORDS:
             self.column = start_col + len(value)
             token_type = ALL_KEYWORDS[value]
             self.tokens.append(Token(token_type, value, self.line, start_col))
             return
-        
+
         # 否则为普通标识符
         self.column = start_col + len(value)
         self.tokens.append(Token(TokenType.IDENTIFIER, value, self.line, start_col))
@@ -332,14 +332,15 @@ class LexerWithErrorHandler:
         """读取英文标识符"""
         start_col = self.column
         start = self.pos
-        
-        while (self.pos < len(self.source) and
-               (self.source[self.pos].isalnum() or self.source[self.pos] == '_')):
+
+        while self.pos < len(self.source) and (
+            self.source[self.pos].isalnum() or self.source[self.pos] == "_"
+        ):
             self.pos += 1
-        
-        value = self.source[start:self.pos]
+
+        value = self.source[start : self.pos]
         self.column += self.pos - start
-        
+
         # 检查是否为关键字
         if value in ALL_KEYWORDS:
             token_type = ALL_KEYWORDS[value]

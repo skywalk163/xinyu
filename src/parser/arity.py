@@ -15,10 +15,11 @@ from typing import Optional
 
 class ArityType(Enum):
     """元数类型"""
-    FIXED = "fixed"        # 固定数量
+
+    FIXED = "fixed"  # 固定数量
     VARIABLE = "variable"  # 可变数量
-    MINIMUM = "minimum"    # 最小数量
-    RANGE = "range"        # 范围数量
+    MINIMUM = "minimum"  # 最小数量
+    RANGE = "range"  # 范围数量
 
 
 class Arity:
@@ -45,7 +46,7 @@ class Arity:
         type: ArityType,
         count: Optional[int] = None,
         min_count: Optional[int] = None,
-        max_count: Optional[int] = None
+        max_count: Optional[int] = None,
     ):
         """初始化元数
 
@@ -61,7 +62,7 @@ class Arity:
         self.max_count = max_count
 
     @classmethod
-    def fixed(cls, count: int) -> 'Arity':
+    def fixed(cls, count: int) -> "Arity":
         """固定元数
 
         必须有固定数量的参数。
@@ -78,7 +79,7 @@ class Arity:
         return cls(ArityType.FIXED, count=count)
 
     @classmethod
-    def variable(cls, min: int = 0) -> 'Arity':
+    def variable(cls, min: int = 0) -> "Arity":
         """可变元数
 
         可以有任意数量的参数（最少min个）。
@@ -96,7 +97,7 @@ class Arity:
         return cls(ArityType.VARIABLE, min_count=min)
 
     @classmethod
-    def min(cls, min_count: int) -> 'Arity':
+    def min(cls, min_count: int) -> "Arity":
         """最小元数
 
         最少需要min_count个参数，可以更多。
@@ -113,7 +114,7 @@ class Arity:
         return cls(ArityType.MINIMUM, min_count=min_count)
 
     @classmethod
-    def range(cls, min: int, max: int) -> 'Arity':
+    def range(cls, min: int, max: int) -> "Arity":
         """范围元数
 
         参数数量必须在[min, max]范围内。

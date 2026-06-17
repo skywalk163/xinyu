@@ -5,9 +5,11 @@
 import pytest
 from src.main import ChineseProgram
 try:
-    from src.security.input_validator import InputValidator
+    from src.security.input_validator import SourceCodeValidator, validate_source
+    InputValidator = SourceCodeValidator  # 保持向后兼容
 except ImportError:
     InputValidator = None
+    validate_source = None
 
 
 class TestSecurityErrors:
@@ -61,27 +63,24 @@ class TestInputValidation:
 
     def test_validate_source_code(self):
         """测试源代码验证"""
-        if InputValidator is None:
-            pytest.skip("InputValidator not available")
-        validator = InputValidator()
+        if validate_source is None:
+            pytest.skip("validate_source not available")
+        
         valid_sources = [
             '打印"你好"。',
             "定义 变量 = 1。",
-            "定义 函数名 = 函数 x：返回 x。",
+            "定义 函数名 = 函 x：返回 x。",
         ]
         for source in valid_sources:
             # 应该通过验证
-            try:
-                result = validator.validate(source)
-                assert result is True or result is not None
-            except Exception:
-                pass  # 某些验证可能抛出异常
+            result = validate_source(source)
+            assert result.is_valid, f"验证失败: {result.errors}"
 
     def test_validate_malicious_input(self):
         """测试恶意输入验证"""
-        if InputValidator is None:
-            pytest.skip("InputValidator not available")
-        validator = InputValidator()
+        if validate_source is None:
+            pytest.skip("validate_source not available")
+        
         malicious_sources = [
             "__import__('os').system('ls')",
             "eval('1+1')",
@@ -89,42 +88,34 @@ class TestInputValidation:
         ]
         for source in malicious_sources:
             # 应该拒绝或标记为危险
-            try:
-                result = validator.validate(source)
-                assert result is False or result is None
-            except Exception:
-                pass  # 预期的异常
+            result = validate_source(source)
+            assert not result.is_valid, f"恶意代码应该被拒绝: {source}"
 
     def test_validate_input_length(self):
         """测试输入长度验证"""
-        if InputValidator is None:
-            pytest.skip("InputValidator not available")
-        validator = InputValidator()
+        if validate_source is None:
+            pytest.skip("validate_source not available")
+        
         # 超长输入
         long_source = "打印" + "。" * 1000000
-        try:
-            result = validator.validate(long_source)
-            # 应该拒绝或截断
-            # 根据实际实现决定
-        except Exception:
-            pass  # 预期的异常
+        result = validate_source(long_source)
+        # 超长输入应该产生警告
+        assert len(result.warnings) > 0, "超长输入应该产生警告"
 
     def test_validate_special_characters(self):
         """测试特殊字符验证"""
-        if InputValidator is None:
-            pytest.skip("InputValidator not available")
-        validator = InputValidator()
+        if validate_source is None:
+            pytest.skip("validate_source not available")
+        
         special_sources = [
             '打印"\x00\x01\x02"。',
             '定义 变量 = "\n\r\t"。',
         ]
         for source in special_sources:
-            try:
-                result = validator.validate(source)
-                # 应该正确处理特殊字符
-                # 根据实际实现决定
-            except Exception:
-                pass
+            result = validate_source(source)
+            # 特殊字符应该被允许（除非是控制字符）
+            # 这里我们只检查验证不会崩溃
+            assert result is not None, "验证应该返回结果"
 
 
 class TestSandboxSecurity:

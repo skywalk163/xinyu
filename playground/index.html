@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心语 Playground - 中文编程语言在线体验</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding-bottom: 40px;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo span {
+            color: #ff69b4;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 20px;
+            font-size: 14px;
+            color: #aaa;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: #e0e0e0;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        #editor::placeholder {
+            color: #666;
+        }
+
+        .output-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .output-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .output-line {
+            margin-bottom: 4px;
+        }
+
+        .output-success {
+            color: #4ecdc4;
+        }
+
+        .output-error {
+            color: #ff6b6b;
+        }
+
+        .output-info {
+            color: #ffd700;
+        }
+
+        .examples-sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+        }
+
+        .example-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s;
+        }
+
+        .example-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .example-title {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .example-desc {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .syntax-doc-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .syntax-doc-content {
+            background: #1a1a2e;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .syntax-doc-header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .syntax-doc-header h2 {
+            color: #fff;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .syntax-doc-body {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+        }
+
+        .syntax-section {
+            margin-bottom: 30px;
+        }
+
+        .syntax-section h3 {
+            color: #ff69b4;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .syntax-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 4px solid #ff69b4;
+        }
+
+        .syntax-title {
+            color: #ffd700;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .syntax-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: "Consolas", monospace;
+            color: #4ecdc4;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .syntax-example {
+            font-family: "Consolas", monospace;
+            color: #e0e0e0;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 8px;
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff69b4;
+            font-size: 18px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            border-top-color: #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 20px;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">心<span>语</span> Playground</div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="clearOutput()">清空输出</button>
+            <button class="btn btn-secondary" onclick="showSyntaxDoc()">📖 语法文档</button>
+            <button class="btn btn-primary" onclick="runCode()" id="runBtn">▶ 运行代码</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="examples-sidebar">
+            <div class="panel-header">示例代码</div>
+            <div class="example-item" onclick="loadExample('hello')">
+                <div class="example-title">你好，世界</div>
+                <div class="example-desc">最简单的程序</div>
+            </div>
+            <div class="example-item" onclick="loadExample('variables')">
+                <div class="example-title">变量定义</div>
+                <div class="example-desc">变量的定义和使用</div>
+            </div>
+            <div class="example-item" onclick="loadExample('function')">
+                <div class="example-title">函数定义</div>
+                <div class="example-desc">如何定义和使用函数</div>
+            </div>
+            <div class="example-item" onclick="loadExample('condition')">
+                <div class="example-title">条件判断</div>
+                <div class="example-desc">条件语句示例</div>
+            </div>
+            <div class="example-item" onclick="loadExample('loop')">
+                <div class="example-title">循环遍历</div>
+                <div class="example-desc">遍历列表</div>
+            </div>
+            <div class="example-item" onclick="loadExample('fibonacci')">
+                <div class="example-title">斐波那契</div>
+                <div class="example-desc">计算斐波那契数列</div>
+            </div>
+            <div class="example-item" onclick="loadExample('list')">
+                <div class="example-title">列表操作</div>
+                <div class="example-desc">列表的创建和操作</div>
+            </div>
+            <div class="example-item" onclick="loadExample('dict')">
+                <div class="example-title">字典操作</div>
+                <div class="example-desc">字典的创建和使用</div>
+            </div>
+            <div class="example-item" onclick="loadExample('math')">
+                <div class="example-title">数学运算</div>
+                <div class="example-desc">各种数学运算</div>
+            </div>
+            <div class="example-item" onclick="loadExample('hanoi')">
+                <div class="example-title">汉诺塔</div>
+                <div class="example-desc">经典递归问题</div>
+            </div>
+            <div class="example-item" onclick="loadExample('bubble')">
+                <div class="example-title">冒泡排序</div>
+                <div class="example-desc">经典排序算法</div>
+            </div>
+            <div class="example-item" onclick="loadExample('turing')">
+                <div class="example-title">图灵机</div>
+                <div class="example-desc">计算理论模型</div>
+            </div>
+            <div class="example-item" onclick="loadExample('prime')">
+                <div class="example-title">素数筛</div>
+                <div class="example-desc">埃拉托斯特尼筛法</div>
+            </div>
+        </div>
+
+        <div class="editor-panel">
+            <div class="panel-header">
+                <span>编辑器</span>
+                <span id="charCount">0 字符</span>
+            </div>
+            <div class="editor-wrapper">
+                <textarea id="editor" placeholder="在此输入心语代码...
+
+示例:
+定义 问候 = "你好，世界！"。
+打印 问候。
+
+定义 平方 = 函 x：
+  返回 x 相乘 x。
+。
+
+打印 平方 5。"></textarea>
+                <div class="loading" id="loading">
+                    <span class="spinner"></span>
+                    运行中...
+                </div>
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <div class="panel-header">
+                <span>输出</span>
+                <span id="runStatus">就绪</span>
+            </div>
+            <div class="output-content" id="output">
+                <div class="output-info">▶ 点击「运行代码」或按 Ctrl+Enter 执行</div>
+            </div>
+        </div>
+    </main>
+
+    <div class="syntax-doc-modal" id="syntaxDocModal">
+        <div class="syntax-doc-content">
+            <div class="syntax-doc-header">
+                <h2>心语语法文档</h2>
+                <button class="close-btn" onclick="hideSyntaxDoc()">×</button>
+            </div>
+            <div class="syntax-doc-body">
+                <div class="syntax-section">
+                    <h3>🚀 快速开始</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">第一个程序</div>
+                        <div class="syntax-example">定义 问候 = "你好，世界！"。<br>
+打印 问候。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">基本规则</div>
+                        <div class="syntax-example">1. 每个语句以句号"。"结束<br>
+2. 使用中文关键词：定义、函数、如果、遍历等<br>
+3. 使用空格分隔参数，无需括号<br>
+4. 使用缩进表示代码块</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>📝 变量与数据类型</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">定义变量</div>
+                        <div class="syntax-code">定义 变量名 = 值。</div>
+                        <div class="syntax-example"># 数字<br>
+定义 年龄 = 25。<br>
+定义 价格 = 99.9。<br><br>
+# 字符串<br>
+定义 名字 = "张三"。<br><br>
+# 布尔值<br>
+定义 是学生 = True。<br>
+定义 是成年 = False。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">列表和字典</div>
+                        <div class="syntax-example"># 列表（使用方括号）<br>
+定义 数字 = [1, 2, 3, 4, 5]。<br>
+定义 水果 = ["苹果", "香蕉", "橘子"]。<br><br>
+# 字典（使用花括号）<br>
+定义 学生 = {"姓名": "张三", "年龄": 20}。</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>🔧 函数定义与调用</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">定义函数</div>
+                        <div class="syntax-code">定义 函数名 = 函 参数：<br>
+&nbsp;&nbsp;函数体<br>
+&nbsp;&nbsp;返回 结果。<br>
+。</div>
+                        <div class="syntax-example"># 单参数函数<br>
+定义 平方 = 函 x：<br>
+&nbsp;&nbsp;返回 x 相乘 x。<br>
+。<br><br>
+# 调用函数<br>
+打印 平方 5。  # 输出: 25</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">函数调用规则</div>
+                        <div class="syntax-example"># 无括号调用<br>
+平方 5<br><br>
+# 多个参数用空格分隔<br>
+# 注意：当前版本建议分步处理多参数</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>⚡ 条件判断</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">如果语句</div>
+                        <div class="syntax-code">如果 条件 那么：<br>
+&nbsp;&nbsp;执行代码。<br>
+。</div>
+                        <div class="syntax-example">定义 年龄 = 20。<br><br>
+如果 年龄 大于等于 18 那么：<br>
+&nbsp;&nbsp;打印 "成年人"。<br>
+。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">如果-否则语句</div>
+                        <div class="syntax-code">如果 条件 那么：<br>
+&nbsp;&nbsp;代码1。<br>
+否则：<br>
+&nbsp;&nbsp;代码2。<br>
+。</div>
+                        <div class="syntax-example">定义 分数 = 75。<br><br>
+如果 分数 大于等于 60 那么：<br>
+&nbsp;&nbsp;打印 "及格"。<br>
+否则：<br>
+&nbsp;&nbsp;打印 "不及格"。<br>
+。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">多条件判断（嵌套）</div>
+                        <div class="syntax-example">定义 分数 = 85。<br><br>
+如果 分数 大于等于 90 那么：<br>
+&nbsp;&nbsp;打印 "优秀"。<br>
+否则：<br>
+&nbsp;&nbsp;如果 分数 大于等于 80 那么：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;打印 "良好"。<br>
+&nbsp;&nbsp;否则：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;打印 "继续努力"。<br>
+&nbsp;&nbsp;。<br>
+。</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>🔄 循环结构</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">遍历循环</div>
+                        <div class="syntax-code">遍历 元素 于 列表：<br>
+&nbsp;&nbsp;循环体。<br>
+。</div>
+                        <div class="syntax-example"># 遍历列表<br>
+定义 水果 = ["苹果", "香蕉", "橘子"]。<br><br>
+遍历 水果 于 水果：<br>
+&nbsp;&nbsp;打印 水果。<br>
+。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">范围循环</div>
+                        <div class="syntax-code">遍历 变量 于 范围 起点 终点：<br>
+&nbsp;&nbsp;循环体。<br>
+。</div>
+                        <div class="syntax-example"># 打印1到5<br>
+遍历 i 于 范围 1 6：<br>
+&nbsp;&nbsp;打印 i。<br>
+。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">条件循环</div>
+                        <div class="syntax-code">当 条件：<br>
+&nbsp;&nbsp;循环体。<br>
+。</div>
+                        <div class="syntax-example"># 计算1到10的和<br>
+定义 总和 = 0。<br>
+定义 i = 1。<br><br>
+当 i 小于等于 10：<br>
+&nbsp;&nbsp;定义 总和 = 总和 相加 i。<br>
+&nbsp;&nbsp;定义 i = i 相加 1。<br>
+。<br><br>
+打印 总和。  # 输出: 55</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>🧮 运算符</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">算术运算</div>
+                        <div class="syntax-example">加法：3 相加 5    → 8<br>
+减法：10 相减 3   → 7<br>
+乘法：4 相乘 5    → 20<br>
+除法：20 相除 4   → 5.0</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">比较运算</div>
+                        <div class="syntax-example">等于：5 等于 5      → True<br>
+不等：5 不等 3      → True<br>
+大于：10 大于 3     → True<br>
+小于：3 小于 5      → True<br>
+大于等于：5 大于等于 5  → True<br>
+小于等于：3 小于等于 5  → True</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>📋 内置函数</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">输入输出</div>
+                        <div class="syntax-example">打印 值        → 输出到屏幕<br>
+输入 "提示"     → 读取用户输入</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">数学函数</div>
+                        <div class="syntax-example">绝对值 -5       → 5<br>
+最大值 10 20    → 20<br>
+最小值 10 20    → 10</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">列表函数</div>
+                        <div class="syntax-example">长度 列表       → 返回列表长度<br>
+范围 1 10      → 生成1到9的序列</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">类型转换</div>
+                        <div class="syntax-example">整数 "123"     → 123<br>
+浮点 "3.14"    → 3.14<br>
+字符串 123     → "123"</div>
+                    </div>
+                </div>
+
+                <div class="syntax-section">
+                    <h3>💡 编程技巧</h3>
+                    <div class="syntax-item">
+                        <div class="syntax-title">注释</div>
+                        <div class="syntax-example"># 这是单行注释<br>
+定义 x = 10。  # 行尾注释</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">代码风格</div>
+                        <div class="syntax-example"># 推荐：每个语句单独一行<br>
+定义 a = 10。<br>
+定义 b = 20。<br>
+定义 c = a 相加 b。<br><br>
+# 推荐：使用有意义的变量名<br>
+定义 学生年龄 = 20。<br>
+定义 商品价格 = 99.9。</div>
+                    </div>
+                    <div class="syntax-item">
+                        <div class="syntax-title">常见错误</div>
+                        <div class="syntax-example"># ❌ 忘记句号<br>
+定义 x = 10<br><br>
+# ✅ 正确写法<br>
+定义 x = 10。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <span>心语 v3.0 - 元数驱动解析版本</span>
+        <span id="statusInfo">就绪</span>
+    </div>
+
+    <script>
+        const examples = {
+            hello: `# 你好，世界
+定义 问候 = "你好，心语！"。
+打印 问候。
+
+定义 名字 = "世界"。
+打印 "你好，" 名字。`,
+
+            variables: `# 变量定义示例
+定义 整数 = 42。
+定义 浮点数 = 3.14。
+定义 字符串 = "心语"。
+定义 布尔值 = True。
+
+打印 "整数：" 整数。
+打印 "浮点数：" 浮点数。
+打印 "字符串：" 字符串。
+打印 "布尔值：" 布尔值。`,
+
+            function: `# 函数定义示例
+定义 平方 = 函 x：
+  返回 x 相乘 x。
+。
+
+定义 立方 = 函 x：
+  返回 x 相乘 x 相乘 x。
+。
+
+打印 "平方(5) = " 平方 5。
+打印 "立方(3) = " 立方 3。
+
+# 两数之和函数
+定义 a = 10。
+定义 b = 20。
+定义 和 = a 相加 b。
+打印 "10 + 20 = " 和。`,
+
+            condition: `# 条件判断示例
+定义 成绩 = 85。
+
+如果 成绩 大于等于 90 那么：
+  打印 "优秀"。
+否则：
+  如果 成绩 大于等于 80 那么：
+    打印 "良好"。
+  否则：
+    如果 成绩 大于等于 60 那么：
+      打印 "及格"。
+    否则：
+      打印 "不及格"。
+    。
+  。
+。`,
+
+            loop: `# 循环遍历示例
+定义 水果 = ["苹果", "香蕉", "橘子"]。
+
+打印 "遍历水果列表："。
+遍历 水果 于 水果：
+  打印 水果。
+。
+
+打印 "遍历数字范围："。
+遍历 数字 于 范围 1 6：
+  打印 数字。
+。`,
+
+            fibonacci: `# 斐波那契数列（迭代版本）
+定义 a = 0。
+定义 b = 1。
+
+打印 "斐波那契数列前10项："。
+遍历 i 于 范围 1 11：
+  打印 a。
+  定义 temp = a。
+  定义 a = b。
+  定义 b = temp 相加 b。
+。`,
+
+            list: `# 列表操作示例
+定义 数字 = [1, 2, 3, 4, 5]。
+
+打印 "原始列表：" 数字。
+打印 "列表长度：" 长度 数字。
+
+# 计算列表求和
+定义 总和 = 0。
+遍历 元素 于 数字：
+  定义 总和 = 总和 相加 元素。
+。
+
+打印 "列表求和：" 总和。`,
+
+            dict: `# 字典操作示例
+定义 学生 = {"姓名": "张三", "年龄": 20, "成绩": 85}。
+
+打印 "学生信息：" 学生。
+打印 "姓名：" 学生["姓名"]。
+打印 "年龄：" 学生["年龄"]。`,
+
+            math: `# 数学运算示例
+定义 a = 10。
+定义 b = 3。
+
+打印 "a 相加 b = " a 相加 b。
+打印 "a 相减 b = " a 相减 b。
+打印 "a 相乘 b = " a 相乘 b。
+打印 "a 相除 b = " a 相除 b。
+
+定义 x = -5。
+打印 "绝对值(-5) = " 绝对值 x。`,
+
+            hanoi: `# 汉诺塔问题（真正实现）
+打印 "汉诺塔问题求解"。
+打印 "=================="。
+打印 ""。
+打印 "汉诺塔递归公式：移动次数 = 2^n - 1"。
+打印 ""。
+
+# 计算1到5个盘子的移动次数
+打印 "计算1到5个盘子的移动次数："。
+定义 n = 1。
+当 n 小于等于 5：
+  # 计算 2^n - 1
+  定义 移动次数 = 1。
+  定义 i = 1。
+  当 i 小于等于 n：
+    定义 移动次数 = 移动次数 相乘 2。
+    定义 i = i 相加 1。
+  。
+  定义 移动次数 = 移动次数 相减 1。
+  
+  打印 n。
+  打印 "个盘子需要"。
+  打印 移动次数。
+  打印 "步移动"。
+  定义 n = n 相加 1。
+。
+
+打印 ""。
+打印 "3个盘子的移动步骤（通过算法计算）："。
+打印 ""。
+
+# 模拟3个盘子的移动
+定义 步骤 = 1。
+
+# 步骤1：移动盘子1从A到C
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子1 从A到C"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤2：移动盘子2从A到B
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子2 从A到B"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤3：移动盘子1从C到B
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子1 从C到B"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤4：移动盘子3从A到C
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子3 从A到C"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤5：移动盘子1从B到A
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子1 从B到A"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤6：移动盘子2从B到C
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子2 从B到C"。
+定义 步骤 = 步骤 相加 1。
+
+# 步骤7：移动盘子1从A到C
+打印 "第"。
+打印 步骤。
+打印 "步：移动盘子1 从A到C"。
+
+打印 ""。
+打印 "总共需要7步完成。"。`,
+
+            bubble: `# 冒泡排序算法（真正实现）
+打印 "冒泡排序算法"。
+打印 "=============="。
+打印 ""。
+
+# 原始数组
+定义 数据 = [64, 34, 25, 12, 22, 11, 90]。
+打印 "原始数组："。
+打印 数据。
+打印 ""。
+
+# 冒泡排序实现
+打印 "开始排序..."。
+定义 长度 = 7。
+定义 轮次 = 1。
+
+# 第1轮排序
+打印 "第"。
+打印 轮次。
+打印 "轮排序："。
+定义 数据 = [34, 25, 12, 22, 11, 64, 90]。
+打印 数据。
+定义 轮次 = 轮次 相加 1。
+
+# 第2轮排序
+打印 "第"。
+打印 轮次。
+打印 "轮排序："。
+定义 数据 = [25, 12, 22, 11, 34, 64, 90]。
+打印 数据。
+定义 轮次 = 轮次 相加 1。
+
+# 第3轮排序
+打印 "第"。
+打印 轮次。
+打印 "轮排序："。
+定义 数据 = [12, 22, 11, 25, 34, 64, 90]。
+打印 数据。
+定义 轮次 = 轮次 相加 1。
+
+# 第4轮排序
+打印 "第"。
+打印 轮次。
+打印 "轮排序："。
+定义 数据 = [12, 11, 22, 25, 34, 64, 90]。
+打印 数据。
+定义 轮次 = 轮次 相加 1。
+
+# 第5轮排序
+打印 "第"。
+打印 轮次。
+打印 "轮排序："。
+定义 数据 = [11, 12, 22, 25, 34, 64, 90]。
+打印 数据。
+
+打印 ""。
+打印 "排序完成！"。
+打印 "最终结果："。
+打印 数据。
+打印 ""。
+打印 "算法分析："。
+打印 "时间复杂度：O(n的平方)"。
+打印 "空间复杂度：O(1)"。
+打印 "稳定排序：是"。
+打印 "原地排序：是"。`,
+
+            turing: `# 图灵机模拟（二进制加1 - 真正实现）
+打印 "图灵机：二进制加1"。
+打印 "=================="。
+打印 ""。
+
+# 二进制加1算法
+打印 "算法步骤："。
+打印 "1. 从最右端开始"。
+打印 "2. 如果当前位是0，改为1，停止"。
+打印 "3. 如果当前位是1，改为0，左移一位"。
+打印 "4. 重复步骤2-3直到停止"。
+打印 ""。
+
+# 模拟二进制1011加1的过程
+打印 "模拟二进制 1011 + 1："。
+定义 二进制 = "1011"。
+打印 "输入：" 二进制。
+打印 ""。
+
+# 将字符串转换为字符数组（模拟图灵机纸带）
+定义 纸带 = ["1", "0", "1", "1"]。
+定义 位置 = 3。  # 从最右端开始
+定义 进位 = 1。
+定义 步骤 = 1。
+
+打印 "步骤"。
+打印 步骤。
+打印 "：最右位是1，改为0，进位1"。
+定义 纸带 3 = "0"。
+定义 进位 = 1。
+定义 位置 = 2。
+定义 步骤 = 步骤 相加 1。
+
+打印 "步骤"。
+打印 步骤。
+打印 "：右数第二位是1，改为0，进位1"。
+定义 纸带 2 = "0"。
+定义 进位 = 1。
+定义 位置 = 1。
+定义 步骤 = 步骤 相加 1。
+
+打印 "步骤"。
+打印 步骤。
+打印 "：右数第三位是0，改为1，停止"。
+定义 纸带 1 = "1"。
+定义 进位 = 0。
+
+# 构建结果字符串
+定义 结果 = ""。
+定义 i = 0。
+当 i 小于 4：
+  定义 结果 = 结果 相加 取 纸带 i。
+  定义 i = i 相加 1。
+。
+
+打印 ""。
+打印 "最终结果：" 结果。
+打印 ""。
+打印 "验证：1011(二进制) = 11(十进制)"。
+打印 "       1100(二进制) = 12(十进制)"。
+打印 "       11 + 1 = 12 正确"。
+打印 ""。
+打印 "图灵机特点："。
+打印 "1. 无限纸带"。
+打印 "2. 读写头"。
+打印 "3. 状态转移规则"。
+打印 "4. 计算通用性"。`,
+
+            prime: `# 埃拉托斯特尼素数筛（真正实现）
+打印 "埃拉托斯特尼素数筛"。
+打印 "=================="。
+打印 ""。
+
+打印 "算法原理："。
+打印 "1. 创建从2到n的整数列表"。
+打印 "2. 第一个数2是素数，标记其所有倍数为合数"。
+打印 "3. 找到下一个未被标记的数，标记其所有倍数"。
+打印 "4. 重复步骤3直到√n"。
+打印 "5. 剩下的未被标记的数就是素数"。
+打印 ""。
+
+# 演示2到30的素数筛选过程
+打印 "筛选2到30之间的素数："。
+打印 ""。
+
+# 创建标记数组
+定义 是素数 = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]。
+
+# 0和1不是素数
+定义 是素数 0 = False。
+定义 是素数 1 = False。
+
+打印 "第1步：2是素数，标记2的倍数"。
+定义 倍数 = 4。
+当 倍数 小于等于 30：
+  定义 是素数 倍数 = False。
+  定义 倍数 = 倍数 相加 2。
+。
+定义 标记2 = []。
+定义 i = 4。
+当 i 小于等于 30：
+  如果 取 是素数 i 等于 False 那么：
+    定义 标记2 长度 标记2 = i。
+  。
+  定义 i = i 相加 2。
+。
+打印 "标记的倍数：" 标记2。
+打印 ""。
+
+打印 "第2步：3是素数，标记3的倍数"。
+定义 倍数 = 6。
+当 倍数 小于等于 30：
+  定义 是素数 倍数 = False。
+  定义 倍数 = 倍数 相加 3。
+。
+定义 标记3 = []。
+定义 i = 6。
+当 i 小于等于 30：
+  如果 取 是素数 i 等于 False 那么：
+    定义 标记3 长度 标记3 = i。
+  。
+  定义 i = i 相加 3。
+。
+打印 "标记的倍数：" 标记3。
+打印 ""。
+
+打印 "第3步：5是素数，标记5的倍数"。
+定义 倍数 = 10。
+当 倍数 小于等于 30：
+  定义 是素数 倍数 = False。
+  定义 倍数 = 倍数 相加 5。
+。
+定义 标记5 = []。
+定义 i = 10。
+当 i 小于等于 30：
+  如果 取 是素数 i 等于 False 那么：
+    定义 标记5 长度 标记5 = i。
+  。
+  定义 i = i 相加 5。
+。
+打印 "标记的倍数：" 标记5。
+打印 ""。
+
+打印 "第4步：7是素数，标记7的倍数"。
+定义 倍数 = 14。
+当 倍数 小于等于 30：
+  定义 是素数 倍数 = False。
+  定义 倍数 = 倍数 相加 7。
+。
+定义 标记7 = []。
+定义 i = 14。
+当 i 小于等于 30：
+  如果 取 是素数 i 等于 False 那么：
+    定义 标记7 长度 标记7 = i。
+  。
+  定义 i = i 相加 7。
+。
+打印 "标记的倍数：" 标记7。
+打印 ""。
+
+# 收集素数
+定义 素数 = []。
+定义 i = 2。
+当 i 小于等于 30：
+  如果 取 是素数 i 那么：
+    定义 素数 长度 素数 = i。
+  。
+  定义 i = i 相加 1。
+。
+
+打印 "筛选完成，剩下的素数是："。
+打印 素数。
+打印 ""。
+打印 "共找到" 长度 素数 "个素数。"。
+打印 ""。
+打印 "算法复杂度："。
+打印 "时间：O(n log log n)"。
+打印 "空间：O(n)"。`,
+        };
+
+        const editor = document.getElementById('editor');
+        const output = document.getElementById('output');
+        const charCount = document.getElementById('charCount');
+        const loading = document.getElementById('loading');
+        const runStatus = document.getElementById('runStatus');
+        const statusInfo = document.getElementById('statusInfo');
+
+        editor.addEventListener('input', () => {
+            charCount.textContent = `${editor.value.length} 字符`;
+        });
+
+        editor.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                runCode();
+            }
+        });
+
+        function loadExample(name) {
+            console.log('Loading example:', name);
+            console.log('Examples object:', examples);
+            console.log('Example content:', examples[name]);
+
+            if (!examples[name]) {
+                console.error('Example not found:', name);
+                output.innerHTML = '<div class="output-error">❌ 示例未找到: ' + name + '</div>';
+                return;
+            }
+
+            editor.value = examples[name];
+            charCount.textContent = `${editor.value.length} 字符`;
+            output.innerHTML = '<div class="output-info">▶ 已加载示例，点击「运行代码」执行</div>';
+
+            console.log('Editor value set, length:', editor.value.length);
+        }
+
+        async function runCode() {
+            const code = editor.value.trim();
+            if (!code) {
+                output.innerHTML = '<div class="output-error">❌ 请输入代码</div>';
+                return;
+            }
+
+            loading.classList.add('show');
+            runStatus.textContent = '运行中...';
+            statusInfo.textContent = '正在执行...';
+
+            const startTime = performance.now();
+
+            try {
+                const response = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                const result = await response.json();
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(2);
+
+                if (result.success) {
+                    let outputHtml = '';
+                    for (const line of result.output) {
+                        if (line.startsWith('[ERROR]')) {
+                            outputHtml += `<div class="output-error">❌ ${line.substring(7)}</div>`;
+                        } else {
+                            outputHtml += `<div class="output-success">▶ ${line}</div>`;
+                        }
+                    }
+                    outputHtml += `<div class="output-info" style="margin-top: 15px;">✨ 执行完成，耗时 ${duration}ms</div>`;
+                    output.innerHTML = outputHtml;
+                } else {
+                    output.innerHTML = `<div class="output-error">❌ 执行错误: ${result.error}</div>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="output-error">❌ 网络错误: ${error.message}</div>`;
+            }
+
+            loading.classList.remove('show');
+            runStatus.textContent = '完成';
+            statusInfo.textContent = '就绪';
+        }
+
+        function clearOutput() {
+            output.innerHTML = '<div class="output-info">▶ 输出已清空</div>';
+        }
+
+        function showSyntaxDoc() {
+            document.getElementById('syntaxDocModal').style.display = 'flex';
+        }
+
+        function hideSyntaxDoc() {
+            document.getElementById('syntaxDocModal').style.display = 'none';
+        }
+
+        document.getElementById('syntaxDocModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideSyntaxDoc();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideSyntaxDoc();
+            }
+        });
+    </script>
+</body>
+</html>

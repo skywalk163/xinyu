@@ -4,7 +4,7 @@
 该模块提供Python标准库模块的中文接口封装和模块管理功能。
 """
 
-from .manager import ModuleManager
 from .loader import ModuleLoader
+from .manager import ModuleManager
 
-__all__ = ['ModuleManager', 'ModuleLoader']
+__all__ = ["ModuleManager", "ModuleLoader"]
