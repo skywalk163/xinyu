@@ -1,5 +1,6 @@
 name: CI/CD Pipeline
-# Updated: Fixed deprecated actions/upload-artifact@v3 to @v4
+# FIX: Updated all actions/upload-artifact from v3 to v4 to fix deprecation error
+# This should resolve: "Error: This request has been automatically failed because it uses a deprecated version of `actions/upload-artifact: v3`"
 
 on:
   push:
