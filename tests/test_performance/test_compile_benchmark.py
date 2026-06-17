@@ -3,11 +3,13 @@
 测试编译各阶段的性能。
 """
 import pytest
+
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
+from src.main import ChineseProgram
 from src.parser.parser import Parser
 from src.semantic.analyzer import SemanticAnalyzer
-from src.codegen.python_codegen import PythonCodegen
-from src.main import ChineseProgram
+
 from .benchmark_utils import benchmark, format_result
 
 

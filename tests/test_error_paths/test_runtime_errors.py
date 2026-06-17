@@ -2,10 +2,12 @@
 
 测试运行时环境的错误处理能力。
 """
-import pytest
-import sys
 import io
+import sys
 from contextlib import redirect_stdout
+
+import pytest
+
 from src.main import ChineseProgram
 
 
@@ -19,7 +21,7 @@ class TestRuntimeErrors:
         # 应该捕获异常或返回错误
         result = program.run(source)
         # 可能返回None或抛出异常
-        assert result is None or result == float('inf')
+        assert result is None or result == float("inf")
 
     def test_index_out_of_range(self):
         """测试索引越界"""
@@ -118,7 +120,9 @@ class TestRuntimeErrorRecovery:
                 # 应该返回None或错误值
             except Exception as e:
                 # 如果抛出异常，应该是预期的异常类型
-                assert isinstance(e, (ValueError, TypeError, KeyError, IndexError, ZeroDivisionError))
+                assert isinstance(
+                    e, (ValueError, TypeError, KeyError, IndexError, ZeroDivisionError)
+                )
 
 
 class TestRuntimeEdgeCases:

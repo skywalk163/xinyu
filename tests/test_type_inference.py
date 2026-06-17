@@ -9,6 +9,7 @@
 """
 
 import unittest
+
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 from src.semantic.type_inference import TypeInferencer
@@ -27,7 +28,7 @@ class TestTypeInference(unittest.TestCase):
 
         inferencer = TypeInferencer()
         # 获取第一个语句的表达式
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "number")
@@ -41,7 +42,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "number")
@@ -55,7 +56,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "string")
@@ -69,7 +70,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "boolean")
@@ -83,7 +84,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "boolean")
@@ -97,7 +98,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "number")
@@ -111,7 +112,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "string")
@@ -125,7 +126,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "boolean")
@@ -139,7 +140,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "boolean")
@@ -153,7 +154,7 @@ class TestTypeInference(unittest.TestCase):
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "list")
@@ -162,14 +163,14 @@ class TestTypeInference(unittest.TestCase):
         """测试字典类型推断"""
         # 使用字典字面量语法（如果支持的话）
         # 如果不支持，测试其他类型推断
-        code = '定义 字典 = 创建字典。'
+        code = "定义 字典 = 创建字典。"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             # 不检查具体类型，只检查推断是否成功
@@ -177,14 +178,14 @@ class TestTypeInference(unittest.TestCase):
 
     def test_infer_function_call_builtin(self):
         """测试内置函数调用类型推断"""
-        code = '长度([1, 2, 3])'
+        code = "长度([1, 2, 3])"
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
 
         inferencer = TypeInferencer()
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr)
             self.assertEqual(result, "number")
@@ -199,7 +200,7 @@ class TestTypeInference(unittest.TestCase):
 
         inferencer = TypeInferencer()
         context = {"x": "number"}
-        if ast.statements and hasattr(ast.statements[0], 'expression'):
+        if ast.statements and hasattr(ast.statements[0], "expression"):
             expr = ast.statements[0].expression
             result = inferencer.infer(expr, context)
             self.assertEqual(result, "number")

@@ -3,10 +3,11 @@
 测试代码生成器的边界情况处理能力。
 """
 import pytest
+
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 from src.semantic.analyzer import SemanticAnalyzer
-from src.codegen.python_codegen import PythonCodegen
 
 
 class TestCodegenBoundary:
@@ -32,8 +33,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'print' in code
-        assert '你好' in code
+        assert "print" in code
+        assert "你好" in code
 
     def test_variable_definition(self):
         """测试变量定义"""
@@ -44,8 +45,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '变量' in code
-        assert '42' in code
+        assert "变量" in code
+        assert "42" in code
 
     def test_function_definition(self):
         """测试函数定义"""
@@ -56,9 +57,9 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'def' in code
-        assert '函数名' in code
-        assert 'return' in code
+        assert "def" in code
+        assert "函数名" in code
+        assert "return" in code
 
     def test_function_call(self):
         """测试函数调用"""
@@ -72,8 +73,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '函数名' in code
-        assert '5' in code
+        assert "函数名" in code
+        assert "5" in code
 
     def test_if_statement(self):
         """测试if语句"""
@@ -89,8 +90,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'if' in code
-        assert 'else' in code
+        assert "if" in code
+        assert "else" in code
 
     def test_while_loop(self):
         """测试while循环"""
@@ -105,7 +106,7 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'while' in code
+        assert "while" in code
 
     def test_for_loop(self):
         """测试for循环"""
@@ -120,7 +121,7 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'for' in code
+        assert "for" in code
 
     def test_arithmetic_operations(self):
         """测试算术运算"""
@@ -136,10 +137,10 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '+' in code or '相加' in code
-        assert '-' in code or '相减' in code
-        assert '*' in code or '相乘' in code
-        assert '/' in code or '相除' in code
+        assert "+" in code or "相加" in code
+        assert "-" in code or "相减" in code
+        assert "*" in code or "相乘" in code
+        assert "/" in code or "相除" in code
 
     def test_comparison_operations(self):
         """测试比较运算"""
@@ -154,9 +155,9 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '<' in code or '小于' in code
-        assert '>' in code or '大于' in code
-        assert '==' in code or '等于' in code
+        assert "<" in code or "小于" in code
+        assert ">" in code or "大于" in code
+        assert "==" in code or "等于" in code
 
     def test_list_literal(self):
         """测试列表字面量"""
@@ -167,8 +168,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '[' in code
-        assert ']' in code
+        assert "[" in code
+        assert "]" in code
 
     def test_dict_literal(self):
         """测试字典字面量"""
@@ -179,8 +180,8 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '{' in code
-        assert '}' in code
+        assert "{" in code
+        assert "}" in code
 
     def test_nested_functions(self):
         """测试嵌套函数"""
@@ -196,9 +197,9 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert 'def' in code
-        assert '外层函数' in code
-        assert '内层函数' in code
+        assert "def" in code
+        assert "外层函数" in code
+        assert "内层函数" in code
 
     def test_multiple_statements(self):
         """测试多语句程序"""
@@ -214,7 +215,7 @@ class TestCodegenBoundary:
         ast = parser.parse()
         codegen = PythonCodegen()
         code = codegen.generate(ast)
-        assert '变量1' in code
-        assert '变量2' in code
-        assert '变量3' in code
-        assert 'print' in code
+        assert "变量1" in code
+        assert "变量2" in code
+        assert "变量3" in code
+        assert "print" in code

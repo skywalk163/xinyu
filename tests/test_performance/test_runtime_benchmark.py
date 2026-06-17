@@ -2,9 +2,12 @@
 
 测试运行时关键操作的性能。
 """
-import pytest
 import time
+
+import pytest
+
 from src.main import ChineseProgram
+
 from .benchmark_utils import benchmark, format_result
 
 

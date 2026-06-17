@@ -1,21 +1,32 @@
 # -*- coding: utf-8 -*-
 """Python代码生成器测试"""
 import pytest
-from src.parser.ast_nodes import (
-    # 基础节点
-    NumberNode, StringNode, IdentifierNode,
-    # 表达式节点
-    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
-    MemberAccessNode, IndexNode,
-    # 语句节点
-    AssignNode, VarDefNode, IfNode, ForNode, WhileNode,
-    RepeatNode, FunctionDefNode, FunctionCallNode, ReturnNode,
-    # 特殊节点
-    ProgramNode, BlockNode
+
+from src.parser.ast_nodes import (  # 基础节点; 表达式节点; 语句节点; 特殊节点
+    AssignNode,
+    BinaryOpNode,
+    BlockNode,
+    DictNode,
+    ForNode,
+    FunctionCallNode,
+    FunctionDefNode,
+    IdentifierNode,
+    IfNode,
+    IndexNode,
+    ListNode,
+    MemberAccessNode,
+    NumberNode,
+    ProgramNode,
+    RepeatNode,
+    ReturnNode,
+    StringNode,
+    UnaryOpNode,
+    VarDefNode,
+    WhileNode,
 )
 
-
 # ============ 基础表达式生成测试 ============
+
 
 def test_generate_number():
     """测试数字生成"""
@@ -122,16 +133,18 @@ def test_generate_identifier():
 
 # ============ 二元操作生成测试 ============
 
+
 def test_generate_binary_add():
     """测试相加法生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=1),
         operator="相加",
-        right=NumberNode(line=1, column=2, value=2)
+        right=NumberNode(line=1, column=2, value=2),
     )
     result = codegen.generate(node)
 
@@ -144,10 +157,11 @@ def test_generate_binary_subtract():
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=5),
         operator="相减",
-        right=NumberNode(line=1, column=2, value=3)
+        right=NumberNode(line=1, column=2, value=3),
     )
     result = codegen.generate(node)
 
@@ -160,10 +174,11 @@ def test_generate_binary_multiply():
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=4),
         operator="相乘",
-        right=NumberNode(line=1, column=2, value=5)
+        right=NumberNode(line=1, column=2, value=5),
     )
     result = codegen.generate(node)
 
@@ -176,10 +191,11 @@ def test_generate_binary_divide():
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=10),
         operator="相除以",
-        right=NumberNode(line=1, column=3, value=2)
+        right=NumberNode(line=1, column=3, value=2),
     )
     result = codegen.generate(node)
 
@@ -192,10 +208,11 @@ def test_generate_binary_comparison():
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=IdentifierNode(line=1, column=0, name="x"),
         operator="大于于",
-        right=NumberNode(line=1, column=3, value=0)
+        right=NumberNode(line=1, column=3, value=0),
     )
     result = codegen.generate(node)
 
@@ -209,15 +226,17 @@ def test_generate_operator_precedence():
     codegen = PythonCodegen()
     # 1 + 2 * 3
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=1),
         operator="相加",
         right=BinaryOpNode(
-            line=1, column=4,
+            line=1,
+            column=4,
             left=NumberNode(line=1, column=4, value=2),
             operator="相乘",
-            right=NumberNode(line=1, column=6, value=3)
-        )
+            right=NumberNode(line=1, column=6, value=3),
+        ),
     )
     result = codegen.generate(node)
 
@@ -234,15 +253,17 @@ def test_generate_nested_parentheses():
     # 注意：这里我们测试的是 AST 已经正确表示了括号的情况
     # 实际上 AST 中不需要显式表示括号，因为树结构已经体现了优先级
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=BinaryOpNode(
-            line=1, column=1,
+            line=1,
+            column=1,
             left=NumberNode(line=1, column=1, value=1),
             operator="相加",
-            right=NumberNode(line=1, column=5, value=2)
+            right=NumberNode(line=1, column=5, value=2),
         ),
         operator="相乘",
-        right=NumberNode(line=1, column=10, value=3)
+        right=NumberNode(line=1, column=10, value=3),
     )
     result = codegen.generate(node)
 
@@ -254,15 +275,14 @@ def test_generate_nested_parentheses():
 
 # ============ 一元操作生成测试 ============
 
+
 def test_generate_unary_negative():
     """测试负号生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = UnaryOpNode(
-        line=1, column=0,
-        operator="负",
-        operand=NumberNode(line=1, column=1, value=5)
+        line=1, column=0, operator="负", operand=NumberNode(line=1, column=1, value=5)
     )
     result = codegen.generate(node)
 
@@ -275,9 +295,7 @@ def test_generate_unary_not():
 
     codegen = PythonCodegen()
     node = UnaryOpNode(
-        line=1, column=0,
-        operator="非也也",
-        operand=IdentifierNode(line=1, column=1, name="x")
+        line=1, column=0, operator="非也也", operand=IdentifierNode(line=1, column=1, name="x")
     )
     result = codegen.generate(node)
 
@@ -286,18 +304,20 @@ def test_generate_unary_not():
 
 # ============ 列表和字典生成测试 ============
 
+
 def test_generate_list():
     """测试列表生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = ListNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         elements=[
             NumberNode(line=1, column=1, value=1),
             NumberNode(line=1, column=3, value=2),
-            NumberNode(line=1, column=5, value=3)
-        ]
+            NumberNode(line=1, column=5, value=3),
+        ],
     )
     result = codegen.generate(node)
 
@@ -310,11 +330,12 @@ def test_generate_dict():
 
     codegen = PythonCodegen()
     node = DictNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         pairs=[
             (StringNode(line=1, column=1, value="键"), NumberNode(line=1, column=5, value=1)),
-            (StringNode(line=1, column=8, value="名"), NumberNode(line=1, column=11, value=2))
-        ]
+            (StringNode(line=1, column=8, value="名"), NumberNode(line=1, column=11, value=2)),
+        ],
     )
     result = codegen.generate(node)
 
@@ -323,15 +344,14 @@ def test_generate_dict():
 
 # ============ 成员访问和索引生成测试 ============
 
+
 def test_generate_member_access():
     """测试成员访问生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = MemberAccessNode(
-        line=1, column=0,
-        obj=IdentifierNode(line=1, column=0, name="对象"),
-        member="成员"
+        line=1, column=0, obj=IdentifierNode(line=1, column=0, name="对象"), member="成员"
     )
     result = codegen.generate(node)
 
@@ -344,9 +364,10 @@ def test_generate_index():
 
     codegen = PythonCodegen()
     node = IndexNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         obj=IdentifierNode(line=1, column=0, name="列表"),
-        index=NumberNode(line=1, column=3, value=0)
+        index=NumberNode(line=1, column=3, value=0),
     )
     result = codegen.generate(node)
 
@@ -355,15 +376,14 @@ def test_generate_index():
 
 # ============ 函数调用生成测试 ============
 
+
 def test_generate_function_call():
     """测试函数调用生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = FunctionCallNode(
-        line=1, column=0,
-        name="打印",
-        args=[StringNode(line=1, column=2, value="你好")]
+        line=1, column=0, name="打印", args=[StringNode(line=1, column=2, value="你好")]
     )
     result = codegen.generate(node)
 
@@ -376,12 +396,10 @@ def test_generate_function_call_multiple_args():
 
     codegen = PythonCodegen()
     node = FunctionCallNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         name="函数",
-        args=[
-            NumberNode(line=1, column=3, value=1),
-            NumberNode(line=1, column=5, value=2)
-        ]
+        args=[NumberNode(line=1, column=3, value=1), NumberNode(line=1, column=5, value=2)],
     )
     result = codegen.generate(node)
 
@@ -394,9 +412,7 @@ def test_generate_builtin_print():
 
     codegen = PythonCodegen()
     node = FunctionCallNode(
-        line=1, column=0,
-        name="打印",
-        args=[IdentifierNode(line=1, column=2, name="x")]
+        line=1, column=0, name="打印", args=[IdentifierNode(line=1, column=2, name="x")]
     )
     result = codegen.generate(node)
 
@@ -409,11 +425,7 @@ def test_generate_builtin_input():
     from src.parser.ast_nodes import FunctionCallNode
 
     codegen = PythonCodegen()
-    node = FunctionCallNode(
-        line=1, column=0,
-        name="输入",
-        args=[]
-    )
+    node = FunctionCallNode(line=1, column=0, name="输入", args=[])
     result = codegen.generate(node)
 
     assert result == "input()"
@@ -421,16 +433,13 @@ def test_generate_builtin_input():
 
 # ============ 变量定义生成测试 ============
 
+
 def test_generate_var_def():
     """测试变量定义生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
-    node = VarDefNode(
-        line=1, column=0,
-        name="x",
-        value=NumberNode(line=1, column=5, value=5)
-    )
+    node = VarDefNode(line=1, column=0, name="x", value=NumberNode(line=1, column=5, value=5))
     result = codegen.generate(node)
 
     assert result == "x = 5"
@@ -441,11 +450,7 @@ def test_generate_var_def_no_value():
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
-    node = VarDefNode(
-        line=1, column=0,
-        name="x",
-        value=None
-    )
+    node = VarDefNode(line=1, column=0, name="x", value=None)
     result = codegen.generate(node)
 
     assert result == "x = None"
@@ -453,15 +458,17 @@ def test_generate_var_def_no_value():
 
 # ============ 赋值生成测试 ============
 
+
 def test_generate_assign():
     """测试赋值生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = AssignNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         target=IdentifierNode(line=1, column=0, name="x"),
-        value=NumberNode(line=1, column=4, value=10)
+        value=NumberNode(line=1, column=4, value=10),
     )
     result = codegen.generate(node)
 
@@ -470,26 +477,30 @@ def test_generate_assign():
 
 # ============ 函数定义生成测试 ============
 
+
 def test_generate_function_def():
     """测试函数定义生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = FunctionDefNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         name="平方",
         params=["x"],
         body=[
             ReturnNode(
-                line=2, column=4,
+                line=2,
+                column=4,
                 value=BinaryOpNode(
-                    line=2, column=11,
+                    line=2,
+                    column=11,
                     left=IdentifierNode(line=2, column=11, name="x"),
                     operator="相乘",
-                    right=IdentifierNode(line=2, column=13, name="x")
-                )
+                    right=IdentifierNode(line=2, column=13, name="x"),
+                ),
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -503,16 +514,15 @@ def test_generate_function_def_no_params():
 
     codegen = PythonCodegen()
     node = FunctionDefNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         name="问候",
         params=[],
         body=[
             FunctionCallNode(
-                line=2, column=4,
-                name="打印",
-                args=[StringNode(line=2, column=7, value="你好")]
+                line=2, column=4, name="打印", args=[StringNode(line=2, column=7, value="你好")]
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -522,26 +532,27 @@ def test_generate_function_def_no_params():
 
 # ============ 控制流生成测试 ============
 
+
 def test_generate_if():
     """测试条件语句生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = IfNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         condition=BinaryOpNode(
-            line=1, column=2,
+            line=1,
+            column=2,
             left=IdentifierNode(line=1, column=2, name="x"),
             operator="大于于",
-            right=NumberNode(line=1, column=5, value=0)
+            right=NumberNode(line=1, column=5, value=0),
         ),
         then_branch=[
             FunctionCallNode(
-                line=2, column=4,
-                name="打印",
-                args=[StringNode(line=2, column=7, value="正数")]
+                line=2, column=4, name="打印", args=[StringNode(line=2, column=7, value="正数")]
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -555,27 +566,25 @@ def test_generate_if_else():
 
     codegen = PythonCodegen()
     node = IfNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         condition=BinaryOpNode(
-            line=1, column=3,
+            line=1,
+            column=3,
             left=IdentifierNode(line=1, column=3, name="x"),
             operator="大于于",
-            right=NumberNode(line=1, column=6, value=0)
+            right=NumberNode(line=1, column=6, value=0),
         ),
         then_branch=[
             FunctionCallNode(
-                line=2, column=4,
-                name="打印",
-                args=[StringNode(line=2, column=5, value="正数")]
+                line=2, column=4, name="打印", args=[StringNode(line=2, column=5, value="正数")]
             )
         ],
         else_branch=[
             FunctionCallNode(
-                line=4, column=4,
-                name="打印",
-                args=[StringNode(line=4, column=5, value="非也正数")]
+                line=4, column=4, name="打印", args=[StringNode(line=4, column=5, value="非也正数")]
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -589,23 +598,23 @@ def test_generate_for():
 
     codegen = PythonCodegen()
     node = ForNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         var="i",
         iterable=ListNode(
-            line=1, column=7,
+            line=1,
+            column=7,
             elements=[
                 NumberNode(line=1, column=8, value=1),
                 NumberNode(line=1, column=10, value=2),
-                NumberNode(line=1, column=12, value=3)
-            ]
+                NumberNode(line=1, column=12, value=3),
+            ],
         ),
         body=[
             FunctionCallNode(
-                line=2, column=4,
-                name="打印",
-                args=[IdentifierNode(line=2, column=7, name="i")]
+                line=2, column=4, name="打印", args=[IdentifierNode(line=2, column=7, name="i")]
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -619,25 +628,29 @@ def test_generate_while():
 
     codegen = PythonCodegen()
     node = WhileNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         condition=BinaryOpNode(
-            line=1, column=2,
+            line=1,
+            column=2,
             left=IdentifierNode(line=1, column=2, name="x"),
             operator="小于于",
-            right=NumberNode(line=1, column=5, value=10)
+            right=NumberNode(line=1, column=5, value=10),
         ),
         body=[
             AssignNode(
-                line=2, column=4,
+                line=2,
+                column=4,
                 target=IdentifierNode(line=2, column=4, name="x"),
                 value=BinaryOpNode(
-                    line=2, column=8,
+                    line=2,
+                    column=8,
                     left=IdentifierNode(line=2, column=8, name="x"),
                     operator="相加",
-                    right=NumberNode(line=2, column=10, value=1)
-                )
+                    right=NumberNode(line=2, column=10, value=1),
+                ),
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -651,15 +664,14 @@ def test_generate_repeat():
 
     codegen = PythonCodegen()
     node = RepeatNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         count=NumberNode(line=1, column=3, value=5),
         body=[
             FunctionCallNode(
-                line=2, column=4,
-                name="打印",
-                args=[StringNode(line=2, column=7, value="你好")]
+                line=2, column=4, name="打印", args=[StringNode(line=2, column=7, value="你好")]
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -669,15 +681,13 @@ def test_generate_repeat():
 
 # ============ 返回语句生成测试 ============
 
+
 def test_generate_return():
     """测试返回语句生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
-    node = ReturnNode(
-        line=1, column=0,
-        value=IdentifierNode(line=1, column=3, name="x")
-    )
+    node = ReturnNode(line=1, column=0, value=IdentifierNode(line=1, column=3, name="x"))
     result = codegen.generate(node)
 
     assert result == "return x"
@@ -688,10 +698,7 @@ def test_generate_return_no_value():
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
-    node = ReturnNode(
-        line=1, column=0,
-        value=None
-    )
+    node = ReturnNode(line=1, column=0, value=None)
     result = codegen.generate(node)
 
     assert result == "return"
@@ -699,25 +706,21 @@ def test_generate_return_no_value():
 
 # ============ 程序生成测试 ============
 
+
 def test_generate_program():
     """测试程序生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = ProgramNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         statements=[
-            VarDefNode(
-                line=1, column=0,
-                name="x",
-                value=NumberNode(line=1, column=5, value=5)
-            ),
+            VarDefNode(line=1, column=0, name="x", value=NumberNode(line=1, column=5, value=5)),
             FunctionCallNode(
-                line=2, column=0,
-                name="打印",
-                args=[IdentifierNode(line=2, column=2, name="x")]
-            )
-        ]
+                line=2, column=0, name="打印", args=[IdentifierNode(line=2, column=2, name="x")]
+            ),
+        ],
     )
     result = codegen.generate(node)
 
@@ -730,10 +733,7 @@ def test_generate_empty_program():
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
-    node = ProgramNode(
-        line=1, column=0,
-        statements=[]
-    )
+    node = ProgramNode(line=1, column=0, statements=[])
     result = codegen.generate(node)
 
     assert result == ""
@@ -741,27 +741,31 @@ def test_generate_empty_program():
 
 # ============ 复杂嵌套测试 ============
 
+
 def test_generate_nested_if():
     """测试嵌套条件生成"""
     from src.codegen.python_codegen import PythonCodegen
 
     codegen = PythonCodegen()
     node = IfNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         condition=IdentifierNode(line=1, column=2, name="条件1"),
         then_branch=[
             IfNode(
-                line=2, column=4,
+                line=2,
+                column=4,
                 condition=IdentifierNode(line=2, column=6, name="条件2"),
                 then_branch=[
                     FunctionCallNode(
-                        line=3, column=8,
+                        line=3,
+                        column=8,
                         name="打印",
-                        args=[StringNode(line=3, column=11, value="嵌套")]
+                        args=[StringNode(line=3, column=11, value="嵌套")],
                     )
-                ]
+                ],
             )
-        ]
+        ],
     )
     result = codegen.generate(node)
 
@@ -775,35 +779,38 @@ def test_generate_nested_function():
 
     codegen = PythonCodegen()
     node = FunctionDefNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         name="外层",
         params=["x"],
         body=[
             FunctionDefNode(
-                line=2, column=4,
+                line=2,
+                column=4,
                 name="内层",
                 params=["y"],
                 body=[
                     ReturnNode(
-                        line=3, column=8,
+                        line=3,
+                        column=8,
                         value=BinaryOpNode(
-                            line=3, column=15,
+                            line=3,
+                            column=15,
                             left=IdentifierNode(line=3, column=15, name="x"),
                             operator="相加",
-                            right=IdentifierNode(line=3, column=17, name="y")
-                        )
+                            right=IdentifierNode(line=3, column=17, name="y"),
+                        ),
                     )
-                ]
+                ],
             ),
             ReturnNode(
-                line=5, column=4,
+                line=5,
+                column=4,
                 value=FunctionCallNode(
-                    line=5, column=11,
-                    name="内层",
-                    args=[NumberNode(line=5, column=14, value=10)]
-                )
-            )
-        ]
+                    line=5, column=11, name="内层", args=[NumberNode(line=5, column=14, value=10)]
+                ),
+            ),
+        ],
     )
     result = codegen.generate(node)
 
@@ -813,9 +820,10 @@ def test_generate_nested_function():
 
 # ============ 错误处理测试 ============
 
+
 def test_generate_unknown_node():
     """测试未知节点类型抛出错误"""
-    from src.codegen.python_codegen import PythonCodegen, CodegenError
+    from src.codegen.python_codegen import CodegenError, PythonCodegen
 
     codegen = PythonCodegen()
 
@@ -833,14 +841,15 @@ def test_generate_unknown_node():
 
 def test_generate_unknown_binary_operator():
     """测试未知的二元操作符抛出错误"""
-    from src.codegen.python_codegen import PythonCodegen, CodegenError
+    from src.codegen.python_codegen import CodegenError, PythonCodegen
 
     codegen = PythonCodegen()
     node = BinaryOpNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         left=NumberNode(line=1, column=0, value=1),
         operator="未知操作符",
-        right=NumberNode(line=1, column=2, value=2)
+        right=NumberNode(line=1, column=2, value=2),
     )
 
     with pytest.raises(CodegenError) as exc_info:
@@ -851,13 +860,11 @@ def test_generate_unknown_binary_operator():
 
 def test_generate_unknown_unary_operator():
     """测试未知的一元操作符抛出错误"""
-    from src.codegen.python_codegen import PythonCodegen, CodegenError
+    from src.codegen.python_codegen import CodegenError, PythonCodegen
 
     codegen = PythonCodegen()
     node = UnaryOpNode(
-        line=1, column=0,
-        operator="未知操作符",
-        operand=NumberNode(line=1, column=1, value=5)
+        line=1, column=0, operator="未知操作符", operand=NumberNode(line=1, column=1, value=5)
     )
 
     with pytest.raises(CodegenError) as exc_info:

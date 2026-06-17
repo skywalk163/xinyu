@@ -4,11 +4,10 @@
 """
 
 import pytest
+
 from src.lexer.lexer import Lexer
+from src.parser.ast_nodes import FunctionCallNode, FunctionDefNode, VarDefNode
 from src.parser.parser import Parser
-from src.parser.ast_nodes import (
-    FunctionDefNode, FunctionCallNode, VarDefNode
-)
 
 
 class TestUserDefinedFunctionArity:
@@ -26,14 +25,14 @@ class TestUserDefinedFunctionArity:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         # 检查变量定义（值为函数定义）
         var_def = ast.statements[0]
         assert isinstance(var_def, VarDefNode)
         assert var_def.name == "平方"
         assert isinstance(var_def.value, FunctionDefNode)
         assert len(var_def.value.params) == 1
-        
+
         # 检查函数调用
         func_call = ast.statements[1]
         assert isinstance(func_call, FunctionCallNode)
@@ -51,11 +50,11 @@ class TestUserDefinedFunctionArity:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         # 检查函数已注册
         assert parser.verb_registry.is_registered("自定义函数")
         assert parser.verb_registry.is_function("自定义函数")
-        
+
         # 检查元数
         arity = parser.verb_registry.get("自定义函数")
         assert arity is not None
@@ -72,14 +71,14 @@ class TestUserDefinedFunctionArity:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         # 检查变量定义
         var_def = ast.statements[0]
         assert isinstance(var_def, VarDefNode)
         assert var_def.name == "常量"
         assert isinstance(var_def.value, FunctionDefNode)
         assert len(var_def.value.params) == 0
-        
+
         # 检查元数为0
         arity = parser.verb_registry.get("常量")
         assert arity is not None

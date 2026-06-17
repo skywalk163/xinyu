@@ -2,10 +2,10 @@
 
 提供性能基准测试的基础框架和工具函数。
 """
-import time
 import statistics
+import time
 from functools import wraps
-from typing import Callable, List, Dict, Any
+from typing import Any, Callable, Dict, List
 
 
 def benchmark(iterations: int = 10, warmup: int = 2) -> Callable:
@@ -19,6 +19,7 @@ def benchmark(iterations: int = 10, warmup: int = 2) -> Callable:
     Returns:
         装饰后的函数
     """
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Dict[str, float]:
@@ -43,23 +44,25 @@ def benchmark(iterations: int = 10, warmup: int = 2) -> Callable:
             # 计算统计信息
             if times:
                 return {
-                    'mean': statistics.mean(times),
-                    'median': statistics.median(times),
-                    'stdev': statistics.stdev(times) if len(times) > 1 else 0.0,
-                    'min': min(times),
-                    'max': max(times),
-                    'iterations': iterations
+                    "mean": statistics.mean(times),
+                    "median": statistics.median(times),
+                    "stdev": statistics.stdev(times) if len(times) > 1 else 0.0,
+                    "min": min(times),
+                    "max": max(times),
+                    "iterations": iterations,
                 }
             else:
                 return {
-                    'mean': 0.0,
-                    'median': 0.0,
-                    'stdev': 0.0,
-                    'min': 0.0,
-                    'max': 0.0,
-                    'iterations': 0
+                    "mean": 0.0,
+                    "median": 0.0,
+                    "stdev": 0.0,
+                    "min": 0.0,
+                    "max": 0.0,
+                    "iterations": 0,
                 }
+
         return wrapper
+
     return decorator
 
 
@@ -74,20 +77,14 @@ def get_benchmark_result(times: List[float]) -> Dict[str, float]:
         统计结果字典
     """
     if not times:
-        return {
-            'mean': 0.0,
-            'median': 0.0,
-            'stdev': 0.0,
-            'min': 0.0,
-            'max': 0.0
-        }
+        return {"mean": 0.0, "median": 0.0, "stdev": 0.0, "min": 0.0, "max": 0.0}
 
     return {
-        'mean': statistics.mean(times),
-        'median': statistics.median(times),
-        'stdev': statistics.stdev(times) if len(times) > 1 else 0.0,
-        'min': min(times),
-        'max': max(times)
+        "mean": statistics.mean(times),
+        "median": statistics.median(times),
+        "stdev": statistics.stdev(times) if len(times) > 1 else 0.0,
+        "min": min(times),
+        "max": max(times),
     }
 
 
@@ -102,13 +99,17 @@ def format_result(result: Dict[str, float], operation: str) -> str:
     Returns:
         格式化的字符串
     """
-    return f"{operation}: mean={result['mean']*1000:.2f}ms, " \
-           f"median={result['median']*1000:.2f}ms, " \
-           f"min={result['min']*1000:.2f}ms, " \
-           f"max={result['max']*1000:.2f}ms"
+    return (
+        f"{operation}: mean={result['mean']*1000:.2f}ms, "
+        f"median={result['median']*1000:.2f}ms, "
+        f"min={result['min']*1000:.2f}ms, "
+        f"max={result['max']*1000:.2f}ms"
+    )
 
 
-def compare_with_baseline(current: Dict[str, float], baseline: Dict[str, float], threshold: float = 0.2) -> bool:
+def compare_with_baseline(
+    current: Dict[str, float], baseline: Dict[str, float], threshold: float = 0.2
+) -> bool:
     """
     与基线对比
 
@@ -120,10 +121,10 @@ def compare_with_baseline(current: Dict[str, float], baseline: Dict[str, float],
     Returns:
         是否在允许范围内
     """
-    if baseline['mean'] == 0:
+    if baseline["mean"] == 0:
         return True
 
-    ratio = current['mean'] / baseline['mean']
+    ratio = current["mean"] / baseline["mean"]
     return ratio <= (1 + threshold)
 
 

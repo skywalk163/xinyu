@@ -4,12 +4,16 @@
 """
 
 import pytest
+
 from src.lexer.lexer import Lexer
-from src.parser.parser import Parser
 from src.parser.ast_nodes import (
-    FunctionCallNode, BinaryOpNode, NumberNode, 
-    IdentifierNode, StringNode
+    BinaryOpNode,
+    FunctionCallNode,
+    IdentifierNode,
+    NumberNode,
+    StringNode,
 )
+from src.parser.parser import Parser
 
 
 class TestArityDrivenParsing:
@@ -22,7 +26,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -38,7 +42,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -52,7 +56,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -65,7 +69,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -78,7 +82,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -91,7 +95,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -122,7 +126,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 2
         assert isinstance(ast.statements[0], FunctionCallNode)
         assert isinstance(ast.statements[1], FunctionCallNode)
@@ -134,7 +138,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -150,7 +154,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -167,7 +171,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, BinaryOpNode)
@@ -184,7 +188,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -198,7 +202,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -213,7 +217,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -227,7 +231,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)
@@ -241,7 +245,7 @@ class TestArityDrivenParsing:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
         assert isinstance(stmt, FunctionCallNode)

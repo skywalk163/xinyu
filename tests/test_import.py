@@ -3,16 +3,18 @@
 
 测试心语语言的模块导入功能。
 """
-import pytest
-import sys
 import io
+import sys
 from contextlib import redirect_stdout
+
+import pytest
 
 
 def test_main_module_exists():
     """测试主入口模块存在"""
     try:
         from src.main import ChineseProgram
+
         assert ChineseProgram is not None
     except ImportError:
         pytest.fail("主入口模块 src.main 不存在")
@@ -26,11 +28,11 @@ class TestBasicImport:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 导入 math。
 定义 x = math.sqrt(16)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -44,11 +46,11 @@ class TestBasicImport:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 导入 math 为 m。
 定义 x = m.sqrt(25)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -66,11 +68,11 @@ class TestFromImport:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 从 math 导入 sqrt。
 定义 x = sqrt(36)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -84,11 +86,11 @@ class TestFromImport:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 从 math 导入 sqrt, sin, cos。
 定义 x = sqrt(49)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -102,11 +104,11 @@ class TestFromImport:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 从 math 导入 sqrt 为 square_root。
 定义 x = square_root(64)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -124,11 +126,11 @@ class TestImportUsage:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 导入 math。
 定义 x = math.pi。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -142,12 +144,12 @@ class TestImportUsage:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 导入 math。
 导入 random。
 定义 x = math.sqrt(100)。
 打印 x。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -157,5 +159,5 @@ class TestImportUsage:
         assert "10.0" in output
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

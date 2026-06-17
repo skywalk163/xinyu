@@ -4,6 +4,7 @@
 """
 
 import pytest
+
 from src.parser.arity import Arity, ArityType
 
 

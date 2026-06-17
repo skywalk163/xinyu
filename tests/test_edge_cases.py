@@ -7,10 +7,11 @@
 """
 
 import pytest
-from src.lexer.lexer import Lexer, LexerError
-from src.parser.parser import Parser, ParseError
-from src.semantic.analyzer import SemanticAnalyzer, SemanticError
+
 from src.codegen.python_codegen import PythonCodegen
+from src.lexer.lexer import Lexer, LexerError
+from src.parser.parser import ParseError, Parser
+from src.semantic.analyzer import SemanticAnalyzer, SemanticError
 
 
 class TestLexerEdgeCases:
@@ -21,7 +22,7 @@ class TestLexerEdgeCases:
         lexer = Lexer("")
         tokens = lexer.tokenize()
         assert len(tokens) == 1
-        assert tokens[0].type.name == 'EOF'
+        assert tokens[0].type.name == "EOF"
 
     def test_only_whitespace(self):
         """测试只有空白字符"""
@@ -29,7 +30,7 @@ class TestLexerEdgeCases:
         tokens = lexer.tokenize()
         # 空白字符会产生NEWLINE和EOF token
         assert len(tokens) >= 1
-        assert tokens[-1].type.name == 'EOF'
+        assert tokens[-1].type.name == "EOF"
 
     def test_only_comments(self):
         """测试只有注释"""
@@ -37,7 +38,7 @@ class TestLexerEdgeCases:
         tokens = lexer.tokenize()
         # 注释会产生NEWLINE和EOF token
         assert len(tokens) >= 1
-        assert tokens[-1].type.name == 'EOF'
+        assert tokens[-1].type.name == "EOF"
 
     def test_unmatched_string(self):
         """测试未闭合的字符串"""
@@ -162,7 +163,7 @@ class TestSemanticEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         # 语义分析器会报告错误，但不一定义抛出异常
         analyzer.analyze(ast)
@@ -179,7 +180,7 @@ class TestSemanticEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         # 应该能检测到重复定义
         analyzer.analyze(ast)
@@ -194,7 +195,7 @@ class TestSemanticEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         # 应该能检测到参数数量错误
         analyzer.analyze(ast)
@@ -213,7 +214,7 @@ class TestSemanticEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -228,7 +229,7 @@ class TestSemanticEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -239,6 +240,7 @@ class TestCodegenEdgeCases:
     def test_empty_program(self):
         """测试空程序"""
         from src.parser.ast_nodes import ProgramNode
+
         codegen = PythonCodegen()
         ast = ProgramNode(line=1, column=1, statements=[])
         code = codegen.generate(ast)
@@ -252,7 +254,7 @@ class TestCodegenEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert long_string in code
@@ -264,7 +266,7 @@ class TestCodegenEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "print" in code
@@ -276,7 +278,7 @@ class TestCodegenEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "print" in code
@@ -305,10 +307,10 @@ class TestIntegrationEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
-        
+
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "def" in code
@@ -333,10 +335,10 @@ class TestIntegrationEdgeCases:
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
-        
+
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert code.count("def") >= 3

@@ -5,10 +5,11 @@
 """
 
 import pytest
-from src.lexer.lexer import Lexer
-from src.parser.parser import Parser
-from src.parser.ast_nodes import FunctionCallNode, IdentifierNode, NumberNode, StringNode
+
 from src.codegen.python_codegen import PythonCodegen
+from src.lexer.lexer import Lexer
+from src.parser.ast_nodes import FunctionCallNode, IdentifierNode, NumberNode, StringNode
+from src.parser.parser import Parser
 
 
 class TestIntentionalCall:
@@ -45,7 +46,7 @@ class TestIntentionalCall:
 
     def test_intentional_call_with_strings(self):
         """测试字符串参数的意合式调用"""
-        source = "\"张三\"、\"李四\"，发送消息。"
+        source = '"张三"、"李四"，发送消息。'
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         parser = Parser(tokens)

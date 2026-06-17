@@ -16,9 +16,9 @@ from typing import Any, Dict, NoReturn, Optional
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.core.compiler import XinyuCompiler, CompilationError
-from src.runtime.secure_executor import SecureExecutor
+from src.core.compiler import CompilationError, XinyuCompiler
 from src.repl import EnhancedREPL
+from src.runtime.secure_executor import SecureExecutor
 
 # 常量定义
 VERSION = "1.0"
@@ -40,7 +40,7 @@ class ChineseProgram:
 
     def __init__(self, enable_safety: bool = True):
         """初始化心语语言环境
-        
+
         Args:
             enable_safety: 是否启用安全限制
         """
@@ -65,7 +65,7 @@ class ChineseProgram:
             # 使用编译器进行编译
             result = self.compiler.execute(source)
             return result
-            
+
         except CompilationError as e:
             print(f"编译错误: {e}")
             return None
@@ -84,30 +84,29 @@ class ChineseProgram:
         """
         try:
             python_code = self.compiler.compile(source)
-            
+
             # 输出诊断信息
             for diagnostic in self.compiler.get_diagnostics():
                 print(diagnostic)
-            
+
             return python_code
-            
+
         except CompilationError as e:
             print(f"编译错误: {e}")
             return ""
 
     def _create_exec_globals(self) -> Dict[str, Any]:
         """创建执行环境（已弃用，使用安全执行器替代）
-        
+
         注意：此方法已不再使用，保留用于向后兼容。
         新的实现使用 SecureExecutor 提供安全执行环境。
         """
         import warnings
+
         warnings.warn(
-            "_create_exec_globals 已弃用，请使用 SecureExecutor",
-            DeprecationWarning,
-            stacklevel=2
+            "_create_exec_globals 已弃用，请使用 SecureExecutor", DeprecationWarning, stacklevel=2
         )
-        
+
         # 返回空字典，实际执行由 SecureExecutor 处理
         return {}
 
@@ -136,14 +135,14 @@ def main() -> None:
     parser.add_argument("--compile", action="store_true", help="只编译为 Python 代码，不执行")
 
     parser.add_argument("--unsafe", action="store_true", help="禁用安全限制（不推荐）")
-    
+
     args = parser.parse_args()
 
     # 根据参数决定是否启用安全限制
     enable_safety = not args.unsafe
     if not enable_safety:
         print("⚠️  警告：已禁用安全限制，可能存在安全风险！")
-    
+
     program = ChineseProgram(enable_safety=enable_safety)
 
     # 直接执行代码字符串
@@ -176,10 +175,10 @@ def main() -> None:
     print(WELCOME_MESSAGE)
     print("提示: 使用增强REPL，支持语法高亮、代码补全和历史记录")
     print("-" * 50)
-    
+
     # 创建增强REPL
     repl = EnhancedREPL(program.compiler, history_file=".xinyu_history")
-    
+
     # 运行REPL
     repl.run_interactive()
 

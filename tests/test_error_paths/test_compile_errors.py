@@ -3,8 +3,9 @@
 测试编译各阶段的错误处理能力。
 """
 import pytest
+
 from src.lexer.lexer import Lexer, LexerError
-from src.parser.parser import Parser, ParseError
+from src.parser.parser import ParseError, Parser
 from src.semantic.analyzer import SemanticAnalyzer
 
 
@@ -197,7 +198,7 @@ class TestCompileErrorRecovery:
         if not result and len(analyzer.errors) > 0:
             # 错误应该包含位置信息
             error = analyzer.errors[0]
-            assert hasattr(error, 'line') or hasattr(error, 'column')
+            assert hasattr(error, "line") or hasattr(error, "column")
 
     def test_partial_compilation(self):
         """测试部分编译"""

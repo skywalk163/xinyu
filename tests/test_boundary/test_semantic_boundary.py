@@ -3,6 +3,7 @@
 测试语义分析器的边界情况处理能力。
 """
 import pytest
+
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 from src.semantic.analyzer import SemanticAnalyzer

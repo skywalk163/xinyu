@@ -1,21 +1,32 @@
 # -*- coding: utf-8 -*-
 """AST节点测试"""
 import pytest
-from src.parser.ast_nodes import (
-    # 基础节点
-    NumberNode, StringNode, IdentifierNode,
-    # 表达式节点
-    BinaryOpNode, UnaryOpNode, ListNode, DictNode,
-    MemberAccessNode, IndexNode,
-    # 语句节点
-    AssignNode, VarDefNode, IfNode, ForNode, WhileNode,
-    RepeatNode, FunctionDefNode, FunctionCallNode, ReturnNode,
-    # 特殊节点
-    ProgramNode, BlockNode
+
+from src.parser.ast_nodes import (  # 基础节点; 表达式节点; 语句节点; 特殊节点
+    AssignNode,
+    BinaryOpNode,
+    BlockNode,
+    DictNode,
+    ForNode,
+    FunctionCallNode,
+    FunctionDefNode,
+    IdentifierNode,
+    IfNode,
+    IndexNode,
+    ListNode,
+    MemberAccessNode,
+    NumberNode,
+    ProgramNode,
+    RepeatNode,
+    ReturnNode,
+    StringNode,
+    UnaryOpNode,
+    VarDefNode,
+    WhileNode,
 )
 
-
 # ============ 基础节点测试 ============
+
 
 def test_number_node():
     """测试数字节点"""
@@ -48,6 +59,7 @@ def test_identifier_node():
 
 
 # ============ 表达式节点测试 ============
+
 
 def test_binary_op_node():
     """测试二元操作节点"""
@@ -122,6 +134,7 @@ def test_index_node():
 
 # ============ 语句节点测试 ============
 
+
 def test_assign_node():
     """测试赋值节点"""
     target = IdentifierNode(line=1, column=0, name="x")
@@ -154,7 +167,9 @@ def test_if_node_with_else():
     condition = IdentifierNode(line=1, column=0, name="x")
     then_branch = [NumberNode(line=1, column=0, value=1)]
     else_branch = [NumberNode(line=1, column=0, value=2)]
-    node = IfNode(line=1, column=0, condition=condition, then_branch=then_branch, else_branch=else_branch)
+    node = IfNode(
+        line=1, column=0, condition=condition, then_branch=then_branch, else_branch=else_branch
+    )
     assert node.condition == condition
     assert len(node.then_branch) == 1
     assert len(node.else_branch) == 1
@@ -252,6 +267,7 @@ def test_return_node_without_value():
 
 # ============ 特殊节点测试 ============
 
+
 def test_program_node():
     """测试程序根节点"""
     stmt1 = NumberNode(line=1, column=0, value=1)
@@ -286,6 +302,7 @@ def test_block_node_empty():
 
 # ============ 复杂场景测试 ============
 
+
 def test_nested_binary_op():
     """测试嵌套二元操作"""
     # 1 + 2 * 3
@@ -304,16 +321,18 @@ def test_nested_if():
     x = IdentifierNode(line=1, column=0, name="x")
     y = IdentifierNode(line=1, column=0, name="y")
     inner_if = IfNode(
-        line=2, column=0,
+        line=2,
+        column=0,
         condition=y,
         then_branch=[NumberNode(line=2, column=0, value=1)],
-        else_branch=[NumberNode(line=2, column=0, value=2)]
+        else_branch=[NumberNode(line=2, column=0, value=2)],
     )
     outer_if = IfNode(
-        line=1, column=0,
+        line=1,
+        column=0,
         condition=x,
         then_branch=[inner_if],
-        else_branch=[NumberNode(line=1, column=0, value=3)]
+        else_branch=[NumberNode(line=1, column=0, value=3)],
     )
     assert len(outer_if.then_branch) == 1
     assert isinstance(outer_if.then_branch[0], IfNode)
@@ -339,8 +358,9 @@ def test_function_with_nested_body():
 # ============ 语法分析器测试 ============
 
 import pytest
+
 from src.lexer.lexer import Lexer
-from src.parser.parser import Parser, ParseError
+from src.parser.parser import ParseError, Parser
 
 
 class TestParserBasic:

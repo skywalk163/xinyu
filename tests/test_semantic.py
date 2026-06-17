@@ -10,10 +10,11 @@
 """
 
 import unittest
+
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.semantic.scope import Scope
 from src.semantic.analyzer import SemanticAnalyzer, SemanticError
+from src.semantic.scope import Scope
 
 
 class TestScope(unittest.TestCase):
@@ -258,7 +259,7 @@ x = 10。"""
 
     def test_type_inference_string(self):
         """测试字符串类型推断"""
-        code = "定义 x = \"你好\"。"
+        code = '定义 x = "你好"。'
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
@@ -273,7 +274,7 @@ x = 10。"""
 
     def test_builtin_function(self):
         """测试内置函数"""
-        code = "打印 \"你好\"。"
+        code = '打印 "你好"。'
         success, errors = self._analyze(code)
 
         self.assertTrue(success)

@@ -3,16 +3,18 @@
 
 测试心语语言的异常处理功能。
 """
-import pytest
-import sys
 import io
+import sys
 from contextlib import redirect_stdout
+
+import pytest
 
 
 def test_main_module_exists():
     """测试主入口模块存在"""
     try:
         from src.main import ChineseProgram
+
         assert ChineseProgram is not None
     except ImportError:
         pytest.fail("主入口模块 src.main 不存在")
@@ -26,13 +28,13 @@ class TestTryExcept:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     定义 x = 1 相除 0。
 捕获 那么：
     打印 "捕获到异常"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -46,13 +48,13 @@ class TestTryExcept:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     定义 x = 1 相除 0。
 捕获 ZeroDivisionError 那么：
     打印 "除零错误"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -66,7 +68,7 @@ class TestTryExcept:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 结果 = "未执行"。
 尝试：
     定义 x = 1 相除 0。
@@ -76,7 +78,7 @@ class TestTryExcept:
     打印 "最终执行"。
 。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -91,7 +93,7 @@ class TestTryExcept:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     定义 x = 1 相除 0。
 捕获 ValueError 那么：
@@ -101,7 +103,7 @@ class TestTryExcept:
 捕获 那么：
     打印 "其他错误"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -119,13 +121,13 @@ class TestRaise:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     抛出 ValueError "测试异常"。
 捕获 ValueError 那么：
     打印 "捕获到ValueError"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -139,7 +141,7 @@ class TestRaise:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     尝试：
         定义 x = 1 相除 0。
@@ -149,7 +151,7 @@ class TestRaise:
 捕获 那么：
     打印 "重新抛出成功"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -167,13 +169,13 @@ class TestExceptionWithVariable:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 尝试：
     定义 x = 1 相除 0。
 捕获 ZeroDivisionError 为 e 那么：
     打印 "捕获到异常"。
 。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -183,5 +185,5 @@ class TestExceptionWithVariable:
         assert "捕获到异常" in output
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

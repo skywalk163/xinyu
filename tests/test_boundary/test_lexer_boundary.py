@@ -3,6 +3,7 @@
 测试词法分析器的边界情况处理能力。
 """
 import pytest
+
 from src.lexer.lexer import Lexer, LexerError
 from src.lexer.tokens import TokenType
 
@@ -23,7 +24,9 @@ class TestLexerBoundary:
         tokens = lexer.tokenize()
         # 仅空白字符应该返回NEWLINE和EOF token，或仅EOF
         # 过滤掉NEWLINE token，只检查是否有实质内容
-        non_whitespace_tokens = [t for t in tokens if t.type not in [TokenType.NEWLINE, TokenType.EOF]]
+        non_whitespace_tokens = [
+            t for t in tokens if t.type not in [TokenType.NEWLINE, TokenType.EOF]
+        ]
         assert len(non_whitespace_tokens) == 0
 
     def test_single_character(self):
@@ -61,10 +64,7 @@ class TestLexerBoundary:
 
     def test_all_keywords(self):
         """测试所有关键字识别"""
-        keywords = [
-            "定义", "函数", "返回", "如果", "那么", "否则",
-            "当", "遍历", "重复", "打印", "真", "假"
-        ]
+        keywords = ["定义", "函数", "返回", "如果", "那么", "否则", "当", "遍历", "重复", "打印", "真", "假"]
         for keyword in keywords:
             lexer = Lexer(keyword)
             tokens = lexer.tokenize()
@@ -141,7 +141,7 @@ class TestLexerBoundary:
 
     def test_mixed_tokens(self):
         """测试混合token类型"""
-        source = '定义 函数名 = 函数 参数：返回 参数 相加 1。打印 函数名 5。'
+        source = "定义 函数名 = 函数 参数：返回 参数 相加 1。打印 函数名 5。"
         lexer = Lexer(source)
         tokens = lexer.tokenize()
         assert len(tokens) > 0

@@ -3,10 +3,11 @@
 
 测试完整的编译流程：词法分析 → 语法分析 → 语义分析 → 代码生成 → 执行
 """
-import pytest
-import sys
 import io
+import sys
 from contextlib import redirect_stdout
+
+import pytest
 
 
 # 测试模块不存在，应该失败
@@ -14,6 +15,7 @@ def test_main_module_exists():
     """测试主入口模块存在"""
     try:
         from src.main import ChineseProgram
+
         assert ChineseProgram is not None
     except ImportError:
         pytest.fail("主入口模块 src.main 不存在")
@@ -42,10 +44,10 @@ class TestHelloWorld:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 消息 = "你好，世界！"。
 打印消息。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -63,7 +65,7 @@ class TestArithmetic:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 结果 = 3 相加 5。打印结果。'
+        source = "定义 结果 = 3 相加 5。打印结果。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -77,7 +79,7 @@ class TestArithmetic:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 结果 = 10 相减 3。打印结果。'
+        source = "定义 结果 = 10 相减 3。打印结果。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -91,7 +93,7 @@ class TestArithmetic:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 结果 = 4 相乘 5。打印结果。'
+        source = "定义 结果 = 4 相乘 5。打印结果。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -105,7 +107,7 @@ class TestArithmetic:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 结果 = 20 相除以 4。打印结果。'
+        source = "定义 结果 = 20 相除以 4。打印结果。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -119,7 +121,7 @@ class TestArithmetic:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 结果 = (2 相加 3) 相乘 4。打印结果。'
+        source = "定义 结果 = (2 相加 3) 相乘 4。打印结果。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -137,11 +139,11 @@ class TestFunction:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 问候 = 函数：
     打印"你好！"。
 问候。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -155,12 +157,12 @@ class TestFunction:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 问候 = 函数 名字：
     定义 消息 = "你好，" 相加 名字 相加 "！"。
     打印消息。
 问候"世界"。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -174,12 +176,12 @@ class TestFunction:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 相加法 = 函数 甲 乙：
     返回 甲 相加 乙。
 定义 结果 = 相加法 3 5。
 打印结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -193,7 +195,7 @@ class TestFunction:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 阶相乘 = 函数 n：
     如果 n 等于 1 那么：
         返回 1。
@@ -201,7 +203,7 @@ class TestFunction:
         返回 n 相乘 阶相乘 n 相减 1。
 定义 结果 = 阶相乘 5。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -219,11 +221,11 @@ class TestControlFlow:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 x = 10。
 如果 x 大于 5 那么：
     打印"x 大于 5"。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -237,13 +239,13 @@ class TestControlFlow:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 x = 3。
 如果 x 大于 5 那么：
     打印"x 大于 5"。
 否则：
     打印"x 小于等于 5"。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -257,12 +259,12 @@ class TestControlFlow:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 x = 10。
 如果 x 大于 5 那么：
     如果 x 大于 8 那么：
         打印"x 大于 8"。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -280,10 +282,10 @@ class TestLoop:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 循环 i 于 [1, 2, 3]：
     打印 i。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -299,12 +301,12 @@ class TestLoop:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 n = 1。
 当满足 n 小于等于 3：
     打印 n。
     n = n 相加 1。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -320,10 +322,10 @@ class TestLoop:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 重复 3 次数：
     打印"你好"。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -341,7 +343,7 @@ class TestComplexPrograms:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 斐波那契 = 函数 n：
     如果 n 小于等于 1 那么：
         返回 n。
@@ -350,7 +352,7 @@ class TestComplexPrograms:
 
 定义 结果 = 斐波那契 7。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -364,13 +366,13 @@ class TestComplexPrograms:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 数字列表 = [1, 2, 3, 4, 5]。
 定义 总和 = 0。
 循环 num 于 数字列表：
     总和 = 总和 相加 num。
 打印总和。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -384,7 +386,7 @@ class TestComplexPrograms:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 阶相乘 = 函数 n：
     定义 结果 = 1。
     定义 i = 1。
@@ -395,7 +397,7 @@ class TestComplexPrograms:
 
 定义 答案 = 阶相乘 5。
 打印答案。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -413,7 +415,7 @@ class TestCompile:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 x = 5。打印x。'
+        source = "定义 x = 5。打印x。"
 
         python_code = program.compile(source)
 
@@ -425,10 +427,10 @@ class TestCompile:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 相加法 = 函数 a b：
     返回 a 相加 b。
-'''
+"""
 
         python_code = program.compile(source)
 
@@ -446,7 +448,7 @@ class TestErrorHandling:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '定义 x = @。'  # @ 是非也也法字符
+        source = "定义 x = @。"  # @ 是非也也法字符
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -461,7 +463,7 @@ class TestErrorHandling:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '如果 则。'  # 缺少条件
+        source = "如果 则。"  # 缺少条件
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -476,7 +478,7 @@ class TestErrorHandling:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '打印未定义的变量。'
+        source = "打印未定义的变量。"
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -512,12 +514,12 @@ class TestBuiltinFunctions:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 a = 真值。
 定义 b = 假值。
 打印a。
 打印b。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -536,10 +538,10 @@ class TestPythonModules:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 pi = math.pi。
 打印pi。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -553,10 +555,10 @@ class TestPythonModules:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 num = random.randint(1, 10)。
 打印num。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):

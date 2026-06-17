@@ -6,12 +6,13 @@
 """
 
 import pytest
+
+from src.error_handling import ErrorHandler, ErrorType
 from src.lexer.lexer import Lexer
 from src.lexer.lexer_with_error_handler import LexerWithErrorHandler
+from src.parser.parser import Parser
 from src.semantic.analyzer import SemanticAnalyzer
 from src.semantic.analyzer_with_inference import SemanticAnalyzerWithInference
-from src.parser.parser import Parser
-from src.error_handling import ErrorHandler, ErrorType
 
 
 class TestLexerWithErrorHandler:
@@ -23,7 +24,7 @@ class TestLexerWithErrorHandler:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         assert not error_handler.has_errors()
         assert len(tokens) > 0
         assert tokens[-1].type.name == "EOF"
@@ -34,7 +35,7 @@ class TestLexerWithErrorHandler:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         # 应该收集到错误
         assert error_handler.has_errors()
         errors = error_handler.get_errors()
@@ -47,7 +48,7 @@ class TestLexerWithErrorHandler:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         lexer.tokenize()
-        
+
         assert error_handler.has_errors()
         errors = error_handler.get_errors()
         # 应该收集到至少一个错误
@@ -59,7 +60,7 @@ class TestLexerWithErrorHandler:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         lexer.tokenize()
-        
+
         assert error_handler.has_errors()
         errors = error_handler.get_errors()
         assert any("字符串未终止" in err.message for err in errors)
@@ -70,10 +71,12 @@ class TestLexerWithErrorHandler:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         assert not error_handler.has_errors()
         # 检查操作符被正确识别
-        operator_tokens = [t for t in tokens if t.type.name in ["PLUS", "MINUS", "MULTIPLY", "DIVIDE"]]
+        operator_tokens = [
+            t for t in tokens if t.type.name in ["PLUS", "MINUS", "MULTIPLY", "DIVIDE"]
+        ]
         assert len(operator_tokens) == 4
 
 
@@ -86,13 +89,13 @@ class TestSemanticAnalyzerWithInference:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         success = analyzer.analyze(ast)
-        
+
         assert success
         assert not error_handler.has_errors()
 
@@ -102,17 +105,17 @@ class TestSemanticAnalyzerWithInference:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
-        
+
         # 检查变量类型
-        symbol = analyzer.current_scope.lookup('x')
+        symbol = analyzer.current_scope.lookup("x")
         assert symbol is not None
-        assert symbol.get('value_type') == 'number'
+        assert symbol.get("value_type") == "number"
 
     def test_type_inference_string(self):
         """测试字符串类型推断"""
@@ -120,17 +123,17 @@ class TestSemanticAnalyzerWithInference:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
-        
+
         # 检查变量类型
-        symbol = analyzer.current_scope.lookup('x')
+        symbol = analyzer.current_scope.lookup("x")
         assert symbol is not None
-        assert symbol.get('value_type') == 'string'
+        assert symbol.get("value_type") == "string"
 
     def test_undefined_variable_error(self):
         """测试未定义变量的错误报告"""
@@ -138,13 +141,13 @@ class TestSemanticAnalyzerWithInference:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
-        
+
         # 应该报告错误
         assert error_handler.has_errors()
         errors = error_handler.get_errors()
@@ -156,13 +159,13 @@ class TestSemanticAnalyzerWithInference:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
-        
+
         # 应该报告错误
         assert error_handler.has_errors()
         errors = error_handler.get_errors()
@@ -206,8 +209,8 @@ class TestIntegration:
         assert success
 
         # 检查类型推断结果
-        x_symbol = analyzer.current_scope.lookup('x')
-        y_symbol = analyzer.current_scope.lookup('y')
+        x_symbol = analyzer.current_scope.lookup("x")
+        y_symbol = analyzer.current_scope.lookup("y")
 
         assert x_symbol is not None
         assert y_symbol is not None
@@ -218,18 +221,18 @@ class TestIntegration:
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
         tokens = lexer.tokenize()
-        
+
         # 不应该有词法错误
         assert not error_handler.has_errors()
-        
+
         # 可以正常分析
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
-        
+
         # y 应该被正确分析
-        y_symbol = analyzer.current_scope.lookup('y')
+        y_symbol = analyzer.current_scope.lookup("y")
         assert y_symbol is not None
-        assert y_symbol.get('value_type') == 'number'
+        assert y_symbol.get("value_type") == "number"

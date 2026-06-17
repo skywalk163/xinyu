@@ -3,9 +3,10 @@
 测试语法分析器的边界情况处理能力。
 """
 import pytest
+
 from src.lexer.lexer import Lexer
-from src.parser.parser import Parser, ParseError
-from src.parser.ast_nodes import ProgramNode, FunctionDefNode, IfNode, VarDefNode
+from src.parser.ast_nodes import FunctionDefNode, IfNode, ProgramNode, VarDefNode
+from src.parser.parser import ParseError, Parser
 
 
 class TestParserBoundary:

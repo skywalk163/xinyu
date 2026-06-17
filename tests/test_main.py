@@ -6,6 +6,7 @@
 """
 
 import pytest
+
 from src.main import ChineseProgram
 
 
@@ -79,7 +80,7 @@ class TestChineseProgram:
         source = """
         定义 相加法(a, b)：
             返回 a 相加 b。
-        
+
         定义 结果 = 相加法(3, 5)。
         """
         result = self.program.run(source)
@@ -189,7 +190,7 @@ class TestChineseProgram:
         exec_globals = self.program._create_exec_globals()
         # 应该包含基本的内置函数
         assert isinstance(exec_globals, dict)
-        assert '__builtins__' in exec_globals
+        assert "__builtins__" in exec_globals
 
     def test_run_empty_source(self):
         """测试运行空源代码"""

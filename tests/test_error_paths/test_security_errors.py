@@ -3,9 +3,12 @@
 测试安全验证的错误处理能力。
 """
 import pytest
+
 from src.main import ChineseProgram
+
 try:
     from src.security.input_validator import SourceCodeValidator, validate_source
+
     InputValidator = SourceCodeValidator  # 保持向后兼容
 except ImportError:
     InputValidator = None
@@ -20,8 +23,8 @@ class TestSecurityErrors:
         program = ChineseProgram()
         # 尝试注入恶意代码
         malicious_sources = [
-            "定义 代码 = '__import__(\"os\").system(\"rm -rf /\")'。",
-            "执行 '__import__(\"os\").system(\"ls\")'。",
+            '定义 代码 = \'__import__("os").system("rm -rf /")\'。',
+            '执行 \'__import__("os").system("ls")\'。',
             "定义 危险 = eval('1+1')。",
         ]
         for source in malicious_sources:
@@ -65,7 +68,7 @@ class TestInputValidation:
         """测试源代码验证"""
         if validate_source is None:
             pytest.skip("validate_source not available")
-        
+
         valid_sources = [
             '打印"你好"。',
             "定义 变量 = 1。",
@@ -80,7 +83,7 @@ class TestInputValidation:
         """测试恶意输入验证"""
         if validate_source is None:
             pytest.skip("validate_source not available")
-        
+
         malicious_sources = [
             "__import__('os').system('ls')",
             "eval('1+1')",
@@ -95,7 +98,7 @@ class TestInputValidation:
         """测试输入长度验证"""
         if validate_source is None:
             pytest.skip("validate_source not available")
-        
+
         # 超长输入
         long_source = "打印" + "。" * 1000000
         result = validate_source(long_source)
@@ -106,7 +109,7 @@ class TestInputValidation:
         """测试特殊字符验证"""
         if validate_source is None:
             pytest.skip("validate_source not available")
-        
+
         special_sources = [
             '打印"\x00\x01\x02"。',
             '定义 变量 = "\n\r\t"。',

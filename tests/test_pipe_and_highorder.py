@@ -3,16 +3,18 @@
 
 测试心语语言的管道操作和高阶函数功能。
 """
-import pytest
-import sys
 import io
+import sys
 from contextlib import redirect_stdout
+
+import pytest
 
 
 def test_main_module_exists():
     """测试主入口模块存在"""
     try:
         from src.main import ChineseProgram
+
         assert ChineseProgram is not None
     except ImportError:
         pytest.fail("主入口模块 src.main 不存在")
@@ -26,11 +28,11 @@ class TestPipeOperation:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 x = -5。
 定义 结果 = x，绝对值。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -44,11 +46,11 @@ class TestPipeOperation:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 列表1 = [1, 2, 3, 4, 5]。
 定义 结果 = 列表1，求和。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -62,11 +64,11 @@ class TestPipeOperation:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 列表1 = [1, 2, 3, 4, 5]。
 定义 结果 = 列表1，长度。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -84,7 +86,7 @@ class TestHighOrderFunctions:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 列表1 = [1, 2, 3]。
 定义 双倍 = 函数 x：
   返回 x 相乘 2。
@@ -92,7 +94,7 @@ class TestHighOrderFunctions:
 定义 结果 = 列表1，皆 双倍。
 定义 结果列表 = 列表 结果。
 打印 结果列表。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -117,11 +119,11 @@ class TestBuiltinFunctions:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 列表1 = [1, 2, 3, 4, 5]。
 定义 结果 = 求和 列表1。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -135,11 +137,11 @@ class TestBuiltinFunctions:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 列表1 = [1, 2, 3, 4, 5]。
 定义 结果 = 长度 列表1。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -153,11 +155,11 @@ class TestBuiltinFunctions:
         from src.main import ChineseProgram
 
         program = ChineseProgram()
-        source = '''
+        source = """
 定义 x = -10。
 定义 结果 = 绝对值 x。
 打印 结果。
-'''
+"""
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -167,5 +169,5 @@ class TestBuiltinFunctions:
         assert "10" in output
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

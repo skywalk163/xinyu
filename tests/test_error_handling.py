@@ -8,6 +8,7 @@
 """
 
 import unittest
+
 from src.error_handling import ErrorHandler, ErrorType
 
 
@@ -62,13 +63,7 @@ class TestErrorHandler(unittest.TestCase):
     def test_error_formatting(self):
         """测试错误格式化"""
         handler = ErrorHandler()
-        handler.report(
-            ErrorType.PARSER_ERROR,
-            "Expected ')'",
-            line=3,
-            column=10,
-            source="印(1加2。"
-        )
+        handler.report(ErrorType.PARSER_ERROR, "Expected ')'", line=3, column=10, source="印(1加2。")
 
         formatted = handler.format_error(0)
         self.assertIn("第 3 行", formatted)
@@ -80,11 +75,7 @@ class TestErrorHandler(unittest.TestCase):
         handler = ErrorHandler()
         source = "定义 x = 。"
         handler.report(
-            ErrorType.PARSER_ERROR,
-            "Expected expression",
-            line=1,
-            column=6,
-            source=source
+            ErrorType.PARSER_ERROR, "Expected expression", line=1, column=6, source=source
         )
 
         formatted = handler.format_error(0)
