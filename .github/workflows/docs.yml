@@ -26,19 +26,19 @@ jobs:
   build:
     name: 构建文档
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: 检出代码
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    
+
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
         cache: 'pip'
-    
+
     - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
@@ -46,26 +46,26 @@ jobs:
         pip install -r requirements-dev.txt
         pip install -e .
         pip install sphinx sphinx-rtd-theme myst-parser
-    
+
     - name: 安装文档工具
       run: |
         pip install sphinx-autobuild sphinx-copybutton sphinx-design
-    
+
     - name: 生成API文档
       run: |
         # 创建API文档目录
         mkdir -p docs/api
-        
+
         # 使用sphinx-apidoc生成API文档
         sphinx-apidoc -o docs/api src --force --module-first
-        
+
         # 创建conf.py如果不存在
         if [ ! -f docs/conf.py ]; then
           sphinx-quickstart docs --quiet --project "心语编程语言" --author "心语开发团队" \
             --release "0.1.0" --language "zh_CN" --ext-autodoc --ext-viewcode \
             --makefile --no-batchfile
         fi
-        
+
         # 更新conf.py配置
         echo "import os" > docs/conf.py
         echo "import sys" >> docs/conf.py
@@ -119,7 +119,7 @@ jobs:
         echo "    'substitution'," >> docs/conf.py
         echo "    'tasklist'," >> docs/conf.py
         echo "]" >> docs/conf.py
-        
+
         # 创建index.rst
         echo "心语编程语言文档" > docs/index.rst
         echo "==================" >> docs/index.rst
@@ -154,14 +154,14 @@ jobs:
         echo "* :ref:\`genindex\`" >> docs/index.rst
         echo "* :ref:\`modindex\`" >> docs/index.rst
         echo "* :ref:\`search\`" >> docs/index.rst
-    
+
     - name: 构建HTML文档
       run: |
         cd docs
         sphinx-build -b html . _build/html -W --keep-going
-    
+
     - name: 上传构建产物
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v2
       with:
         path: docs/_build/html
 
@@ -172,7 +172,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
     - name: 部署到GitHub Pages
       id: deployment
@@ -182,51 +182,51 @@ jobs:
     name: 文档测试
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
     - name: 检出代码
       uses: actions/checkout@v4
-    
+
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
         cache: 'pip'
-    
+
     - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -e .
-    
+
     - name: 测试文档中的代码示例
       run: |
         echo "测试README.md中的代码示例..."
-        
+
         # 测试快速开始示例
         echo "测试快速开始示例..."
         echo '印"你好，世界！"。' > test_hello.xinyu
         python src/main.py test_hello.xinyu
-        
+
         # 测试格式化工具示例
         echo "测试格式化工具示例..."
         python tools/xinyu_format.py check example.xinyu
-        
+
         # 测试REPL示例
         echo "测试REPL示例..."
         echo "print('Hello from REPL')" | python src/main.py || true
-        
+
         echo "文档代码示例测试完成"
-    
+
     - name: 验证文档链接
       run: |
         echo "验证文档内部链接..."
-        
+
         # 检查README.md中的链接
         if grep -q "\[.*\](.*)" README.md; then
           echo "README.md包含Markdown链接"
         fi
-        
+
         # 检查文档文件中的链接
         for file in docs/*.md; do
           if [ -f "$file" ]; then
@@ -241,28 +241,28 @@ jobs:
     name: 文档质量检查
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
     - name: 检出代码
       uses: actions/checkout@v4
-    
+
     - name: 设置Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
         cache: 'pip'
-    
+
     - name: 安装文档检查工具
       run: |
         pip install vale
         pip install markdownlint-cli
-    
+
     - name: 下载Vale样式
       run: |
         mkdir -p .vale/styles
         curl -L https://github.com/errata-ai/Google/releases/latest/download/Google.zip -o .vale/styles/Google.zip
         unzip -o .vale/styles/Google.zip -d .vale/styles/
-    
+
     - name: 配置Vale
       run: |
         echo "StylesPath = .vale/styles" > .vale.ini
@@ -276,16 +276,16 @@ jobs:
         echo "Google.Exclamation = NO" >> .vale.ini
         echo "Google.Ellipses = NO" >> .vale.ini
         echo "Google.Spacing = NO" >> .vale.ini
-    
+
     - name: 运行Vale检查
       run: |
         vale docs/ README.md || echo "Vale检查完成（允许警告）"
-    
+
     - name: 运行Markdown检查
       run: |
         # 安装markdownlint-cli
         npm install -g markdownlint-cli
-        
+
         # 创建配置
         echo '{' > .markdownlint.json
         echo '  "default": true,' >> .markdownlint.json
@@ -293,18 +293,18 @@ jobs:
         echo '  "MD033": false,  # 允许内联HTML' >> .markdownlint.json
         echo '  "MD041": false   # 禁用首行标题检查' >> .markdownlint.json
         echo '}' >> .markdownlint.json
-        
+
         # 运行检查
         markdownlint docs/ README.md --config .markdownlint.json || echo "Markdown检查完成（允许警告）"
-    
+
     - name: 检查拼写
       run: |
         echo "运行拼写检查..."
-        
+
         # 安装aspell
         sudo apt-get update
         sudo apt-get install -y aspell aspell-en
-        
+
         # 检查英文拼写
         for file in docs/*.md README.md; do
           if [ -f "$file" ]; then
@@ -318,7 +318,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy, docs-test, docs-quality]
     if: always()
-    
+
     steps:
     - name: 发送成功通知
       if: success()
@@ -330,15 +330,15 @@ jobs:
         icon_emoji: ':books:'
         text: |
           文档已成功部署！
-          
+
           状态: ✅ 成功
           环境: GitHub Pages
           URL: https://yourusername.github.io/xinyu-lang
-          
+
           构建日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    
+
     - name: 发送失败通知
       if: failure()
       uses: 8398a7/action-slack@v3
@@ -349,10 +349,10 @@ jobs:
         icon_emoji: ':x:'
         text: |
           文档部署失败！
-          
+
           状态: ❌ 失败
           环境: GitHub Pages
-          
+
           请检查工作流日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
