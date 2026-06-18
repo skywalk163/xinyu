@@ -3,8 +3,6 @@
 测试元数定义和验证功能。
 """
 
-import pytest
-
 from src.parser.arity import Arity, ArityType
 
 
@@ -20,17 +18,17 @@ class TestArity:
     def test_fixed_arity_satisfied(self):
         """测试固定元数验证"""
         arity = Arity.fixed(2)
-        assert arity.is_satisfied(2) == True
-        assert arity.is_satisfied(1) == False
-        assert arity.is_satisfied(3) == False
+        assert arity.is_satisfied(2) is True
+        assert arity.is_satisfied(1) is False
+        assert arity.is_satisfied(3) is False
 
     def test_fixed_arity_stop_collecting(self):
         """测试固定元数停止收集"""
         arity = Arity.fixed(2)
-        assert arity.should_stop_collecting(0) == False
-        assert arity.should_stop_collecting(1) == False
-        assert arity.should_stop_collecting(2) == True
-        assert arity.should_stop_collecting(3) == True
+        assert arity.should_stop_collecting(0) is False
+        assert arity.should_stop_collecting(1) is False
+        assert arity.should_stop_collecting(2) is True
+        assert arity.should_stop_collecting(3) is True
 
     def test_variable_arity_creation(self):
         """测试可变元数创建"""
@@ -41,23 +39,23 @@ class TestArity:
     def test_variable_arity_satisfied(self):
         """测试可变元数验证"""
         arity = Arity.variable(min=0)
-        assert arity.is_satisfied(0) == True
-        assert arity.is_satisfied(1) == True
-        assert arity.is_satisfied(5) == True
+        assert arity.is_satisfied(0) is True
+        assert arity.is_satisfied(1) is True
+        assert arity.is_satisfied(5) is True
 
     def test_variable_arity_with_min(self):
         """测试可变元数（有最小值）"""
         arity = Arity.variable(min=1)
-        assert arity.is_satisfied(0) == False
-        assert arity.is_satisfied(1) == True
-        assert arity.is_satisfied(5) == True
+        assert arity.is_satisfied(0) is False
+        assert arity.is_satisfied(1) is True
+        assert arity.is_satisfied(5) is True
 
     def test_variable_arity_stop_collecting(self):
         """测试可变元数停止收集"""
         arity = Arity.variable(min=0)
         # 可变元数不主动停止
-        assert arity.should_stop_collecting(0) == False
-        assert arity.should_stop_collecting(5) == False
+        assert arity.should_stop_collecting(0) is False
+        assert arity.should_stop_collecting(5) is False
 
     def test_minimum_arity_creation(self):
         """测试最小元数创建"""
@@ -68,17 +66,17 @@ class TestArity:
     def test_minimum_arity_satisfied(self):
         """测试最小元数验证"""
         arity = Arity.min(2)
-        assert arity.is_satisfied(1) == False
-        assert arity.is_satisfied(2) == True
-        assert arity.is_satisfied(5) == True
+        assert arity.is_satisfied(1) is False
+        assert arity.is_satisfied(2) is True
+        assert arity.is_satisfied(5) is True
 
     def test_minimum_arity_stop_collecting(self):
         """测试最小元数停止收集"""
         arity = Arity.min(2)
         # 最小元数不主动停止
-        assert arity.should_stop_collecting(0) == False
-        assert arity.should_stop_collecting(2) == False
-        assert arity.should_stop_collecting(5) == False
+        assert arity.should_stop_collecting(0) is False
+        assert arity.should_stop_collecting(2) is False
+        assert arity.should_stop_collecting(5) is False
 
     def test_range_arity_creation(self):
         """测试范围元数创建"""
@@ -90,20 +88,20 @@ class TestArity:
     def test_range_arity_satisfied(self):
         """测试范围元数验证"""
         arity = Arity.range(min=1, max=3)
-        assert arity.is_satisfied(0) == False
-        assert arity.is_satisfied(1) == True
-        assert arity.is_satisfied(2) == True
-        assert arity.is_satisfied(3) == True
-        assert arity.is_satisfied(4) == False
+        assert arity.is_satisfied(0) is False
+        assert arity.is_satisfied(1) is True
+        assert arity.is_satisfied(2) is True
+        assert arity.is_satisfied(3) is True
+        assert arity.is_satisfied(4) is False
 
     def test_range_arity_stop_collecting(self):
         """测试范围元数停止收集"""
         arity = Arity.range(min=1, max=3)
-        assert arity.should_stop_collecting(0) == False
-        assert arity.should_stop_collecting(1) == False
-        assert arity.should_stop_collecting(2) == False
-        assert arity.should_stop_collecting(3) == True
-        assert arity.should_stop_collecting(4) == True
+        assert arity.should_stop_collecting(0) is False
+        assert arity.should_stop_collecting(1) is False
+        assert arity.should_stop_collecting(2) is False
+        assert arity.should_stop_collecting(3) is True
+        assert arity.should_stop_collecting(4) is True
 
     def test_arity_str_representation(self):
         """测试元数字符串表示"""
