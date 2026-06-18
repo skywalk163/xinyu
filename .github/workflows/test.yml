@@ -186,7 +186,7 @@ jobs:
 
     - name: 发送测试通知
       if: failure()
-      uses: 8398a7/action-slack@v3
+      uses: 8398a7/action-slack@v4
       with:
         status: ${{ job.status }}
         channel: '#ci-cd'
