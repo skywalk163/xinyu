@@ -111,7 +111,7 @@ class MacroSystem:
                             try:
                                 code = codegen.generate(stmt)
                                 statements_code.append(code)
-                            except:
+                            except Exception:
                                 # 如果无法生成代码，使用占位符
                                 statements_code.append(f"/* {param} */")
                         replacement = "。".join(statements_code)

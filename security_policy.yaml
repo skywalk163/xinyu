@@ -9,7 +9,7 @@ roles:
         operations: ["all"]
         description: "管理员拥有所有权限"
     parent_roles: []
-    
+
   developer:
     permissions:
       - resource: "/home/*"
@@ -37,7 +37,7 @@ roles:
         operations: ["import"]
         description: "开发者可以导入subprocess模块"
     parent_roles: ["user"]
-    
+
   user:
     permissions:
       - resource: "/home/user/*"
@@ -68,7 +68,7 @@ roles:
         operations: ["network"]
         description: "用户可以访问example.com的API"
     parent_roles: ["guest"]
-    
+
   guest:
     permissions:
       - resource: "/tmp/*"
@@ -90,7 +90,7 @@ roles:
         operations: ["network"]
         description: "访客可以访问example.com的公开API"
     parent_roles: []
-    
+
   restricted:
     permissions:
       - resource: "/tmp/restricted/*"

@@ -99,7 +99,7 @@ python build.py --docs
 ## GitHub Actions 工作流
 
 ### 代码质量检查 (`quality.yml`)
-**触发条件**: 
+**触发条件**:
 - 推送到 `main` 或 `develop` 分支
 - 创建或更新拉取请求到 `main` 分支
 - 每周一早上6点（定时任务）
@@ -170,7 +170,7 @@ environments:
   test:
     pypi_url: "https://test.pypi.org/legacy/"
     api_token_env: "TEST_PYPI_API_TOKEN"
-  
+
   production:
     pypi_url: "https://upload.pypi.org/legacy/"
     api_token_env: "PYPI_API_TOKEN"

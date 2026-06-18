@@ -97,7 +97,7 @@
 class Lexer:
     def __init__(self, source: str, error_handler: ErrorHandler = None):
         """初始化词法分析器
-        
+
         Args:
             source: 源代码字符串
             error_handler: 错误处理器实例（可选）
@@ -105,16 +105,16 @@ class Lexer:
         self.source = source
         self.error_handler = error_handler or ErrorHandler()
         # ... 其他初始化
-    
+
     def _report_error(
-        self, 
-        message: str, 
-        line: int, 
-        column: int, 
+        self,
+        message: str,
+        line: int,
+        column: int,
         suggestion: Optional[str] = None
     ) -> None:
         """统一报告词法错误
-        
+
         Args:
             message: 错误消息
             line: 行号
@@ -146,7 +146,7 @@ class Lexer:
 class Parser:
     def __init__(self, tokens: List[Token], error_handler: ErrorHandler = None):
         """初始化语法分析器
-        
+
         Args:
             tokens: Token序列
             error_handler: 错误处理器实例（可选）
@@ -154,15 +154,15 @@ class Parser:
         self.tokens = tokens
         self.error_handler = error_handler or ErrorHandler()
         # ... 其他初始化
-    
+
     def _report_error(
-        self, 
-        message: str, 
-        token: Token, 
+        self,
+        message: str,
+        token: Token,
         suggestion: Optional[str] = None
     ) -> None:
         """统一报告语法错误
-        
+
         Args:
             message: 错误消息
             token: 相关Token
@@ -190,22 +190,22 @@ class Parser:
 class SemanticAnalyzer:
     def __init__(self, error_handler: ErrorHandler = None):
         """初始化语义分析器
-        
+
         Args:
             error_handler: 错误处理器实例（可选）
         """
         self.error_handler = error_handler or ErrorHandler()
         # ... 其他初始化
-    
+
     def _report_error(
-        self, 
-        message: str, 
-        line: int, 
-        column: int, 
+        self,
+        message: str,
+        line: int,
+        column: int,
         suggestion: Optional[str] = None
     ) -> None:
         """统一报告语义错误
-        
+
         Args:
             message: 错误消息
             line: 行号
@@ -219,18 +219,18 @@ class SemanticAnalyzer:
             column=column,
             suggestion=suggestion
         )
-    
+
     def has_errors(self) -> bool:
         """检查是否存在错误
-        
+
         Returns:
             是否存在错误
         """
         return self.error_handler.has_errors()
-    
+
     def get_errors(self) -> List[Error]:
         """获取所有错误
-        
+
         Returns:
             错误列表
         """
@@ -253,26 +253,26 @@ class SemanticAnalyzer:
         self.error_handler = error_handler or ErrorHandler()
         self.type_inferencer = TypeInferencer()
         # ... 其他初始化
-    
+
     def _infer_type(
-        self, 
-        node: ASTNode, 
+        self,
+        node: ASTNode,
         context: Optional[Dict[str, str]] = None
     ) -> str:
         """推断AST节点的类型
-        
+
         Args:
             node: AST节点
             context: 类型上下文（变量名 -> 类型）
-        
+
         Returns:
             推断的类型字符串
         """
         return self.type_inferencer.infer(node, context)
-    
+
     def _build_type_context(self) -> Dict[str, str]:
         """构建当前作用域的类型上下文
-        
+
         Returns:
             变量名到类型的映射
         """
@@ -307,19 +307,19 @@ Symbol = {
 ```python
 def method_name(self, param1: Type1, param2: Type2) -> ReturnType:
     """方法功能简述
-    
+
     详细描述（可选）。
-    
+
     Args:
         param1: 参数1说明
         param2: 参数2说明
-    
+
     Returns:
         返回值说明
-    
+
     Raises:
         ExceptionType: 异常说明（如适用）
-    
+
     Example:
         使用示例（可选）
     """

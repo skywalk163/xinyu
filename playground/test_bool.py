@@ -2,19 +2,20 @@
 # -*- coding: utf-8 -*-
 """测试布尔值语法"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
 test_cases = [
-    ('真值', '定义 x = 真值。'),
-    ('假值', '定义 x = 假值。'),
-    ('True', '定义 x = True。'),
-    ('False', '定义 x = False。'),
+    ("真值", "定义 x = 真值。"),
+    ("假值", "定义 x = 假值。"),
+    ("True", "定义 x = True。"),
+    ("False", "定义 x = False。"),
 ]
 
 for name, code in test_cases:

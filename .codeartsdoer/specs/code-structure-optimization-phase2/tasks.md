@@ -158,7 +158,7 @@
 4. 修改 has_errors() 和 get_errors() 方法：
    def has_errors(self) -> bool:
        return self.error_handler.has_errors()
-   
+
    def get_errors(self) -> List[Error]:
        return self.error_handler.get_errors()
 ```
@@ -222,7 +222,7 @@
            if symbol.get('value_type'):
                context[name] = symbol['value_type']
        return context
-   
+
    def _infer_type(self, node: ASTNode, context: Optional[Dict[str, str]] = None) -> str:
        return self.type_inferencer.infer(node, context)
 
@@ -315,18 +315,18 @@
 在 Lexer 类中添加文档字符串：
 def tokenize(self) -> List[Token]:
     """将源代码转换为 Token 序列
-    
+
     对源代码进行词法分析，识别并提取所有的词法单元（Token）。
-    
+
     Args:
         无（使用初始化时传入的 source）
-    
+
     Returns:
         List[Token]: Token 序列列表
-    
+
     Raises:
         无（错误通过 ErrorHandler 报告）
-    
+
     Example:
         >>> lexer = Lexer("变量 x 为 42")
         >>> tokens = lexer.tokenize()
@@ -351,15 +351,15 @@ def tokenize(self) -> List[Token]:
 在 Parser 类中添加文档字符串：
 def parse(self) -> ProgramNode:
     """解析 Token 序列生成抽象语法树
-    
+
     对 Token 序列进行语法分析，构建完整的抽象语法树（AST）。
-    
+
     Args:
         无（使用初始化时传入的 tokens）
-    
+
     Returns:
         ProgramNode: 程序根节点
-    
+
     Raises:
         无（错误通过 ErrorHandler 报告）
     """
@@ -367,15 +367,15 @@ def parse(self) -> ProgramNode:
 
 def _parse_statement(self) -> StatementNode:
     """解析语句
-    
+
     根据当前 Token 类型选择相应的语句解析方法。
-    
+
     Args:
         无
-    
+
     Returns:
         StatementNode: 语句节点
-    
+
     Raises:
         无（错误通过 ErrorHandler 报告）
     """
@@ -400,15 +400,15 @@ def _parse_statement(self) -> StatementNode:
 在 SemanticAnalyzer 类中添加文档字符串：
 def analyze(self, ast: ProgramNode) -> None:
     """分析抽象语法树进行语义检查
-    
+
     对 AST 进行语义分析，包括符号表构建、类型检查、作用域检查等。
-    
+
     Args:
         ast: 程序根节点
-    
+
     Returns:
         无
-    
+
     Raises:
         无（错误通过 ErrorHandler 报告）
     """
@@ -416,13 +416,13 @@ def analyze(self, ast: ProgramNode) -> None:
 
 def _infer_type(self, node: ASTNode, context: Optional[Dict[str, str]] = None) -> str:
     """推断 AST 节点的类型
-    
+
     使用类型推断器推断给定节点的类型。
-    
+
     Args:
         node: AST 节点
         context: 类型上下文（变量名到类型的映射）
-    
+
     Returns:
         str: 推断的类型字符串（如 'number', 'string', 'boolean'）
     """
@@ -446,12 +446,12 @@ def _infer_type(self, node: ASTNode, context: Optional[Dict[str, str]] = None) -
 在 CodeGenerator 类中添加文档字符串：
 def generate(self, ast: ProgramNode) -> str:
     """生成目标代码
-    
+
     将抽象语法树转换为目标代码（如 Python 代码）。
-    
+
     Args:
         ast: 程序根节点
-    
+
     Returns:
         str: 生成的目标代码字符串
     """
@@ -476,12 +476,12 @@ def generate(self, ast: ProgramNode) -> str:
 在 MacroExpander 类中添加文档字符串：
 def expand(self, ast: ProgramNode) -> ProgramNode:
     """展开宏
-    
+
     递归展开 AST 中的所有宏调用。
-    
+
     Args:
         ast: 程序根节点
-    
+
     Returns:
         ProgramNode: 展开后的 AST
     """
@@ -489,9 +489,9 @@ def expand(self, ast: ProgramNode) -> ProgramNode:
 
 def register_macro(self, name: str, definition: MacroDefinition) -> None:
     """注册宏定义
-    
+
     将宏定义添加到宏表中。
-    
+
     Args:
         name: 宏名称
         definition: 宏定义对象
@@ -546,7 +546,7 @@ def test_lexer_error_handling():
     error_handler = ErrorHandler()
     lexer = Lexer(source, error_handler)
     tokens = lexer.tokenize()
-    
+
     assert error_handler.has_errors()
     errors = error_handler.get_errors()
     assert len(errors) > 0
@@ -560,7 +560,7 @@ def test_multiple_errors():
     error_handler = ErrorHandler()
     lexer = Lexer(source, error_handler)
     lexer.tokenize()
-    
+
     assert error_handler.has_errors()
     errors = error_handler.get_errors()
     assert len(errors) >= 2  # 应该收集所有错误
@@ -593,7 +593,7 @@ def test_number_type_inference():
     ast = parser.parse()
     analyzer = SemanticAnalyzer(error_handler)
     analyzer.analyze(ast)
-    
+
     symbol = analyzer.symbol_table.lookup('x')
     assert symbol['value_type'] == 'number'
 
@@ -624,7 +624,7 @@ def test_binary_op_type_inference():
 def test_lexer_docstrings():
     """测试词法分析器文档字符串"""
     lexer = Lexer("")
-    
+
     # 检查 tokenize 方法文档字符串
     assert lexer.tokenize.__doc__ is not None
     assert '"""' in lexer.tokenize.__doc__
@@ -635,7 +635,7 @@ def test_lexer_docstrings():
 def test_all_public_methods_have_docstrings():
     """测试所有公开方法都有文档字符串"""
     classes_to_check = [Lexer, Parser, SemanticAnalyzer, CodeGenerator]
-    
+
     for cls in classes_to_check:
         for name, method in inspect.getmembers(cls, inspect.isfunction):
             if not name.startswith('_'):  # 公开方法
@@ -684,7 +684,7 @@ def run_integration_tests():
     # 1. 运行现有测试套件
     result = subprocess.run(['pytest', 'tests/'], capture_output=True)
     assert result.returncode == 0, "测试失败"
-    
+
     # 2. 性能测试
     import time
     start = time.time()
@@ -692,11 +692,11 @@ def run_integration_tests():
     compile_large_test_file()
     elapsed = time.time() - start
     print(f"编译时间: {elapsed:.2f}s")
-    
+
     # 3. API 兼容性检查
     # 检查所有公开 API 签名是否改变
     check_api_compatibility()
-    
+
     # 4. 错误信息格式检查
     check_error_message_format()
 ```

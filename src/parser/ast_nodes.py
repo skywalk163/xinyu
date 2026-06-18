@@ -336,7 +336,11 @@ class TryNode(ASTNode):
     finally_body: Optional[List[ASTNode]] = None
 
     def __str__(self) -> str:
-        return f"TryNode(try: {len(self.try_body)}, except: {len(self.except_clauses)}, finally: {len(self.finally_body) if self.finally_body else 0})"
+        return (
+            f"TryNode(try: {len(self.try_body)}, "
+            f"except: {len(self.except_clauses)}, "
+            f"finally: {len(self.finally_body) if self.finally_body else 0})"
+        )
 
 
 @dataclass
@@ -351,7 +355,10 @@ class ExceptNode(ASTNode):
     body: List[ASTNode] = field(default_factory=list)
 
     def __str__(self) -> str:
-        return f"ExceptNode(type: {self.exception_type}, var: {self.exception_var}, body: {len(self.body)})"
+        return (
+            f"ExceptNode(type: {self.exception_type}, "
+            f"var: {self.exception_var}, body: {len(self.body)})"
+        )
 
 
 @dataclass

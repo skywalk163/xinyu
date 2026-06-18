@@ -4,50 +4,51 @@
 """
 
 import http.server
+import json
 import socketserver
 import threading
 import time
-import urllib.request
 import urllib.parse
-import json
+import urllib.request
+
 
 class TestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/':
+        if self.path == "/":
             self.send_response(200)
-            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
-            
+
             # 读取index.html
-            with open('index.html', 'r', encoding='utf-8') as f:
+            with open("index.html", "r", encoding="utf-8") as f:
                 content = f.read()
-            self.wfile.write(content.encode('utf-8'))
+            self.wfile.write(content.encode("utf-8"))
         else:
             super().do_GET()
-    
+
     def do_POST(self):
-        if self.path == '/run':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length).decode('utf-8')
+        if self.path == "/run":
+            content_length = int(self.headers["Content-Length"])
+            post_data = self.rfile.read(content_length).decode("utf-8")
             data = json.loads(post_data)
-            code = data.get('code', '')
-            
+            code = data.get("code", "")
+
             # 简单的心语解释器（仅用于测试）
             output = self.simulate_xinyu_execution(code)
-            
+
             self.send_response(200)
-            self.send_header('Content-type', 'application/json; charset=utf-8')
+            self.send_header("Content-type", "application/json; charset=utf-8")
             self.end_headers()
-            response = json.dumps({'output': output})
-            self.wfile.write(response.encode('utf-8'))
+            response = json.dumps({"output": output})
+            self.wfile.write(response.encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()
-    
+
     def simulate_xinyu_execution(self, code):
         """简单模拟心语代码执行"""
         output_lines = []
-        
+
         # 检查是否是汉诺塔算法
         if "汉诺塔问题" in code:
             output_lines.append("汉诺塔问题求解")
@@ -71,7 +72,7 @@ class TestHandler(http.server.SimpleHTTPRequestHandler):
             output_lines.append("第7步：移动盘子1 从A到C")
             output_lines.append("")
             output_lines.append("总共需要7步完成。")
-        
+
         # 检查是否是冒泡排序算法
         elif "冒泡排序算法" in code:
             output_lines.append("冒泡排序算法")
@@ -94,7 +95,7 @@ class TestHandler(http.server.SimpleHTTPRequestHandler):
             output_lines.append("空间复杂度：O(1)")
             output_lines.append("稳定排序：是")
             output_lines.append("原地排序：是")
-        
+
         # 检查是否是图灵机算法
         elif "图灵机模拟" in code:
             output_lines.append("图灵机：二进制加1")
@@ -124,7 +125,7 @@ class TestHandler(http.server.SimpleHTTPRequestHandler):
             output_lines.append("2. 读写头")
             output_lines.append("3. 状态转移规则")
             output_lines.append("4. 计算通用性")
-        
+
         # 检查是否是素数筛算法
         elif "埃拉托斯特尼素数筛" in code:
             output_lines.append("埃拉托斯特尼素数筛")
@@ -159,12 +160,13 @@ class TestHandler(http.server.SimpleHTTPRequestHandler):
             output_lines.append("算法复杂度：")
             output_lines.append("时间：O(n log log n)")
             output_lines.append("空间：O(n)")
-        
+
         else:
             output_lines.append("测试输出：代码执行成功")
             output_lines.append("这是一个测试响应，实际代码会在浏览器中执行")
-        
+
         return "\n".join(output_lines)
+
 
 def start_test_server(port=5002):
     """启动测试服务器"""
@@ -176,6 +178,7 @@ def start_test_server(port=5002):
             httpd.serve_forever()
         except KeyboardInterrupt:
             print("\n服务器已停止")
+
 
 if __name__ == "__main__":
     print("启动测试服务器...")

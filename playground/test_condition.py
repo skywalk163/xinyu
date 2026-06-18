@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 """测试条件语法"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
-code = '''定义 成绩 = 85。
+code = """定义 成绩 = 85。
 
 如果 成绩 大于等于 90 那么：
   打印 "优秀"。
@@ -18,7 +19,7 @@ code = '''定义 成绩 = 85。
   打印 "良好"。
 否则：
   打印 "不及格"。
-。'''
+。"""
 
 print("心语代码:")
 print(code)
@@ -42,4 +43,5 @@ try:
 except Exception as e:
     print(f"错误: {e}")
     import traceback
+
     traceback.print_exc()

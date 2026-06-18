@@ -3,13 +3,14 @@
 调试代码生成
 """
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.parser.parser import Parser
-from src.lexer.lexer import Lexer
 from src.codegen.python_codegen import PythonCodegen
+from src.lexer.lexer import Lexer
+from src.parser.parser import Parser
 
 # 测试代码
 test_code = """定义 相加函数 = 函 x, y：
@@ -21,7 +22,7 @@ test_code = """定义 相加函数 = 函 x, y：
 
 print("测试代码:")
 print(test_code)
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 词法分析
 lexer = Lexer(test_code)
@@ -31,7 +32,7 @@ print("词法分析结果:")
 for i, token in enumerate(tokens):
     print(f"{i:3d}: {token.type.name:15} '{token.value}' (行{token.line}, 列{token.column})")
 
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 语法分析
 parser = Parser(tokens)
@@ -40,7 +41,7 @@ ast = parser.parse()
 print("语法分析结果:")
 print(ast)
 
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 代码生成
 codegen = PythonCodegen()

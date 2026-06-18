@@ -3,13 +3,15 @@
 调试解析树
 """
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.parser.parser import Parser
 from src.lexer.lexer import Lexer
 from src.parser.ast_nodes import *
+from src.parser.parser import Parser
+
 
 def print_ast(node, indent=0):
     """打印AST树"""
@@ -47,6 +49,7 @@ def print_ast(node, indent=0):
     else:
         print(f"{prefix}{type(node).__name__}")
 
+
 # 测试代码
 test_code = """定义 加法 = 函 x, y：
   返回 x 相加 y。
@@ -57,7 +60,7 @@ test_code = """定义 加法 = 函 x, y：
 
 print("测试代码:")
 print(test_code)
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 词法分析
 lexer = Lexer(test_code)
@@ -67,7 +70,7 @@ print("词法分析结果:")
 for i, token in enumerate(tokens):
     print(f"{i:3d}: {token.type.name:15} '{token.value}' (行{token.line}, 列{token.column})")
 
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 语法分析
 parser = Parser(tokens)

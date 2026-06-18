@@ -258,14 +258,14 @@ class TokenType(Enum):
     NUMBER = auto()      # 数字
     STRING = auto()      # 字符串
     IDENTIFIER = auto()  # 标识符
-    
+
     # 核心关键字（仅5个）
     VAR = auto()         # 定
     FUNCTION = auto()    # 函
     IF = auto()          # 若
     TRUE = auto()        # 真
     FALSE = auto()       # 假
-    
+
     # 语法标记（非关键字）
     THEN = auto()        # 则
     ELSE = auto()        # 否则
@@ -278,7 +278,7 @@ class TokenType(Enum):
     RECEIVE = auto()     # 接收
     IN = auto()          # 于
     TIMES = auto()       # 次
-    
+
     # 操作符（函数，非关键字）
     PLUS = auto()        # 加
     MINUS = auto()       # 减
@@ -294,7 +294,7 @@ class TokenType(Enum):
     AND = auto()         # 且
     OR = auto()          # 或
     NOT = auto()         # 非
-    
+
     # 分隔符
     COMMA = auto()       # ，
     PERIOD = auto()      # 。
@@ -307,12 +307,12 @@ class TokenType(Enum):
     RBRACKET = auto()    # 】
     LBRACE = auto()      # {
     RBRACE = auto()      # }
-    
+
     # 特殊符号
     DOLLAR = auto()      # $
     MATH_EXPR = auto()   # 数学表达式
     PYTHON_BLOCK = auto() # Python代码块
-    
+
     # 其他
     NEWLINE = auto()     # 换行
     INDENT = auto()      # 缩进
@@ -325,16 +325,16 @@ class Token:
     value: Any
     line: int
     column: int
-    
+
     def __str__(self):
         return f"Token({self.type.name}, {repr(self.value)}, line={self.line}, col={self.column})"
-    
+
     def __eq__(self, other):
         if not isinstance(other, Token):
             return False
-        return (self.type == other.type and 
-                self.value == other.value and 
-                self.line == other.line and 
+        return (self.type == other.type and
+                self.value == other.value and
+                self.line == other.line and
                 self.column == other.column)
 ```
 
@@ -413,7 +413,7 @@ SYNTAX_MARKERS = {
     "则": TokenType.THEN,
     "否则": TokenType.ELSE,
     "否则若": TokenType.ELIF,
-    
+
     # 循环语法标记（通过宏实现）
     "遍历": TokenType.FOR,
     "当": TokenType.WHILE,
@@ -421,7 +421,7 @@ SYNTAX_MARKERS = {
     "持续": TokenType.CONTINUE,
     "于": TokenType.IN,
     "次": TokenType.TIMES,
-    
+
     # 函数语法标记
     "返回": TokenType.RETURN,
     "接收": TokenType.RECEIVE,
@@ -545,16 +545,16 @@ class Lexer:
         self.column = 0
         self.indent_stack = [0]
         self.tokens: List[Token] = []
-    
+
     def tokenize(self) -> List[Token]:
         while self.pos < len(self.source):
             self._skip_whitespace()
-            
+
             if self.pos >= len(self.source):
                 break
-            
+
             char = self.source[self.pos]
-            
+
             # 处理换行和缩进
             if char == '\n':
                 self._handle_newline()
@@ -578,40 +578,40 @@ class Lexer:
                 self._read_identifier()
             else:
                 raise LexerError(f"Unexpected character: {char}", self.line, self.column)
-        
+
         # 处理剩余的DEDENT
         while len(self.indent_stack) > 1:
             self.indent_stack.pop()
             self.tokens.append(Token(TokenType.DEDENT, None, self.line, self.column))
-        
+
         self.tokens.append(Token(TokenType.EOF, None, self.line, self.column))
         return self.tokens
-    
+
     def _skip_whitespace(self):
         while self.pos < len(self.source) and self.source[self.pos] in ' \t':
             self.pos += 1
             self.column += 1
-    
+
     def _skip_comment(self):
         while self.pos < len(self.source) and self.source[self.pos] != '\n':
             self.pos += 1
-    
+
     def _handle_newline(self):
         self.tokens.append(Token(TokenType.NEWLINE, '\n', self.line, self.column))
         self.line += 1
         self.column = 0
         self.pos += 1
-        
+
         # 计算缩进
         indent = 0
         while self.pos < len(self.source) and self.source[self.pos] == ' ':
             indent += 1
             self.pos += 1
-        
+
         # 跳过空行
         if self.pos < len(self.source) and self.source[self.pos] == '\n':
             return
-        
+
         # 生成INDENT/DEDENT
         if indent > self.indent_stack[-1]:
             self.indent_stack.append(indent)
@@ -620,66 +620,66 @@ class Lexer:
             while indent < self.indent_stack[-1]:
                 self.indent_stack.pop()
                 self.tokens.append(Token(TokenType.DEDENT, indent, self.line, 0))
-    
+
     def _read_string(self):
         start_col = self.column
         self.pos += 1  # 跳过开头的 "
         start = self.pos
-        
+
         while self.pos < len(self.source) and self.source[self.pos] != '"':
             if self.source[self.pos] == '\\':
                 self.pos += 1  # 跳过转义字符
             self.pos += 1
-        
+
         if self.pos >= len(self.source):
             raise LexerError("Unterminated string", self.line, start_col)
-        
+
         value = self.source[start:self.pos]
         self.pos += 1  # 跳过结尾的 "
         self.column += self.pos - start + 1
-        
+
         # 处理转义字符
         value = value.replace('\\n', '\n').replace('\\t', '\t').replace('\\"', '"')
-        
+
         self.tokens.append(Token(TokenType.STRING, value, self.line, start_col))
-    
+
     def _read_number(self):
         start_col = self.column
         start = self.pos
-        
+
         while self.pos < len(self.source) and (self.source[self.pos].isdigit() or self.source[self.pos] == '.'):
             self.pos += 1
-        
+
         value = self.source[start:self.pos]
         self.column += len(value)
-        
+
         if '.' in value:
             self.tokens.append(Token(TokenType.NUMBER, float(value), self.line, start_col))
         else:
             self.tokens.append(Token(TokenType.NUMBER, int(value), self.line, start_col))
-    
+
     def _read_symbol(self):
         char = self.source[self.pos]
         token_type = SYMBOLS.get(char)
-        
+
         if token_type:
             self.tokens.append(Token(token_type, char, self.line, self.column))
             self.pos += 1
             self.column += 1
-    
+
     def _is_chinese(self, char: str) -> bool:
         return '\u4e00' <= char <= '\u9fff'
-    
+
     def _read_chinese(self):
         start_col = self.column
         start = self.pos
-        
+
         while self.pos < len(self.source) and self._is_chinese(self.source[self.pos]):
             self.pos += 1
-        
+
         value = self.source[start:self.pos]
         self.column += len(value)
-        
+
         # 检查是否为关键字
         if value in KEYWORDS:
             self.tokens.append(Token(KEYWORDS[value], value, self.line, start_col))
@@ -689,17 +689,17 @@ class Lexer:
         # 否则为标识符
         else:
             self.tokens.append(Token(TokenType.IDENTIFIER, value, self.line, start_col))
-    
+
     def _read_identifier(self):
         start_col = self.column
         start = self.pos
-        
+
         while self.pos < len(self.source) and (self.source[self.pos].isalnum() or self.source[self.pos] == '_'):
             self.pos += 1
-        
+
         value = self.source[start:self.pos]
         self.column += len(value)
-        
+
         self.tokens.append(Token(TokenType.IDENTIFIER, value, self.line, start_col))
 ```
 
@@ -770,12 +770,12 @@ def test_lexer_mixed_chinese_english():
 def tokenize(self) -> List[Token]:
     while self.pos < len(self.source):
         self._skip_whitespace()
-        
+
         if self.pos >= len(self.source):
             break
-        
+
         char = self.source[self.pos]
-        
+
         # 处理换行和缩进
         if char == '\n':
             self._handle_newline()
@@ -799,12 +799,12 @@ def tokenize(self) -> List[Token]:
             self._read_identifier()
         else:
             raise LexerError(f"Unexpected character: {char}", self.line, self.column)
-    
+
     # 处理剩余的DEDENT
     while len(self.indent_stack) > 1:
         self.indent_stack.pop()
         self.tokens.append(Token(TokenType.DEDENT, None, self.line, self.column))
-    
+
     self.tokens.append(Token(TokenType.EOF, None, self.line, self.column))
     return self.tokens
 ```
@@ -878,7 +878,7 @@ from abc import ABC, abstractmethod
 class ASTNode(ABC):
     line: int
     column: int
-    
+
     @abstractmethod
     def __str__(self) -> str:
         pass
@@ -886,21 +886,21 @@ class ASTNode(ABC):
 @dataclass
 class NumberNode(ASTNode):
     value: float
-    
+
     def __str__(self):
         return f"NumberNode({self.value})"
 
 @dataclass
 class StringNode(ASTNode):
     value: str
-    
+
     def __str__(self):
         return f"StringNode({repr(self.value)})"
 
 @dataclass
 class IdentifierNode(ASTNode):
     name: str
-    
+
     def __str__(self):
         return f"IdentifierNode({self.name})"
 
@@ -909,7 +909,7 @@ class BinaryOpNode(ASTNode):
     left: ASTNode
     operator: str
     right: ASTNode
-    
+
     def __str__(self):
         return f"BinaryOpNode({self.left} {self.operator} {self.right})"
 
@@ -917,7 +917,7 @@ class BinaryOpNode(ASTNode):
 class UnaryOpNode(ASTNode):
     operator: str
     operand: ASTNode
-    
+
     def __str__(self):
         return f"UnaryOpNode({self.operator} {self.operand})"
 
@@ -925,7 +925,7 @@ class UnaryOpNode(ASTNode):
 class AssignNode(ASTNode):
     target: IdentifierNode
     value: ASTNode
-    
+
     def __str__(self):
         return f"AssignNode({self.target} = {self.value})"
 
@@ -934,7 +934,7 @@ class IfNode(ASTNode):
     condition: ASTNode
     then_branch: List[ASTNode]
     else_branch: Optional[List[ASTNode]]
-    
+
     def __str__(self):
         return f"IfNode(condition={self.condition}, then={len(self.then_branch)} stmts)"
 
@@ -943,7 +943,7 @@ class ForNode(ASTNode):
     variable: str
     iterable: ASTNode
     body: List[ASTNode]
-    
+
     def __str__(self):
         return f"ForNode({self.variable} in {self.iterable})"
 
@@ -951,7 +951,7 @@ class ForNode(ASTNode):
 class WhileNode(ASTNode):
     condition: ASTNode
     body: List[ASTNode]
-    
+
     def __str__(self):
         return f"WhileNode(condition={self.condition})"
 
@@ -959,7 +959,7 @@ class WhileNode(ASTNode):
 class RepeatNode(ASTNode):
     count: ASTNode
     body: List[ASTNode]
-    
+
     def __str__(self):
         return f"RepeatNode({self.count} times)"
 
@@ -968,7 +968,7 @@ class FunctionDefNode(ASTNode):
     name: str
     params: List[str]
     body: List[ASTNode]
-    
+
     def __str__(self):
         return f"FunctionDefNode({self.name}, params={self.params})"
 
@@ -976,14 +976,14 @@ class FunctionDefNode(ASTNode):
 class FunctionCallNode(ASTNode):
     name: str
     args: List[ASTNode]
-    
+
     def __str__(self):
         return f"FunctionCallNode({self.name}, args={len(self.args)})"
 
 @dataclass
 class ReturnNode(ASTNode):
     value: Optional[ASTNode]
-    
+
     def __str__(self):
         return f"ReturnNode({self.value})"
 
@@ -992,21 +992,21 @@ class VarDefNode(ASTNode):
     name: str
     var_type: Optional[str]
     value: Optional[ASTNode]
-    
+
     def __str__(self):
         return f"VarDefNode({self.name}, type={self.var_type})"
 
 @dataclass
 class ListNode(ASTNode):
     elements: List[ASTNode]
-    
+
     def __str__(self):
         return f"ListNode({len(self.elements)} elements)"
 
 @dataclass
 class DictNode(ASTNode):
     pairs: List[tuple]  # List of (key, value) tuples
-    
+
     def __str__(self):
         return f"DictNode({len(self.pairs)} pairs)"
 
@@ -1014,7 +1014,7 @@ class DictNode(ASTNode):
 class MemberAccessNode(ASTNode):
     object: ASTNode
     member: str
-    
+
     def __str__(self):
         return f"MemberAccessNode({self.object}.{self.member})"
 
@@ -1022,14 +1022,14 @@ class MemberAccessNode(ASTNode):
 class IndexNode(ASTNode):
     object: ASTNode
     index: ASTNode
-    
+
     def __str__(self):
         return f"IndexNode({self.object}[{self.index}])"
 
 @dataclass
 class ProgramNode(ASTNode):
     statements: List[ASTNode]
-    
+
     def __str__(self):
         return f"ProgramNode({len(self.statements)} statements)"
 ```
@@ -1111,7 +1111,7 @@ class Parser:
     def __init__(self, tokens: List[Token]):
         self.tokens = tokens
         self.pos = 0
-    
+
     def parse(self) -> ProgramNode:
         statements = []
         while not self._check(TokenType.EOF):
@@ -1119,29 +1119,29 @@ class Parser:
             if stmt:
                 statements.append(stmt)
         return ProgramNode(statements, line=1, column=0)
-    
+
     def _current_token(self) -> Token:
         return self.tokens[self.pos]
-    
+
     def _check(self, *types: TokenType) -> bool:
         return self._current_token().type in types
-    
+
     def _advance(self) -> Token:
         token = self._current_token()
         if not self._check(TokenType.EOF):
             self.pos += 1
         return token
-    
+
     def _expect(self, token_type: TokenType, message: str) -> Token:
         if self._check(token_type):
             return self._advance()
         raise ParseError(message, self._current_token())
-    
+
     def _parse_statement(self) -> Optional[ASTNode]:
         if self._check(TokenType.NEWLINE):
             self._advance()
             return None
-        
+
         if self._check(TokenType.IF):
             return self._parse_if()
         elif self._check(TokenType.FOR):
@@ -1158,10 +1158,10 @@ class Parser:
             return self._parse_return()
         else:
             return self._parse_expression_statement()
-    
+
     def _parse_expression_statement(self) -> ASTNode:
         expr = self._parse_expression()
-        
+
         # 处理赋值
         if self._check(TokenType.ASSIGN):
             self._advance()
@@ -1170,20 +1170,20 @@ class Parser:
                 return AssignNode(expr, value, line=expr.line, column=expr.column)
             else:
                 raise ParseError("Invalid assignment target", self._current_token())
-        
+
         # 消耗句号
         if self._check(TokenType.PERIOD):
             self._advance()
-        
+
         return expr
-    
+
     def _parse_expression(self) -> ASTNode:
         return self._parse_comparison()
-    
+
     def _parse_comparison(self) -> ASTNode:
         left = self._parse_addition()
-        
-        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS, 
+
+        while self._check(TokenType.EQUALS, TokenType.NOT_EQUALS,
                          TokenType.LESS, TokenType.GREATER,
                          TokenType.LESS_EQ, TokenType.GREATER_EQ):
             op_token = self._advance()
@@ -1198,59 +1198,59 @@ class Parser:
             operator = op_map[op_token.type]
             right = self._parse_addition()
             left = BinaryOpNode(left, operator, right, line=op_token.line, column=op_token.column)
-        
+
         return left
-    
+
     def _parse_addition(self) -> ASTNode:
         left = self._parse_multiplication()
-        
+
         while self._check(TokenType.PLUS, TokenType.MINUS):
             op_token = self._advance()
             operator = "+" if op_token.type == TokenType.PLUS else "-"
             right = self._parse_multiplication()
             left = BinaryOpNode(left, operator, right, line=op_token.line, column=op_token.column)
-        
+
         return left
-    
+
     def _parse_multiplication(self) -> ASTNode:
         left = self._parse_unary()
-        
+
         while self._check(TokenType.MULTIPLY, TokenType.DIVIDE):
             op_token = self._advance()
             operator = "*" if op_token.type == TokenType.MULTIPLY else "/"
             right = self._parse_unary()
             left = BinaryOpNode(left, operator, right, line=op_token.line, column=op_token.column)
-        
+
         return left
-    
+
     def _parse_unary(self) -> ASTNode:
         if self._check(TokenType.NOT, TokenType.MINUS):
             op_token = self._advance()
             operator = "not" if op_token.type == TokenType.NOT else "-"
             operand = self._parse_unary()
             return UnaryOpNode(operator, operand, line=op_token.line, column=op_token.column)
-        
+
         return self._parse_primary()
-    
+
     def _parse_primary(self) -> ASTNode:
         token = self._current_token()
-        
+
         if self._check(TokenType.NUMBER):
             self._advance()
             return NumberNode(token.value, line=token.line, column=token.column)
-        
+
         if self._check(TokenType.STRING):
             self._advance()
             return StringNode(token.value, line=token.line, column=token.column)
-        
+
         if self._check(TokenType.IDENTIFIER):
             self._advance()
             name = token.value
-            
+
             # 函数调用
             if self._check(TokenType.LPAREN):
                 return self._parse_function_call(name, token)
-            
+
             # 成员访问
             if self._check(TokenType.PERIOD):
                 self._advance()
@@ -1260,125 +1260,125 @@ class Parser:
                     member_token.value,
                     line=token.line, column=token.column
                 )
-            
+
             return IdentifierNode(name, line=token.line, column=token.column)
-        
+
         if self._check(TokenType.LPAREN):
             self._advance()
             expr = self._parse_expression()
             self._expect(TokenType.RPAREN, "Expected ')'")
             return expr
-        
+
         raise ParseError(f"Unexpected token: {token.type}", token)
-    
+
     def _parse_function_call(self, name: str, name_token: Token) -> FunctionCallNode:
         self._advance()  # 消耗 (
         args = []
-        
+
         if not self._check(TokenType.RPAREN):
             args.append(self._parse_expression())
             while self._check(TokenType.COMMA):
                 self._advance()
                 args.append(self._parse_expression())
-        
+
         self._expect(TokenType.RPAREN, "Expected ')'")
         return FunctionCallNode(name, args, line=name_token.line, column=name_token.column)
-    
+
     def _parse_if(self) -> IfNode:
         token = self._advance()  # 消耗 '若'
         condition = self._parse_expression()
-        
+
         # 消耗 '则' 或 ':'
         if self._check(TokenType.THEN):
             self._advance()
         elif self._check(TokenType.COLON):
             self._advance()
-        
+
         then_branch = self._parse_block()
-        
+
         else_branch = None
         if self._check(TokenType.ELSE):
             self._advance()
             if self._check(TokenType.COLON):
                 self._advance()
             else_branch = self._parse_block()
-        
+
         return IfNode(condition, then_branch, else_branch, line=token.line, column=token.column)
-    
+
     def _parse_block(self) -> List[ASTNode]:
         statements = []
-        
+
         # 单行语句
         if not self._check(TokenType.INDENT):
             stmt = self._parse_statement()
             if stmt:
                 statements.append(stmt)
             return statements
-        
+
         # 多行块
         self._advance()  # 消耗 INDENT
-        
+
         while not self._check(TokenType.DEDENT, TokenType.EOF):
             stmt = self._parse_statement()
             if stmt:
                 statements.append(stmt)
-        
+
         if self._check(TokenType.DEDENT):
             self._advance()
-        
+
         return statements
-    
+
     def _parse_for(self) -> ForNode:
         token = self._advance()  # 消耗 '遍历'
-        
+
         var_token = self._expect(TokenType.IDENTIFIER, "Expected variable name")
         variable = var_token.value
-        
+
         # 消耗 '于' 或 '中'
         if self._check(TokenType.IDENTIFIER) and self._current_token().value in ["于", "中"]:
             self._advance()
-        
+
         iterable = self._parse_expression()
-        
+
         if self._check(TokenType.COLON):
             self._advance()
-        
+
         body = self._parse_block()
-        
+
         return ForNode(variable, iterable, body, line=token.line, column=token.column)
-    
+
     def _parse_while(self) -> WhileNode:
         token = self._advance()  # 消耗 '当'
         condition = self._parse_expression()
-        
+
         # 消耗 '时'
         if self._check(TokenType.IDENTIFIER) and self._current_token().value == "时":
             self._advance()
-        
+
         if self._check(TokenType.COLON):
             self._advance()
-        
+
         body = self._parse_block()
-        
+
         return WhileNode(condition, body, line=token.line, column=token.column)
-    
+
     def _parse_repeat(self) -> RepeatNode:
         token = self._advance()  # 消耗 '重复'
         count = self._parse_expression()
-        
+
         if self._check(TokenType.COLON):
             self._advance()
-        
+
         body = self._parse_block()
-        
+
         return RepeatNode(count, body, line=token.line, column=token.column)
-    
+
     def _parse_function_def(self) -> FunctionDefNode:
         token = self._advance()  # 消耗 '定义'
-        
+
         name_token = self._expect(TokenType.IDENTIFIER, "Expected function name")
         name = name_token.value
-        
+
         # 解析参数
         params = []
         if self._check(TokenType.LPAREN):
@@ -1391,46 +1391,46 @@ class Parser:
                     param_token = self._expect(TokenType.IDENTIFIER, "Expected parameter name")
                     params.append(param_token.value)
             self._expect(TokenType.RPAREN, "Expected ')'")
-        
+
         if self._check(TokenType.COLON):
             self._advance()
-        
+
         body = self._parse_block()
-        
+
         return FunctionDefNode(name, params, body, line=token.line, column=token.column)
-    
+
     def _parse_var_def(self) -> VarDefNode:
         token = self._advance()  # 消耗 '定'
-        
+
         name_token = self._expect(TokenType.IDENTIFIER, "Expected variable name")
         name = name_token.value
-        
+
         var_type = None
         if self._check(TokenType.AS):
             self._advance()
             type_token = self._expect(TokenType.IDENTIFIER, "Expected type name")
             var_type = type_token.value
-        
+
         value = None
         if self._check(TokenType.ASSIGN):
             self._advance()
             value = self._parse_expression()
-        
+
         if self._check(TokenType.PERIOD):
             self._advance()
-        
+
         return VarDefNode(name, var_type, value, line=token.line, column=token.column)
-    
+
     def _parse_return(self) -> ReturnNode:
         token = self._advance()  # 消耗 '返回'
-        
+
         value = None
         if not self._check(TokenType.PERIOD, TokenType.NEWLINE, TokenType.EOF):
             value = self._parse_expression()
-        
+
         if self._check(TokenType.PERIOD):
             self._advance()
-        
+
         return ReturnNode(value, line=token.line, column=token.column)
 ```
 
@@ -1473,10 +1473,10 @@ def test_scope_creation():
 def test_nested_scope():
     parent = Scope()
     parent.define("x", "number")
-    
+
     child = Scope(parent)
     assert child.lookup("x") == "number"
-    
+
     child.define("y", "string")
     assert child.lookup("y") == "string"
 
@@ -1486,7 +1486,7 @@ def test_undefined_variable():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     analyzer = SemanticAnalyzer()
     with pytest.raises(Exception) as exc_info:
         analyzer.analyze(ast)
@@ -1508,20 +1508,20 @@ class Scope:
     def __init__(self, parent: Optional['Scope'] = None):
         self.parent = parent
         self.symbols: Dict[str, Dict[str, Any]] = {}
-    
+
     def define(self, name: str, symbol_type: str, **attrs):
         self.symbols[name] = {
             'type': symbol_type,
             **attrs
         }
-    
+
     def lookup(self, name: str) -> Optional[Dict[str, Any]]:
         if name in self.symbols:
             return self.symbols[name]
         if self.parent:
             return self.parent.lookup(name)
         return None
-    
+
     def assign(self, name: str, value_type: str) -> bool:
         if name in self.symbols:
             self.symbols[name]['type'] = value_type
@@ -1550,7 +1550,7 @@ class SemanticAnalyzer:
         self.global_scope = Scope()
         self.current_scope = self.global_scope
         self.errors: List[SemanticError] = []
-    
+
     def analyze(self, ast: ProgramNode) -> bool:
         try:
             self._visit_program(ast)
@@ -1558,11 +1558,11 @@ class SemanticAnalyzer:
         except SemanticError as e:
             self.errors.append(e)
             return False
-    
+
     def _visit_program(self, node: ProgramNode):
         for stmt in node.statements:
             self._visit_statement(stmt)
-    
+
     def _visit_statement(self, node: ASTNode):
         if isinstance(node, VarDefNode):
             self._visit_var_def(node)
@@ -1580,44 +1580,44 @@ class SemanticAnalyzer:
             self._visit_return(node)
         else:
             self._visit_expression(node)
-    
+
     def _visit_var_def(self, node: VarDefNode):
         if self.current_scope.lookup(node.name):
             raise SemanticError(f"变量 '{node.name}' 已定义", node)
-        
+
         inferred_type = None
         if node.value:
             inferred_type = self._visit_expression(node.value)
-        
+
         final_type = node.var_type or inferred_type or "unknown"
         self.current_scope.define(node.name, final_type)
-    
+
     def _visit_function_def(self, node: FunctionDefNode):
         if self.current_scope.lookup(node.name):
             raise SemanticError(f"函数 '{node.name}' 已定义", node)
-        
+
         # 创建函数作用域
         func_scope = Scope(self.current_scope)
         self.current_scope = func_scope
-        
+
         # 添加参数
         for param in node.params:
             self.current_scope.define(param, "unknown")
-        
+
         # 分析函数体
         for stmt in node.body:
             self._visit_statement(stmt)
-        
+
         # 恢复作用域
         self.current_scope = func_scope.parent
-        
+
         # 在父作用域中定义函数
         self.current_scope.define(node.name, "function", params=node.params)
-    
+
     def _visit_assign(self, node: AssignNode):
         if not isinstance(node.target, IdentifierNode):
             raise SemanticError("赋值目标必须是标识符", node)
-        
+
         # 检查变量是否已定义
         symbol = self.current_scope.lookup(node.target.name)
         if not symbol:
@@ -1628,44 +1628,44 @@ class SemanticAnalyzer:
             # 更新变量类型
             value_type = self._visit_expression(node.value)
             self.current_scope.assign(node.target.name, value_type)
-    
+
     def _visit_if(self, node: IfNode):
         self._visit_expression(node.condition)
-        
+
         for stmt in node.then_branch:
             self._visit_statement(stmt)
-        
+
         if node.else_branch:
             for stmt in node.else_branch:
                 self._visit_statement(stmt)
-    
+
     def _visit_for(self, node: ForNode):
         iterable_type = self._visit_expression(node.iterable)
-        
+
         # 创建循环作用域
         loop_scope = Scope(self.current_scope)
         self.current_scope = loop_scope
-        
+
         # 定义循环变量
         self.current_scope.define(node.variable, "element")
-        
+
         # 分析循环体
         for stmt in node.body:
             self._visit_statement(stmt)
-        
+
         # 恢复作用域
         self.current_scope = loop_scope.parent
-    
+
     def _visit_while(self, node: WhileNode):
         self._visit_expression(node.condition)
-        
+
         for stmt in node.body:
             self._visit_statement(stmt)
-    
+
     def _visit_return(self, node: ReturnNode):
         if node.value:
             self._visit_expression(node.value)
-    
+
     def _visit_expression(self, node: ASTNode) -> str:
         if isinstance(node, NumberNode):
             return "number"
@@ -1696,7 +1696,7 @@ class SemanticAnalyzer:
             return "unknown"
         else:
             return "unknown"
-    
+
     def _infer_binary_op_type(self, left_type: str, right_type: str, operator: str) -> str:
         if operator in ["+", "-", "*", "/"]:
             if left_type == "number" and right_type == "number":
@@ -1706,10 +1706,10 @@ class SemanticAnalyzer:
         elif operator in ["and", "or"]:
             return "boolean"
         return "unknown"
-    
+
     def _visit_function_call(self, node: FunctionCallNode) -> str:
         symbol = self.current_scope.lookup(node.name)
-        
+
         if not symbol:
             # 内置函数
             builtin_functions = {
@@ -1721,12 +1721,12 @@ class SemanticAnalyzer:
                 for arg in node.args:
                     self._visit_expression(arg)
                 return builtin_functions[node.name]
-            
+
             raise SemanticError(f"未定义的函数: {node.name}", node)
-        
+
         if symbol['type'] != "function":
             raise SemanticError(f"'{node.name}' 不是函数", node)
-        
+
         # 检查参数数量
         expected_params = symbol.get('params', [])
         if len(node.args) != len(expected_params):
@@ -1734,10 +1734,10 @@ class SemanticAnalyzer:
                 f"函数 '{node.name}' 期望 {len(expected_params)} 个参数，但提供了 {len(node.args)} 个",
                 node
             )
-        
+
         for arg in node.args:
             self._visit_expression(arg)
-        
+
         return "unknown"
 ```
 
@@ -1776,7 +1776,7 @@ def test_codegen_number():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert python_code.strip() == "123"
@@ -1787,7 +1787,7 @@ def test_codegen_binary_op():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "1 + 2" in python_code
@@ -1800,7 +1800,7 @@ def test_codegen_function_def():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "def 平方" in python_code
@@ -1826,19 +1826,19 @@ class PythonCodegen:
     def __init__(self):
         self.indent_level = 0
         self.indent_str = "    "
-    
+
     def generate(self, node: ASTNode) -> str:
         if isinstance(node, ProgramNode):
             return self._generate_program(node)
         else:
             raise CodegenError(f"Unsupported node type: {type(node)}")
-    
+
     def _generate_program(self, node: ProgramNode) -> str:
         lines = []
         for stmt in node.statements:
             lines.append(self._generate_statement(stmt))
         return "\n".join(filter(None, lines))
-    
+
     def _generate_statement(self, node: ASTNode) -> str:
         if isinstance(node, VarDefNode):
             return self._generate_var_def(node)
@@ -1859,92 +1859,92 @@ class PythonCodegen:
         else:
             expr_code = self._generate_expression(node)
             return self._indent() + expr_code
-    
+
     def _generate_var_def(self, node: VarDefNode) -> str:
         if node.value:
             value_code = self._generate_expression(node.value)
             return self._indent() + f"{node.name} = {value_code}"
         else:
             return self._indent() + f"{node.name} = None"
-    
+
     def _generate_function_def(self, node: FunctionDefNode) -> str:
         params = ", ".join(node.params)
         code = self._indent() + f"def {node.name}({params}):\n"
-        
+
         self.indent_level += 1
-        
+
         if node.body:
             for stmt in node.body:
                 code += self._generate_statement(stmt) + "\n"
         else:
             code += self._indent() + "pass\n"
-        
+
         self.indent_level -= 1
         return code.rstrip()
-    
+
     def _generate_assign(self, node: AssignNode) -> str:
         target_code = self._generate_expression(node.target)
         value_code = self._generate_expression(node.value)
         return self._indent() + f"{target_code} = {value_code}"
-    
+
     def _generate_if(self, node: IfNode) -> str:
         cond_code = self._generate_expression(node.condition)
         code = self._indent() + f"if {cond_code}:\n"
-        
+
         self.indent_level += 1
         for stmt in node.then_branch:
             code += self._generate_statement(stmt) + "\n"
         self.indent_level -= 1
-        
+
         if node.else_branch:
             code += self._indent() + "else:\n"
             self.indent_level += 1
             for stmt in node.else_branch:
                 code += self._generate_statement(stmt) + "\n"
             self.indent_level -= 1
-        
+
         return code.rstrip()
-    
+
     def _generate_for(self, node: ForNode) -> str:
         iter_code = self._generate_expression(node.iterable)
         code = self._indent() + f"for {node.variable} in {iter_code}:\n"
-        
+
         self.indent_level += 1
         for stmt in node.body:
             code += self._generate_statement(stmt) + "\n"
         self.indent_level -= 1
-        
+
         return code.rstrip()
-    
+
     def _generate_while(self, node: WhileNode) -> str:
         cond_code = self._generate_expression(node.condition)
         code = self._indent() + f"while {cond_code}:\n"
-        
+
         self.indent_level += 1
         for stmt in node.body:
             code += self._generate_statement(stmt) + "\n"
         self.indent_level -= 1
-        
+
         return code.rstrip()
-    
+
     def _generate_repeat(self, node: RepeatNode) -> str:
         count_code = self._generate_expression(node.count)
         code = self._indent() + f"for _ in range({count_code}):\n"
-        
+
         self.indent_level += 1
         for stmt in node.body:
             code += self._generate_statement(stmt) + "\n"
         self.indent_level -= 1
-        
+
         return code.rstrip()
-    
+
     def _generate_return(self, node: ReturnNode) -> str:
         if node.value:
             value_code = self._generate_expression(node.value)
             return self._indent() + f"return {value_code}"
         else:
             return self._indent() + "return"
-    
+
     def _generate_expression(self, node: ASTNode) -> str:
         if isinstance(node, NumberNode):
             return str(node.value)
@@ -1965,7 +1965,7 @@ class PythonCodegen:
             elements = [self._generate_expression(e) for e in node.elements]
             return f"[{', '.join(elements)}]"
         elif isinstance(node, DictNode):
-            pairs = [f"{self._generate_expression(k)}: {self._generate_expression(v)}" 
+            pairs = [f"{self._generate_expression(k)}: {self._generate_expression(v)}"
                     for k, v in node.pairs]
             return f"{{{', '.join(pairs)}}}"
         elif isinstance(node, MemberAccessNode):
@@ -1977,19 +1977,19 @@ class PythonCodegen:
             return f"{obj}[{idx}]"
         else:
             raise CodegenError(f"Unsupported expression type: {type(node)}")
-    
+
     def _generate_function_call(self, node: FunctionCallNode) -> str:
         args = [self._generate_expression(arg) for arg in node.args]
-        
+
         # 内置函数映射
         builtin_map = {
             "印": "print",
             "读取": "input",
         }
-        
+
         func_name = builtin_map.get(node.name, node.name)
         return f"{func_name}({', '.join(args)})"
-    
+
     def _indent(self) -> str:
         return self.indent_str * self.indent_level
 ```
@@ -2031,17 +2031,17 @@ def test_environment_create():
 def test_environment_nested():
     parent = RuntimeEnvironment()
     parent.define("x", 123)
-    
+
     child = RuntimeEnvironment(parent)
     assert child.get("x") == 123
-    
+
     child.define("y", 456)
     assert child.get("y") == 456
 
 def test_builtin_functions():
     env = RuntimeEnvironment()
     register_builtins(env)
-    
+
     assert env.get("印") is not None
     assert env.get("读取") is not None
 ```
@@ -2067,10 +2067,10 @@ class RuntimeEnvironment:
         self.parent = parent
         self.variables: Dict[str, Any] = {}
         self.functions: Dict[str, Callable] = {}
-    
+
     def define(self, name: str, value: Any):
         self.variables[name] = value
-    
+
     def get(self, name: str) -> Any:
         if name in self.variables:
             return self.variables[name]
@@ -2079,7 +2079,7 @@ class RuntimeEnvironment:
         if self.parent:
             return self.parent.get(name)
         raise RuntimeError(f"未定义的变量或函数: {name}")
-    
+
     def set(self, name: str, value: Any):
         if name in self.variables:
             self.variables[name] = value
@@ -2087,17 +2087,17 @@ class RuntimeEnvironment:
             self.parent.set(name, value)
         else:
             self.variables[name] = value
-    
+
     def define_function(self, name: str, func: Callable):
         self.functions[name] = func
-    
+
     def get_function(self, name: str) -> Callable:
         if name in self.functions:
             return self.functions[name]
         if self.parent:
             return self.parent.get_function(name)
         raise RuntimeError(f"未定义的函数: {name}")
-    
+
     def has(self, name: str) -> bool:
         if name in self.variables or name in self.functions:
             return True
@@ -2207,7 +2207,7 @@ def register_builtins(env: RuntimeEnvironment):
     env.define_function("映射", builtin_map)
     env.define_function("过滤", builtin_filter)
     env.define_function("折叠", builtin_reduce)
-    
+
     # 数据动词
     env.define_function("读取文件", data_verb_read)
     env.define_function("写入文件", data_verb_write)
@@ -2301,27 +2301,27 @@ class ChineseProgram:
     def __init__(self):
         self.env = RuntimeEnvironment()
         register_builtins(self.env)
-    
+
     def run(self, source: str) -> any:
         # 词法分析
         lexer = Lexer(source)
         tokens = lexer.tokenize()
-        
+
         # 语法分析
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         # 语义分析
         analyzer = SemanticAnalyzer()
         if not analyzer.analyze(ast):
             for error in analyzer.errors:
                 print(f"语义错误: {error.message}")
             return None
-        
+
         # 代码生成
         codegen = PythonCodegen()
         python_code = codegen.generate(ast)
-        
+
         # 执行
         try:
             exec_globals = self._create_exec_globals()
@@ -2330,7 +2330,7 @@ class ChineseProgram:
         except Exception as e:
             print(f"运行时错误: {e}")
             return None
-    
+
     def _create_exec_globals(self):
         import builtins
         import math
@@ -2338,7 +2338,7 @@ class ChineseProgram:
         import json
         import re
         from datetime import datetime
-        
+
         # 创建执行环境
         exec_globals = {
             '__builtins__': builtins,
@@ -2348,24 +2348,24 @@ class ChineseProgram:
             're': re,
             'datetime': datetime,
         }
-        
+
         # 添加运行时环境中的函数
         for name, func in self.env.functions.items():
             exec_globals[name] = func
-        
+
         return exec_globals
-    
+
     def compile(self, source: str) -> str:
         """编译为Python代码"""
         lexer = Lexer(source)
         tokens = lexer.tokenize()
-        
+
         parser = Parser(tokens)
         ast = parser.parse()
-        
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
-        
+
         codegen = PythonCodegen()
         return codegen.generate(ast)
 
@@ -2376,7 +2376,7 @@ def main():
         print("中文编程语言 v1.0")
         print("输入代码，输入'退出'结束")
         print("-" * 40)
-        
+
         while True:
             try:
                 source = input(">>> ")
@@ -2394,7 +2394,7 @@ def main():
         filename = sys.argv[1]
         with open(filename, 'r', encoding='utf-8') as f:
             source = f.read()
-        
+
         program = ChineseProgram()
         program.run(source)
 
@@ -2453,7 +2453,7 @@ def test_macro_system():
         params=["次数", "循环体"],
         body="定计数器=0。当计数器小于次数：循环体。计数器=计数器加1。"
     ))
-    
+
     assert system.has("重复")
     assert not system.has("不存在的宏")
 
@@ -2465,7 +2465,7 @@ def test_macro_expansion():
         params=["次数", "循环体"],
         body="定计数器=0。当计数器小于次数：循环体。计数器=计数器加1。"
     ))
-    
+
     # 模拟宏调用
     call = {"name": "重复", "args": ["5", "印\"你好\"。"]}
     expanded = system.expand("重复", call)
@@ -2501,33 +2501,33 @@ class Macro:
 class MacroSystem:
     def __init__(self):
         self.macros: Dict[str, Macro] = {}
-    
+
     def register(self, macro: Macro):
         """注册宏"""
         self.macros[macro.name] = macro
-    
+
     def has(self, name: str) -> bool:
         """检查宏是否存在"""
         return name in self.macros
-    
+
     def get(self, name: str) -> Optional[Macro]:
         """获取宏"""
         return self.macros.get(name)
-    
+
     def expand(self, name: str, args: Dict[str, Any]) -> str:
         """展开宏"""
         macro = self.get(name)
         if not macro:
             raise ValueError(f"未定义的宏: {name}")
-        
+
         # 参数替换
         result = macro.body
         for i, param in enumerate(macro.params):
             if i < len(args):
                 result = result.replace(param, str(args[i]))
-        
+
         return result
-    
+
     def list_macros(self) -> List[str]:
         """列出所有宏"""
         return list(self.macros.keys())
@@ -2544,7 +2544,7 @@ from src.parser.ast_nodes import *
 class MacroExpander:
     def __init__(self, macro_system: MacroSystem):
         self.macro_system = macro_system
-    
+
     def expand_ast(self, node: ASTNode) -> ASTNode:
         """展开AST中的宏调用"""
         if isinstance(node, ProgramNode):
@@ -2556,7 +2556,7 @@ class MacroExpander:
                 else:
                     expanded_statements.append(expanded)
             return ProgramNode(expanded_statements, line=node.line, column=node.column)
-        
+
         elif isinstance(node, FunctionCallNode):
             # 检查是否是宏调用
             if self.macro_system.has(node.name):
@@ -2565,59 +2565,59 @@ class MacroExpander:
                 # 递归展开参数
                 expanded_args = [self.expand_ast(arg) for arg in node.args]
                 return FunctionCallNode(node.name, expanded_args, line=node.line, column=node.column)
-        
+
         elif isinstance(node, IfNode):
             expanded_condition = self.expand_ast(node.condition)
             expanded_then = [self.expand_ast(stmt) for stmt in node.then_branch]
             expanded_else = [self.expand_ast(stmt) for stmt in node.else_branch] if node.else_branch else None
             return IfNode(expanded_condition, expanded_then, expanded_else, line=node.line, column=node.column)
-        
+
         elif isinstance(node, ForNode):
             # 遍历循环可能是宏调用
             if self.macro_system.has("遍历"):
                 return self._expand_for_loop(node)
             return node
-        
+
         elif isinstance(node, WhileNode):
             expanded_condition = self.expand_ast(node.condition)
             expanded_body = [self.expand_ast(stmt) for stmt in node.body]
             return WhileNode(expanded_condition, expanded_body, line=node.line, column=node.column)
-        
+
         elif isinstance(node, RepeatNode):
             # 重复循环是宏调用
             if self.macro_system.has("重复"):
                 return self._expand_repeat_loop(node)
             return node
-        
+
         else:
             return node
-    
+
     def _expand_macro_call(self, node: FunctionCallNode) -> ASTNode:
         """展开宏调用"""
         macro = self.macro_system.get(node.name)
         if not macro:
             return node
-        
+
         # 构建参数映射
         args = {}
         for i, param in enumerate(macro.params):
             if i < len(node.args):
                 args[param] = node.args[i]
-        
+
         # 展开宏体
         expanded_code = self.macro_system.expand(node.name, args)
-        
+
         # 解析展开后的代码
         from src.lexer.lexer import Lexer
         from src.parser.parser import Parser
-        
+
         lexer = Lexer(expanded_code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         expanded_ast = parser.parse()
-        
+
         return expanded_ast.statements if len(expanded_ast.statements) > 1 else expanded_ast.statements[0]
-    
+
     def _expand_for_loop(self, node: ForNode) -> ASTNode:
         """展开遍历循环"""
         # 将遍历循环转换为宏调用
@@ -2630,7 +2630,7 @@ class MacroExpander:
             column=node.column
         )
         return self._expand_macro_call(macro_call)
-    
+
     def _expand_repeat_loop(self, node: RepeatNode) -> ASTNode:
         """展开重复循环"""
         # 将重复循环转换为宏调用
@@ -2672,7 +2672,7 @@ from src.macro.builtin_macros import register_builtin_macros
 def test_builtin_macros():
     system = MacroSystem()
     register_builtin_macros(system)
-    
+
     # 检查内置宏
     assert system.has("遍历")
     assert system.has("重复")
@@ -2682,27 +2682,27 @@ def test_builtin_macros():
 def test_for_loop_expansion():
     system = MacroSystem()
     register_builtin_macros(system)
-    
+
     # 测试遍历宏展开
     expanded = system.expand("遍历", {
         "变量": "用户",
         "列表": "用户列表",
         "循环体": "发送通知给用户。"
     })
-    
+
     assert "迭代器" in expanded
     assert "用户列表" in expanded
 
 def test_repeat_loop_expansion():
     system = MacroSystem()
     register_builtin_macros(system)
-    
+
     # 测试重复宏展开
     expanded = system.expand("重复", {
         "次数": "5",
         "循环体": "尝试连接。"
     })
-    
+
     assert "计数器" in expanded
     assert "5" in expanded
 ```
@@ -2720,7 +2720,7 @@ from src.macro.macro_system import Macro, MacroType
 
 def register_builtin_macros(system):
     """注册内置宏"""
-    
+
     # 遍历宏
     system.register(Macro(
         name="遍历",
@@ -2729,7 +2729,7 @@ def register_builtin_macros(system):
         body="定迭代器=列表的迭代器。当迭代器有下一个：定变量=迭代器下一个。循环体。",
         description="遍历列表中的每个元素"
     ))
-    
+
     # 重复宏
     system.register(Macro(
         name="重复",
@@ -2738,7 +2738,7 @@ def register_builtin_macros(system):
         body="定计数器=0。当计数器小于次数：循环体。计数器=计数器加1。",
         description="重复执行指定次数"
     ))
-    
+
     # 持续宏（无限循环）
     system.register(Macro(
         name="持续",
@@ -2747,7 +2747,7 @@ def register_builtin_macros(system):
         body="若真：循环体。持续：循环体。",
         description="持续执行（无限循环）"
     ))
-    
+
     # 除非宏
     system.register(Macro(
         name="除非",
@@ -2756,7 +2756,7 @@ def register_builtin_macros(system):
         body="若非(条件)：动作。",
         description="除非条件成立，否则执行动作"
     ))
-    
+
     # 当...时宏
     system.register(Macro(
         name="当",
@@ -2796,7 +2796,7 @@ from src.macro.idiom_macros import register_idiom_macros
 def test_idiom_macros():
     system = MacroSystem()
     register_idiom_macros(system)
-    
+
     # 检查成语宏
     assert system.has("守株待兔")
     assert system.has("亡羊补牢")
@@ -2805,13 +2805,13 @@ def test_idiom_macros():
 def test_idiom_expansion():
     system = MacroSystem()
     register_idiom_macros(system)
-    
+
     # 测试守株待兔宏展开
     expanded = system.expand("守株待兔", {
         "事件": "用户点击",
         "处理函数": "处理点击"
     })
-    
+
     assert "持续" in expanded or "若真" in expanded
     assert "用户点击" in expanded
 ```
@@ -2829,7 +2829,7 @@ from src.macro.macro_system import Macro, MacroType
 
 def register_idiom_macros(system):
     """注册成语宏"""
-    
+
     # 守株待兔：事件监听循环
     system.register(Macro(
         name="守株待兔",
@@ -2838,7 +2838,7 @@ def register_idiom_macros(system):
         body="持续：事件，等待发生。处理函数。",
         description="等待事件发生并处理（事件监听循环）"
     ))
-    
+
     # 亡羊补牢：错误补救
     system.register(Macro(
         name="亡羊补牢",
@@ -2847,7 +2847,7 @@ def register_idiom_macros(system):
         body="若错误发生：补救措施。返回成功。否则：返回失败。",
         description="错误发生后进行补救"
     ))
-    
+
     # 画蛇添足：多余操作
     system.register(Macro(
         name="画蛇添足",
@@ -2856,7 +2856,7 @@ def register_idiom_macros(system):
         body="数据，处理。多余操作。返回数据。",
         description="在数据处理后执行多余操作"
     ))
-    
+
     # 一举两得：同时执行两个操作
     system.register(Macro(
         name="一举两得",
@@ -2865,7 +2865,7 @@ def register_idiom_macros(system):
         body="定结果1=动作1。定结果2=动作2。返回列(结果1, 结果2)。",
         description="同时执行两个操作并返回结果"
     ))
-    
+
     # 循序渐进：逐步处理
     system.register(Macro(
         name="循序渐进",
@@ -2907,7 +2907,7 @@ def test_intentional_call():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     # 应该解析为函数调用
     assert isinstance(ast.statements[0], FunctionCallNode)
     assert ast.statements[0].name == "计算距离"
@@ -2925,31 +2925,31 @@ def test_intentional_call():
 # src/parser/parser.py (在_parse_primary方法中添加)
 def _parse_primary(self) -> ASTNode:
     token = self._current_token()
-    
+
     # ... 现有代码 ...
-    
+
     # 意合式调用：参数1、参数2，函数名。
     if self._check(TokenType.IDENTIFIER):
         # 收集可能的参数
         potential_args = []
         first_token = self._advance()
         potential_args.append(IdentifierNode(first_token.value, line=first_token.line, column=first_token.column))
-        
+
         # 检查是否有顿号分隔的参数
         while self._check(TokenType.COMMA):
             self._advance()
             arg_token = self._expect(TokenType.IDENTIFIER, "Expected argument")
             potential_args.append(IdentifierNode(arg_token.value, line=arg_token.line, column=arg_token.column))
-        
+
         # 检查是否是函数调用（逗号后跟函数名）
         if self._check(TokenType.COMMA):
             self._advance()
             func_token = self._expect(TokenType.IDENTIFIER, "Expected function name")
-            
+
             # 消耗句号
             if self._check(TokenType.PERIOD):
                 self._advance()
-            
+
             return FunctionCallNode(
                 func_token.value,
                 potential_args,
@@ -2959,7 +2959,7 @@ def _parse_primary(self) -> ASTNode:
         else:
             # 不是意合式调用，返回第一个标识符
             return potential_args[0]
-    
+
     # ... 现有代码 ...
 ```
 
@@ -3024,14 +3024,14 @@ from typing import List, Tuple
 class ContextCompleter:
     def __init__(self):
         self.topic_stack = []
-    
+
     def complete(self, source: str) -> str:
         lines = source.split('\n')
         completed_lines = []
-        
+
         for i, line in enumerate(lines):
             stripped = line.strip()
-            
+
             # 检测话题链（以冒号结尾）
             if stripped.endswith('：') or stripped.endswith(':'):
                 topic = stripped[:-1].strip()
@@ -3048,24 +3048,24 @@ class ContextCompleter:
                 completed_lines.append(line)
             else:
                 completed_lines.append(line)
-        
+
         return '\n'.join(completed_lines)
-    
+
     def _complete_statement(self, statement: str, topic: str) -> str:
         # 动词列表
         verbs = ['验证', '检查', '发送', '读取', '写入', '处理', '计算', '显示', '印']
-        
+
         for verb in verbs:
             if statement.startswith(verb):
                 # 补全宾语
                 return f"{verb}{topic}的{statement[len(verb):]}"
-        
+
         # 如果是简单语句，可能是循环
         if not any(op in statement for op in ['=', '加', '减', '乘', '除']):
             # 检查话题是否是列表
             if '列表' in topic or '集合' in topic:
                 return f"遍历{topic}中的每个元素：{statement}"
-        
+
         return statement
 ```
 
@@ -3097,22 +3097,22 @@ from src.runtime.data_verbs import DataVerbLibrary
 
 def test_data_verb_library():
     lib = DataVerbLibrary()
-    
+
     # 测试映射
     result = lib.execute("映射", lambda x: x * 2, [1, 2, 3])
     assert result == [2, 4, 6]
-    
+
     # 测试过滤
     result = lib.execute("过滤", lambda x: x > 2, [1, 2, 3, 4, 5])
     assert result == [3, 4, 5]
-    
+
     # 测试排序
     result = lib.execute("排序", None, [3, 1, 2])
     assert result == [1, 2, 3]
 
 def test_data_verb_chain():
     lib = DataVerbLibrary()
-    
+
     # 测试链式调用
     result = lib.chain([1, 2, 3, 4, 5], [
         ("过滤", lambda x: x > 2),
@@ -3142,28 +3142,28 @@ class DataVerbLibrary:
             '写入': self._write,
             '发送': self._send,
             '接收': self._receive,
-            
+
             # 数据变换动词
             '映射': self._map,
             '过滤': self._filter,
             '折叠': self._reduce,
             '分组': self._group,
             '排序': self._sort,
-            
+
             # 数据流控制动词
             '分发': self._distribute,
             '合并': self._merge,
             '缓存': self._cache,
             '转换': self._transform,
         }
-        
+
         self.cache = {}
-    
+
     def execute(self, verb: str, *args, **kwargs) -> Any:
         if verb not in self.verbs:
             raise ValueError(f"未知的数据动词: {verb}")
         return self.verbs[verb](*args, **kwargs)
-    
+
     def chain(self, data: Any, operations: List[tuple]) -> Any:
         """链式执行多个数据动词"""
         result = data
@@ -3172,7 +3172,7 @@ class DataVerbLibrary:
             args = op[1:] if len(op) > 1 else ()
             result = self.execute(verb, *args, data=result)
         return result
-    
+
     # 数据传递动词实现
     def _read(self, source: str, **kwargs) -> Any:
         """读取数据"""
@@ -3182,35 +3182,35 @@ class DataVerbLibrary:
         else:
             with open(source, 'r', encoding='utf-8') as f:
                 return f.read()
-    
+
     def _write(self, data: Any, target: str, **kwargs):
         """写入数据"""
         with open(target, 'w', encoding='utf-8') as f:
             f.write(str(data))
-    
+
     def _send(self, data: Any, target: str, **kwargs):
         """发送数据"""
         # 实现消息队列、网络发送等
         pass
-    
+
     def _receive(self, source: str, **kwargs) -> Any:
         """接收数据"""
         # 实现消息队列、网络接收等
         pass
-    
+
     # 数据变换动词实现
     def _map(self, func: Callable, data: List = None, **kwargs) -> List:
         """映射"""
         if data is None:
             data = kwargs.get('data', [])
         return list(map(func, data))
-    
+
     def _filter(self, func: Callable, data: List = None, **kwargs) -> List:
         """过滤"""
         if data is None:
             data = kwargs.get('data', [])
         return list(filter(func, data))
-    
+
     def _reduce(self, func: Callable, data: List = None, initial: Any = None, **kwargs) -> Any:
         """折叠"""
         if data is None:
@@ -3218,44 +3218,44 @@ class DataVerbLibrary:
         if initial is not None:
             return reduce(func, data, initial)
         return reduce(func, data)
-    
+
     def _group(self, key_func: Callable, data: List = None, **kwargs) -> Dict:
         """分组"""
         if data is None:
             data = kwargs.get('data', [])
         from itertools import groupby
         return {k: list(g) for k, g in groupby(sorted(data, key=key_func), key_func)}
-    
+
     def _sort(self, key_func: Callable = None, data: List = None, reverse: bool = False, **kwargs) -> List:
         """排序"""
         if data is None:
             data = kwargs.get('data', [])
         return sorted(data, key=key_func, reverse=reverse)
-    
+
     # 数据流控制动词实现
     def _distribute(self, data: Any, targets: List[str], **kwargs):
         """分发数据到多个目标"""
         for target in targets:
             self._send(data, target)
-    
+
     def _merge(self, sources: List[str], **kwargs) -> List:
         """合并多个数据源"""
         result = []
         for source in sources:
             result.extend(self._read(source))
         return result
-    
+
     def _cache(self, key: str, data: Any = None, **kwargs) -> Any:
         """缓存数据"""
         if data is None:
             data = kwargs.get('data')
-        
+
         if data is not None:
             self.cache[key] = data
             return data
         else:
             return self.cache.get(key)
-    
+
     def _transform(self, transformer: Callable, data: Any = None, **kwargs) -> Any:
         """转换数据格式"""
         if data is None:
@@ -3294,7 +3294,7 @@ def test_preposition_explicit():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     # 应该解析为函数调用
     assert isinstance(ast.statements[0], FunctionCallNode)
 ```
@@ -3310,37 +3310,37 @@ def test_preposition_explicit():
 # src/parser/parser.py (在_parse_statement方法中添加)
 def _parse_statement(self) -> Optional[ASTNode]:
     # ... 现有代码 ...
-    
+
     # 检测介词开头的语句
     if self._check(TokenType.IDENTIFIER):
         token = self._current_token()
         if token.value in ["把", "将", "给", "从"]:
             return self._parse_preposition_statement()
-    
+
     # ... 现有代码 ...
 
 def _parse_preposition_statement(self) -> ASTNode:
     prep_token = self._advance()  # 消耗介词
     preposition = prep_token.value
-    
+
     # 解析宾语
     obj_token = self._expect(TokenType.IDENTIFIER, "Expected object")
     obj = IdentifierNode(obj_token.value, line=obj_token.line, column=obj_token.column)
-    
+
     # 解析动词
     verb_token = self._expect(TokenType.IDENTIFIER, "Expected verb")
     verb = verb_token.value
-    
+
     # 解析目标（如果有）
     target = None
     if self._check(TokenType.IDENTIFIER):
         target_token = self._advance()
         target = IdentifierNode(target_token.value, line=target_token.line, column=target_token.column)
-    
+
     # 消耗句号
     if self._check(TokenType.PERIOD):
         self._advance()
-    
+
     # 根据介词生成不同的AST
     if preposition in ["把", "将"]:
         # 把A存入B -> 存入(A, B)
@@ -3357,7 +3357,7 @@ def _parse_preposition_statement(self) -> ASTNode:
             return FunctionCallNode(verb, [obj, target], line=prep_token.line, column=prep_token.column)
         else:
             return FunctionCallNode(verb, [obj], line=prep_token.line, column=prep_token.column)
-    
+
     return FunctionCallNode(verb, [obj], line=prep_token.line, column=prep_token.column)
 ```
 
@@ -3428,11 +3428,11 @@ class TypeInferencer:
             ('boolean', 'and', 'boolean'): 'boolean',
             ('boolean', 'or', 'boolean'): 'boolean',
         }
-    
+
     def infer(self, node: ASTNode, context: Dict[str, str] = None) -> str:
         if context is None:
             context = {}
-        
+
         if isinstance(node, NumberNode):
             return 'number'
         elif isinstance(node, StringNode):
@@ -3457,7 +3457,7 @@ class TypeInferencer:
             return 'dict'
         else:
             return 'unknown'
-    
+
     def _infer_function_return_type(self, node: FunctionCallNode, context: Dict[str, str]) -> str:
         # 内置函数返回类型
         builtin_returns = {
@@ -3471,7 +3471,7 @@ class TypeInferencer:
             '映射': 'list',
             '过滤': 'list',
         }
-        
+
         return builtin_returns.get(node.name, 'unknown')
 ```
 
@@ -3505,7 +3505,7 @@ from src.error_handling import ErrorHandler, ErrorType
 def test_error_handler():
     handler = ErrorHandler()
     handler.report(ErrorType.LEXER_ERROR, "Unexpected character", line=1, column=5)
-    
+
     errors = handler.get_errors()
     assert len(errors) == 1
     assert errors[0].error_type == ErrorType.LEXER_ERROR
@@ -3513,7 +3513,7 @@ def test_error_handler():
 def test_error_formatting():
     handler = ErrorHandler()
     handler.report(ErrorType.PARSER_ERROR, "Expected ')'", line=3, column=10, source="印(1加2。")
-    
+
     formatted = handler.format_error(0)
     assert "第 3 行" in formatted
     assert "第 10 列" in formatted
@@ -3551,43 +3551,43 @@ class Error:
 class ErrorHandler:
     def __init__(self):
         self.errors: List[Error] = []
-    
-    def report(self, error_type: ErrorType, message: str, line: int, column: int, 
+
+    def report(self, error_type: ErrorType, message: str, line: int, column: int,
                source: str = None, suggestion: str = None):
         error = Error(error_type, message, line, column, source, suggestion)
         self.errors.append(error)
-    
+
     def has_errors(self) -> bool:
         return len(self.errors) > 0
-    
+
     def get_errors(self) -> List[Error]:
         return self.errors
-    
+
     def format_error(self, index: int) -> str:
         if index >= len(self.errors):
             return ""
-        
+
         error = self.errors[index]
         lines = [
             f"{error.error_type.value}: {error.message}",
             f"  位置: 第 {error.line} 行, 第 {error.column} 列",
         ]
-        
+
         if error.source:
             source_lines = error.source.split('\n')
             if error.line <= len(source_lines):
                 source_line = source_lines[error.line - 1]
                 lines.append(f"  源代码: {source_line}")
                 lines.append(f"          {' ' * (error.column - 1)}^")
-        
+
         if error.suggestion:
             lines.append(f"  建议: {error.suggestion}")
-        
+
         return '\n'.join(lines)
-    
+
     def format_all_errors(self) -> str:
         return '\n\n'.join(self.format_error(i) for i in range(len(self.errors)))
-    
+
     def clear(self):
         self.errors.clear()
 ```
@@ -3674,26 +3674,26 @@ git commit -m "feat: implement enhanced error handling"
 ```yan
 # examples/advanced/user_registration.yan
 用户注册流程：
-  
+
   接收注册信息。
-  
+
   验证信息：
     用户名长度小于3，返回错误"用户名太短"。
     邮箱格式不正确，返回错误"邮箱格式错误"。
     用户名已存在，返回错误"用户名已被使用"。
-  
+
   创建用户对象：
     设置用户名。
     设置邮箱。
     设置密码哈希值。
     设置注册时间。
-  
+
   存入数据库。
-  
+
   发送欢迎邮件：
     标题 = "欢迎加入"。
     内容 = "感谢注册"。
-  
+
   返回成功消息。
 ```
 
@@ -3733,7 +3733,7 @@ def test_math_track():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "math.pi" in python_code or "π" in python_code
@@ -3762,33 +3762,33 @@ class MultiTrackCodegen:
             '÷': '/',
             '±': '+/-',
         }
-    
+
     def process_math_expression(self, expr: str) -> str:
         """处理数学表达式"""
         result = expr
-        
+
         # 替换数学符号
         for symbol, replacement in self.math_symbols.items():
             result = result.replace(symbol, replacement)
-        
+
         # 处理幂运算
         result = re.sub(r'(\w+)²', r'\1**2', result)
         result = re.sub(r'(\w+)³', r'\1**3', result)
-        
+
         # 处理根号
         result = re.sub(r'√\(([^)]+)\)', r'math.sqrt(\1)', result)
         result = re.sub(r'√(\w+)', r'math.sqrt(\1)', result)
-        
+
         return result
-    
+
     def process_python_block(self, code: str) -> str:
         """处理Python代码块"""
         return code
-    
+
     def process_sql_query(self, query: str) -> str:
         """处理SQL查询"""
         return f'"""{query}"""'
-    
+
     def process_javascript_block(self, code: str) -> str:
         """处理JavaScript代码块"""
         return f'"""{code}"""'
@@ -3805,17 +3805,17 @@ class PythonCodegen:
         self.indent_level = 0
         self.indent_str = "    "
         self.multi_track = MultiTrackCodegen()
-    
+
     # ... 现有代码 ...
-    
+
     def _generate_expression(self, node: ASTNode) -> str:
         # ... 现有代码 ...
-        
+
         # 处理数学表达式
         if isinstance(node, StringNode) and node.value.startswith('$('):
             math_expr = node.value[2:-1]  # 提取 $(...) 中的内容
             return self.multi_track.process_math_expression(math_expr)
-        
+
         # ... 现有代码 ...
 ```
 
@@ -3854,7 +3854,7 @@ result = df.groupby('category').sum()
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "import pandas" in python_code
@@ -3871,12 +3871,12 @@ result = df.groupby('category').sum()
 # src/codegen/python_codegen.py (在_generate_expression中添加)
 def _generate_expression(self, node: ASTNode) -> str:
     # ... 现有代码 ...
-    
+
     # 处理Python代码块
     if isinstance(node, StringNode) and node.value.startswith('{{'):
         python_code = node.value[2:-2]  # 提取 {{...}} 中的内容
         return self.multi_track.process_python_block(python_code)
-    
+
     # ... 现有代码 ...
 ```
 
@@ -3907,7 +3907,7 @@ git commit -m "feat: implement Python track support"
 # tests/test_codegen.py (追加)
 def test_sql_track():
     source = '''用户查询 = 【
-SELECT * FROM users 
+SELECT * FROM users
 WHERE status = 'active'
 ORDER BY created_at DESC
 】'''
@@ -3915,7 +3915,7 @@ ORDER BY created_at DESC
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "SELECT" in python_code
@@ -3932,12 +3932,12 @@ ORDER BY created_at DESC
 # src/codegen/python_codegen.py (在_generate_expression中添加)
 def _generate_expression(self, node: ASTNode) -> str:
     # ... 现有代码 ...
-    
+
     # 处理SQL查询
     if isinstance(node, StringNode) and node.value.startswith('【'):
         sql_query = node.value[1:-1]  # 提取【...】中的内容
         return self.multi_track.process_sql_query(sql_query)
-    
+
     # ... 现有代码 ...
 ```
 
@@ -3977,7 +3977,7 @@ function handleClick(event) {
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     codegen = PythonCodegen()
     python_code = codegen.generate(ast)
     assert "function" in python_code
@@ -3994,12 +3994,12 @@ function handleClick(event) {
 # src/codegen/python_codegen.py (在_generate_expression中添加)
 def _generate_expression(self, node: ASTNode) -> str:
     # ... 现有代码 ...
-    
+
     # 处理JavaScript代码块
     if isinstance(node, StringNode) and node.value.startswith('「'):
         js_code = node.value[1:-1]  # 提取「...」中的内容
         return self.multi_track.process_javascript_block(js_code)
-    
+
     # ... 现有代码 ...
 ```
 
@@ -4099,19 +4099,19 @@ export function activate(context: vscode.ExtensionContext) {
         {
             provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
                 const items: vscode.CompletionItem[] = [];
-                
+
                 // 关键字补全
                 const keywords = ['若', '则', '否则', '遍历', '当', '定义', '返回', '定'];
                 keywords.forEach(keyword => {
                     items.push(new vscode.CompletionItem(keyword, vscode.CompletionItemKind.Keyword));
                 });
-                
+
                 // 内置函数补全
                 const builtins = ['印', '读取', '写入', '长度', '求和', '最大', '最小', '排序'];
                 builtins.forEach(builtin => {
                     items.push(new vscode.CompletionItem(builtin, vscode.CompletionItemKind.Function));
                 });
-                
+
                 return items;
             }
         }
@@ -4508,7 +4508,7 @@ def 写入CSV(路径: str, 数据: List[Dict], 编码: str = 'utf-8'):
     """写入CSV文件"""
     if not 数据:
         return
-    
+
     with open(路径, 'w', encoding=编码, newline='') as f:
         writer = csv.DictWriter(f, fieldnames=数据[0].keys())
         writer.writeheader()
@@ -5105,7 +5105,7 @@ result = df.groupby('category').sum()
 }}
 
 用户查询 = 【
-SELECT * FROM users 
+SELECT * FROM users
 WHERE status = 'active'
 】
 ```

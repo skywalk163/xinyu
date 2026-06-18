@@ -448,7 +448,7 @@ def run_benchmark(
         else:
             memory_growth_mb = 0
             cpu_usage_percent = 0
-    except:
+    except Exception:
         memory_growth_mb = 0
         cpu_usage_percent = 0
 

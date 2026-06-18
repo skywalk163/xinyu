@@ -317,22 +317,22 @@ class TestTypeInferencerDetailed:
     def test_check_type_compatibility(self):
         """测试类型兼容性检查"""
         # 相同类型
-        assert self.inferencer.check_type_compatibility("number", "number") == True
-        assert self.inferencer.check_type_compatibility("string", "string") == True
+        assert self.inferencer.check_type_compatibility("number", "number") is True
+        assert self.inferencer.check_type_compatibility("string", "string") is True
 
         # unknown类型兼容任何类型
-        assert self.inferencer.check_type_compatibility("unknown", "number") == True
-        assert self.inferencer.check_type_compatibility("string", "unknown") == True
-        assert self.inferencer.check_type_compatibility("unknown", "unknown") == True
+        assert self.inferencer.check_type_compatibility("unknown", "number") is True
+        assert self.inferencer.check_type_compatibility("string", "unknown") is True
+        assert self.inferencer.check_type_compatibility("unknown", "unknown") is True
 
         # 不同类型不兼容
-        assert self.inferencer.check_type_compatibility("number", "string") == False
-        assert self.inferencer.check_type_compatibility("string", "boolean") == False
-        assert self.inferencer.check_type_compatibility("boolean", "list") == False
+        assert self.inferencer.check_type_compatibility("number", "string") is False
+        assert self.inferencer.check_type_compatibility("string", "boolean") is False
+        assert self.inferencer.check_type_compatibility("boolean", "list") is False
 
         # 边缘情况
-        assert self.inferencer.check_type_compatibility("", "number") == False
-        assert self.inferencer.check_type_compatibility("number", "") == False
+        assert self.inferencer.check_type_compatibility("", "number") is False
+        assert self.inferencer.check_type_compatibility("number", "") is False
 
 
 if __name__ == "__main__":

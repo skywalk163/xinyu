@@ -2,19 +2,21 @@
 # -*- coding: utf-8 -*-
 """测试简化版算法实现"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
+
 
 def test_algorithm(name, code):
     """测试单个算法"""
     print(f"\n{'='*60}")
     print(f"测试: {name}")
-    print('='*60)
+    print("=" * 60)
     try:
         lexer = Lexer(code)
         tokens = lexer.tokenize()
@@ -29,11 +31,13 @@ def test_algorithm(name, code):
     except Exception as e:
         print(f"[FAIL] 错误: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
+
 # 测试汉诺塔
-hanoi = '''打印 "汉诺塔问题求解"。
+hanoi = """打印 "汉诺塔问题求解"。
 打印 "计算1到5个盘子的移动次数："。
 定义 n = 1。
 当 n 小于等于 5：
@@ -45,16 +49,16 @@ hanoi = '''打印 "汉诺塔问题求解"。
     定义 i = i 相加 1。
   。
   定义 移动次数 = 移动次数 相减 1。
-  
+
   打印 n。
   打印 "个盘子需要"。
   打印 移动次数。
   打印 "步移动"。
   定义 n = n 相加 1。
-。'''
+。"""
 
 # 测试冒泡排序
-bubble = '''打印 "冒泡排序算法"。
+bubble = """打印 "冒泡排序算法"。
 定义 数据 = [64, 34, 25, 12, 22, 11, 90]。
 打印 "原始数组："。
 打印 数据。
@@ -93,10 +97,10 @@ bubble = '''打印 "冒泡排序算法"。
 打印 ""。
 打印 "排序完成！"。
 打印 "最终结果："。
-打印 数据5。'''
+打印 数据5。"""
 
 # 测试图灵机
-turing = '''打印 "图灵机：二进制加1"。
+turing = """打印 "图灵机：二进制加1"。
 打印 "模拟二进制 1011 + 1："。
 定义 二进制 = "1011"。
 打印 "输入：" 二进制。
@@ -115,10 +119,10 @@ turing = '''打印 "图灵机：二进制加1"。
 打印 ""。
 打印 "验证：1011(二进制) = 11(十进制)"。
 打印 "       1100(二进制) = 12(十进制)"。
-打印 "       11 + 1 = 12 正确"。'''
+打印 "       11 + 1 = 12 正确"。"""
 
 # 测试素数筛
-prime = '''打印 "埃拉托斯特尼素数筛"。
+prime = """打印 "埃拉托斯特尼素数筛"。
 打印 "筛选2到30之间的素数："。
 打印 ""。
 打印 "第1步：2是素数，标记2的倍数"。
@@ -141,7 +145,7 @@ prime = '''打印 "埃拉托斯特尼素数筛"。
 定义 素数 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]。
 打印 素数。
 打印 ""。
-打印 "共找到10个素数。"。'''
+打印 "共找到10个素数。"。"""
 
 # 运行测试
 results = []
@@ -153,11 +157,11 @@ results.append(("素数筛", test_algorithm("素数筛", prime)))
 # 总结
 print(f"\n{'='*60}")
 print("测试总结")
-print('='*60)
+print("=" * 60)
 passed = sum(1 for _, r in results if r)
 total = len(results)
 for name, result in results:
     status = "[PASS]" if result else "[FAIL]"
     print(f"{status} - {name}")
 print(f"\n总计: {passed}/{total} 通过")
-print('='*60)
+print("=" * 60)

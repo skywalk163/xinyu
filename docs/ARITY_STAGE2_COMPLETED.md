@@ -100,11 +100,11 @@ def _should_stop_collecting_args(self) -> bool:
     # 1. 遇到操作符动词停止
     if self._is_operator_verb(current.value):
         return True
-    
+
     # 2. 遇到终止符停止
     if self._check(TokenType.NEWLINE, ...):
         return True
-    
+
     # 3. 遇到操作符token停止
     if self._check(TokenType.PLUS, ...):
         return True

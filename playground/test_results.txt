@@ -4,7 +4,7 @@ At line:1 char:160
 +                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
+
   File "G:\dumategithub\chineseprogram\playground\test_all_examples.py", line 160, in <module>
     exec(python_code)
   File "<string>", line 4, in <module>

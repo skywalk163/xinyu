@@ -18,7 +18,7 @@ KEYWORDS = {
     # 4字关键字
     "大于等于": ">=",
     "小于等于": "<=",
-    
+
     # 3字关键字
     "定义": "VAR",
     "函数": "FUNCTION",
@@ -35,7 +35,7 @@ KEYWORDS = {
     "继续": "CONTINUE",
     "跳出": "BREAK",
     "结束": "END",
-    
+
     # 2字操作符动词
     "相加": "+",
     "相减": "-",
@@ -48,7 +48,7 @@ KEYWORDS = {
     "小于": "<",
     "并且": "AND",
     "或者": "OR",
-    
+
     # 2字内置函数
     "打印": "PRINT",
     "输入": "INPUT",
@@ -57,7 +57,7 @@ KEYWORDS = {
     "范围": "RANGE",
     "追加": "APPEND",
     "弹出": "POP",
-    
+
     # 3字内置函数
     "平方根": "SQRT",
     "绝对值": "ABS",
@@ -79,13 +79,13 @@ def tokenize_no_space(source: str) -> List[Token]:
     """无空格词法分析"""
     tokens = []
     pos = 0
-    
+
     while pos < len(source):
         # 跳过空白字符
         if source[pos].isspace():
             pos += 1
             continue
-        
+
         # 尝试匹配最长关键字
         matched = False
         for length in range(4, 0, -1):  # 从4到1
@@ -96,7 +96,7 @@ def tokenize_no_space(source: str) -> List[Token]:
                     pos += length
                     matched = True
                     break
-        
+
         if not matched:
             # 匹配数字
             if source[pos].isdigit():
@@ -105,7 +105,7 @@ def tokenize_no_space(source: str) -> List[Token]:
                     pos += 1
                 tokens.append(Token('NUMBER', source[num_start:pos]))
                 continue
-            
+
             # 匹配字符串
             if source[pos] == '"':
                 str_start = pos
@@ -115,7 +115,7 @@ def tokenize_no_space(source: str) -> List[Token]:
                 pos += 1
                 tokens.append(Token('STRING', source[str_start:pos]))
                 continue
-            
+
             # 匹配标识符
             if is_chinese_char(source[pos]) or source[pos].isalpha():
                 id_start = pos
@@ -123,16 +123,16 @@ def tokenize_no_space(source: str) -> List[Token]:
                     pos += 1
                 tokens.append(Token('IDENTIFIER', source[id_start:pos]))
                 continue
-            
+
             # 匹配符号
             if source[pos] in '()[]{}。，：=+-*/%<>!':
                 tokens.append(Token('SYMBOL', source[pos]))
                 pos += 1
                 continue
-            
+
             # 未知字符
             raise LexicalError(f"未知字符: {source[pos]}")
-    
+
     return tokens
 ```
 
@@ -215,13 +215,13 @@ from src.lexer.tokens import Token, TokenType
 
 class NoSpaceLexer:
     """无空格词法分析器"""
-    
+
     # 关键字字典（按长度降序排列）
     KEYWORDS = {
         # 4字
         "大于等于": (TokenType.GREATER_EQ, ">="),
         "小于等于": (TokenType.LESS_EQ, "<="),
-        
+
         # 3字
         "定义": (TokenType.VAR, "var"),
         "函数": (TokenType.FUNCTION, "function"),
@@ -246,7 +246,7 @@ class NoSpaceLexer:
         "转整数": (TokenType.IDENTIFIER, "int"),
         "转浮点": (TokenType.IDENTIFIER, "float"),
         "转字符串": (TokenType.IDENTIFIER, "str"),
-        
+
         # 2字
         "相加": (TokenType.PLUS, "+"),
         "相减": (TokenType.MINUS, "-"),
@@ -267,32 +267,32 @@ class NoSpaceLexer:
         "追加": (TokenType.IDENTIFIER, "append"),
         "弹出": (TokenType.IDENTIFIER, "pop"),
     }
-    
+
     def __init__(self, source: str):
         self.source = source
         self.pos = 0
         self.line = 1
         self.column = 1
-    
+
     def tokenize(self) -> List[Token]:
         """词法分析"""
         tokens = []
-        
+
         while self.pos < len(self.source):
             token = self._next_token()
             if token:
                 tokens.append(token)
-        
+
         tokens.append(Token(TokenType.EOF, "", self.line, self.column))
         return tokens
-    
+
     def _next_token(self) -> Token:
         """获取下一个token"""
         self._skip_whitespace()
-        
+
         if self.pos >= len(self.source):
             return None
-        
+
         # 尝试匹配最长关键字
         for length in range(4, 0, -1):
             if self.pos + length <= len(self.source):
@@ -302,22 +302,22 @@ class NoSpaceLexer:
                     token = Token(token_type, value, self.line, self.column)
                     self._advance(length)
                     return token
-        
+
         # 匹配数字
         if self.source[self.pos].isdigit():
             return self._read_number()
-        
+
         # 匹配字符串
         if self.source[self.pos] == '"':
             return self._read_string()
-        
+
         # 匹配标识符
         if self._is_identifier_start():
             return self._read_identifier()
-        
+
         # 匹配符号
         return self._read_symbol()
-    
+
     def _skip_whitespace(self):
         """跳过空白字符"""
         while self.pos < len(self.source) and self.source[self.pos].isspace():
@@ -327,7 +327,7 @@ class NoSpaceLexer:
             else:
                 self.column += 1
             self.pos += 1
-    
+
     def _advance(self, count: int = 1):
         """前进count个字符"""
         for _ in range(count):
@@ -338,65 +338,65 @@ class NoSpaceLexer:
                 else:
                     self.column += 1
                 self.pos += 1
-    
+
     def _is_identifier_start(self) -> bool:
         """判断是否是标识符开始"""
         char = self.source[self.pos]
-        return (char.isalpha() or 
-                '\u4e00' <= char <= '\u9fff' or 
+        return (char.isalpha() or
+                '\u4e00' <= char <= '\u9fff' or
                 char == '_')
-    
+
     def _read_number(self) -> Token:
         """读取数字"""
         start = self.pos
         start_col = self.column
-        
+
         while self.pos < len(self.source):
             char = self.source[self.pos]
             if char.isdigit() or char == '.':
                 self._advance()
             else:
                 break
-        
+
         value = self.source[start:self.pos]
         return Token(TokenType.NUMBER, value, self.line, start_col)
-    
+
     def _read_string(self) -> Token:
         """读取字符串"""
         start_col = self.column
         self._advance()  # 跳过开始引号
-        
+
         start = self.pos
         while self.pos < len(self.source) and self.source[self.pos] != '"':
             self._advance()
-        
+
         value = self.source[start:self.pos]
         self._advance()  # 跳过结束引号
-        
+
         return Token(TokenType.STRING, value, self.line, start_col)
-    
+
     def _read_identifier(self) -> Token:
         """读取标识符"""
         start = self.pos
         start_col = self.column
-        
+
         while self.pos < len(self.source):
             char = self.source[self.pos]
-            if (char.isalnum() or 
-                '\u4e00' <= char <= '\u9fff' or 
+            if (char.isalnum() or
+                '\u4e00' <= char <= '\u9fff' or
                 char == '_'):
                 self._advance()
             else:
                 break
-        
+
         value = self.source[start:self.pos]
         return Token(TokenType.IDENTIFIER, value, self.line, start_col)
-    
+
     def _read_symbol(self) -> Token:
         """读取符号"""
         char = self.source[self.pos]
         start_col = self.column
-        
+
         symbol_map = {
             '(': TokenType.LPAREN,
             ')': TokenType.RPAREN,
@@ -417,11 +417,11 @@ class NoSpaceLexer:
             '>': TokenType.GREATER,
             '!': TokenType.NOT,
         }
-        
+
         token_type = symbol_map.get(char, TokenType.UNKNOWN)
         token = Token(token_type, char, self.line, start_col)
         self._advance()
-        
+
         return token
 ```
 
@@ -447,7 +447,7 @@ LEXER_MODE = LexerMode.STANDARD
 ```python
 def detect_lexer_mode(source: str) -> str:
     """自动检测词法分析器模式
-    
+
     检测规则：
     - 如果包含"定义x"这样的模式，使用无空格模式
     - 否则使用标准模式
@@ -458,11 +458,11 @@ def detect_lexer_mode(source: str) -> str:
         "如果x", "如果y", "如果z",
         "打印x", "打印y", "打印z",
     ]
-    
+
     for pattern in no_space_patterns:
         if pattern in source:
             return LexerMode.NO_SPACE
-    
+
     return LexerMode.STANDARD
 ```
 
@@ -478,7 +478,7 @@ def test_no_space_variable():
     source = "定义x=5。"
     lexer = NoSpaceLexer(source)
     tokens = lexer.tokenize()
-    
+
     assert len(tokens) == 5
     assert tokens[0].type == TokenType.VAR
     assert tokens[1].type == TokenType.IDENTIFIER
@@ -491,7 +491,7 @@ def test_no_space_function():
     source = "定义平方=函x：返回x相乘x。。"
     lexer = NoSpaceLexer(source)
     tokens = lexer.tokenize()
-    
+
     assert tokens[0].type == TokenType.VAR
     assert tokens[1].value == "平方"
     assert tokens[3].type == TokenType.FUNCTION
@@ -501,7 +501,7 @@ def test_no_space_condition():
     source = "如果x大于5那么：打印\"大\"。"
     lexer = NoSpaceLexer(source)
     tokens = lexer.tokenize()
-    
+
     assert tokens[0].type == TokenType.IF
     assert tokens[2].type == TokenType.GREATER
 ```

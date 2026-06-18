@@ -216,7 +216,7 @@ def find_memory_leaks(
             # 获取代码行
             try:
                 line = linecache.getline(filename, lineno).strip()
-            except:
+            except Exception:
                 line = "无法获取代码行"
 
             leaks.append(
@@ -271,7 +271,7 @@ def analyze_object_types(limit: int = 20) -> List[ObjectInfo]:
                 referrers = gc.get_referrers(obj)[:3]  # 只取前3个引用者
                 ref_types = [type(ref).__name__ for ref in referrers]
                 references.extend(ref_types)
-            except:
+            except Exception:
                 pass
 
         object_infos.append(
@@ -464,7 +464,7 @@ def clear_large_objects(target_mb: float) -> int:
                 size = sys.getsizeof(obj)
                 if size > 1024 * 1024:  # 大于1MB的对象
                     large_objects.append((obj, size))
-            except:
+            except Exception:
                 pass
 
         if not large_objects:
@@ -490,7 +490,7 @@ def clear_large_objects(target_mb: float) -> int:
                     if obj in referrer:
                         referrer.remove(obj)
                         cleared += 1
-        except:
+        except Exception:
             pass
 
         # 更新当前内存使用

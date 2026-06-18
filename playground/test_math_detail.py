@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 """测试math示例"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
-code = '''# 数学运算示例
+code = """# 数学运算示例
 定义 a = 10。
 定义 b = 3。
 
@@ -21,7 +22,7 @@ code = '''# 数学运算示例
 打印 "a 相除 b = " a 相除 b。
 
 打印 "绝对值(-5) = " 绝对值 -5。
-打印 "最大值(10, 20) = " 最大值 10 20。'''
+打印 "最大值(10, 20) = " 最大值 10 20。"""
 
 print("心语代码:")
 print(code)
@@ -45,4 +46,5 @@ try:
 except Exception as e:
     print(f"错误: {e}")
     import traceback
+
     traceback.print_exc()

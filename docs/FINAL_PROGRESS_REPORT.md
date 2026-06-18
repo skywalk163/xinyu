@@ -1,6 +1,6 @@
 # 心语项目改进最终报告
 
-**日期**：2026-06-04  
+**日期**：2026-06-04
 **Python版本**：3.12+
 
 ---
@@ -85,15 +85,15 @@
 ### 1. 集成测试问题（2个）
 
 #### test_builtin_function
-**文件**：`tests/test_integration_enhanced.py`  
-**问题**：内置函数集成测试失败  
-**优先级**：中  
+**文件**：`tests/test_integration_enhanced.py`
+**问题**：内置函数集成测试失败
+**优先级**：中
 **预计时间**：1小时
 
 #### test_full_pipeline
-**文件**：`tests/test_integration_enhanced.py`  
-**问题**：完整编译流程测试失败  
-**优先级**：中  
+**文件**：`tests/test_integration_enhanced.py`
+**问题**：完整编译流程测试失败
+**优先级**：中
 **预计时间**：1小时
 
 ---
@@ -101,24 +101,24 @@
 ### 2. 元数驱动解析问题（3个）
 
 #### test_function_call_with_operator_args
-**文件**：`tests/test_parser_arity.py`  
-**问题**：操作符参数识别问题  
-**测试代码**：`平方根 n 相减 1`  
-**优先级**：高  
+**文件**：`tests/test_parser_arity.py`
+**问题**：操作符参数识别问题
+**测试代码**：`平方根 n 相减 1`
+**优先级**：高
 **预计时间**：1小时
 
 #### test_unregistered_function
-**文件**：`tests/test_parser_arity.py`  
-**问题**：未注册函数参数收集  
-**测试代码**：`自定义函数 1 2 3`  
-**优先级**：高  
+**文件**：`tests/test_parser_arity.py`
+**问题**：未注册函数参数收集
+**测试代码**：`自定义函数 1 2 3`
+**优先级**：高
 **预计时间**：1小时
 
 #### test_operator_verb_stops_argument_collection
-**文件**：`tests/test_parser_arity.py`  
-**问题**：操作符动词停止参数收集  
-**测试代码**：`平方根 16 相加 平方根 25`  
-**优先级**：高  
+**文件**：`tests/test_parser_arity.py`
+**问题**：操作符动词停止参数收集
+**测试代码**：`平方根 16 相加 平方根 25`
+**优先级**：高
 **预计时间**：1小时
 
 ---

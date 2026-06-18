@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """使用Playwright测试Playground示例加载功能"""
 
-import sys
 import os
+import sys
 import time
 
 # 安装playwright
@@ -14,6 +14,7 @@ except ImportError:
     os.system("pip install playwright")
     os.system("python -m playwright install chromium")
     from playwright.sync_api import sync_playwright
+
 
 def test_playground():
     """测试Playground示例加载"""
@@ -35,6 +36,7 @@ def test_playground():
 
         # 启用控制台日志
         console_messages = []
+
         def handle_console(msg):
             console_messages.append(f"[{msg.type}] {msg.text}")
             print(f"控制台: [{msg.type}] {msg.text}")
@@ -184,6 +186,7 @@ def test_playground():
         print("\n" + "=" * 80)
         print("测试完成")
         print("=" * 80)
+
 
 if __name__ == "__main__":
     test_playground()

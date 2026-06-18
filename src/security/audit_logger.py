@@ -437,7 +437,8 @@ def test_audit_logger():
         logger.info(f"  记录的事件数量: {len(events)}")
         for event in events:
             logger.debug(
-                f"  - {event.timestamp} {event.user} {event.operation} {event.resource} {'允许' if event.allowed else '拒绝'}"
+                f"  - {event.timestamp} {event.user} {event.operation} "
+                f"{event.resource} {'允许' if event.allowed else '拒绝'}"
             )
 
         # 测试生成报告

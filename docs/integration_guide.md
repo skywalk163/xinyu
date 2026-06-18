@@ -334,10 +334,10 @@ if error_handler.has_errors():
     # 限制显示的错误数量
     errors = error_handler.get_errors()
     max_display = 10
-    
+
     for i, error in enumerate(errors[:max_display]):
         print(f"错误 {i+1}: {error}")
-    
+
     if len(errors) > max_display:
         print(f"... 还有 {len(errors) - max_display} 个错误")
 ```

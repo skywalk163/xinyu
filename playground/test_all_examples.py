@@ -2,24 +2,24 @@
 # -*- coding: utf-8 -*-
 """测试所有Playground示例"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
 # 所有示例代码
 examples = {
-    'hello': '''# 你好，世界
+    "hello": """# 你好，世界
 定义 问候 = "你好，心语！"。
 打印 问候。
 
 定义 名字 = "世界"。
-打印 "你好，" 名字。''',
-
-    'variables': '''# 变量定义示例
+打印 "你好，" 名字。""",
+    "variables": """# 变量定义示例
 定义 整数 = 42。
 定义 浮点数 = 3.14。
 定义 字符串 = "心语"。
@@ -28,9 +28,8 @@ examples = {
 打印 "整数：" 整数。
 打印 "浮点数：" 浮点数。
 打印 "字符串：" 字符串。
-打印 "布尔值：" 布尔值。''',
-
-    'function': '''# 函数定义示例
+打印 "布尔值：" 布尔值。""",
+    "function": """# 函数定义示例
 定义 平方 = 函 x：
   返回 x 相乘 x。
 。
@@ -45,9 +44,8 @@ examples = {
 
 打印 "平方(5) = " 平方 5。
 打印 "立方(3) = " 立方 3。
-打印 "两数之和(10, 20) = " 两数之和 10 20。''',
-
-    'condition': '''# 条件判断示例
+打印 "两数之和(10, 20) = " 两数之和 10 20。""",
+    "condition": """# 条件判断示例
 定义 成绩 = 85。
 
 如果 成绩 大于等于 90 那么：
@@ -60,9 +58,8 @@ examples = {
   打印 "及格"。
 否则：
   打印 "不及格"。
-。''',
-
-    'loop': '''# 循环遍历示例
+。""",
+    "loop": """# 循环遍历示例
 定义 水果 = 列表 "苹果" "香蕉" "橘子"。
 
 打印 "遍历水果列表："。
@@ -73,9 +70,8 @@ examples = {
 打印 "遍历数字范围："。
 遍历 数字 于 范围 1 6：
   打印 数字。
-。''',
-
-    'fibonacci': '''# 斐波那契数列
+。""",
+    "fibonacci": """# 斐波那契数列
 定义 斐波那契 = 函 n：
   如果 n 小于 2 那么：
     返回 n。
@@ -86,9 +82,8 @@ examples = {
 打印 "斐波那契数列前10项："。
 遍历 i 于 范围 1 11：
   打印 "斐波那契(" i ") = " 斐波那契 i。
-。''',
-
-    'list': '''# 列表操作示例
+。""",
+    "list": """# 列表操作示例
 定义 数字 = 列表 1 2 3 4 5。
 
 打印 "原始列表：" 数字。
@@ -102,16 +97,14 @@ examples = {
   返回 总和。
 。
 
-打印 "列表求和：" 求和 数字。''',
-
-    'dict': '''# 字典操作示例
+打印 "列表求和：" 求和 数字。""",
+    "dict": """# 字典操作示例
 定义 学生 = {"姓名": "张三", "年龄": 20, "成绩": 85}。
 
 打印 "学生信息：" 学生。
 打印 "姓名：" 学生["姓名"]。
-打印 "年龄：" 学生["年龄"]。''',
-
-    'math': '''# 数学运算示例
+打印 "年龄：" 学生["年龄"]。""",
+    "math": """# 数学运算示例
 定义 a = 10。
 定义 b = 3。
 
@@ -124,7 +117,7 @@ examples = {
 
 打印 "平方根(16) = " 平方根 16。
 打印 "绝对值(-5) = " 绝对值 -5。
-打印 "最大值(1, 5, 3, 2) = " 最大值 1 5 3 2。'''
+打印 "最大值(1, 5, 3, 2) = " 最大值 1 5 3 2。""",
 }
 
 print("=" * 80)
@@ -167,6 +160,7 @@ for name, code in examples.items():
         results.append((name, False, str(e)))
         print(f"[FAIL] 测试失败: {e}")
         import traceback
+
         traceback.print_exc()
 
 # 总结

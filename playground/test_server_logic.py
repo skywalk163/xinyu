@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 """测试server.py的执行功能"""
 
-import sys
-import os
 import io
-from contextlib import redirect_stdout, redirect_stderr
+import os
+import sys
+from contextlib import redirect_stderr, redirect_stdout
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
 # 测试代码
-test_code = '''定义 问候 = "你好，心语！"。
-打印 问候。'''
+test_code = """定义 问候 = "你好，心语！"。
+打印 问候。"""
 
 print("=" * 60)
 print("测试server.py执行逻辑")
@@ -52,24 +52,25 @@ try:
     try:
         # 创建执行环境，包含所有内置函数
         import builtins
+
         exec_globals = {
-            '__name__': '__main__',
-            '__builtins__': builtins,
+            "__name__": "__main__",
+            "__builtins__": builtins,
             # 添加常用的内置函数
-            'print': print,
-            'len': len,
-            'range': range,
-            'list': list,
-            'dict': dict,
-            'str': str,
-            'int': int,
-            'float': float,
-            'abs': abs,
-            'max': max,
-            'min': min,
-            'sum': sum,
-            'sorted': sorted,
-            'type': type,
+            "print": print,
+            "len": len,
+            "range": range,
+            "list": list,
+            "dict": dict,
+            "str": str,
+            "int": int,
+            "float": float,
+            "abs": abs,
+            "max": max,
+            "min": min,
+            "sum": sum,
+            "sorted": sorted,
+            "type": type,
         }
 
         # 执行代码
@@ -91,6 +92,7 @@ try:
     except Exception as e:
         print(f"执行错误: {str(e)}")
         import traceback
+
         traceback.print_exc()
     finally:
         sys.stdout = old_stdout
@@ -99,4 +101,5 @@ try:
 except Exception as e:
     print(f"编译错误: {e}")
     import traceback
+
     traceback.print_exc()

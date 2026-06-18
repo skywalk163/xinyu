@@ -101,27 +101,27 @@ spaces_after_colon: true
 custom_rules:
   # 函数定义和调用中的空格
   function_spacing: true
-  
+
   # 列表和字典中的空格
   collection_spacing: true
-  
+
   # 注释格式
   comment_format: true
-  
+
   # 导入语句排序
   import_sorting: true
-  
+
   # 空行位置规则
   blank_line_rules:
     # 在函数定义前添加空行
     before_function: true
-    
+
     # 在类定义前添加空行
     before_class: true
-    
+
     # 在导入语句后添加空行
     after_imports: true
-    
+
     # 在逻辑块之间添加空行
     between_blocks: true
 
@@ -202,7 +202,7 @@ pre-commit run xinyu-format --files example.xinyu
       files: \.xinyu$
       pass_filenames: true
       args: [--check]
-    
+
     - id: xinyu-format-fix
       name: Format Xinyu code (auto-fix)
       entry: python tools/simple_formatter.py --in-place

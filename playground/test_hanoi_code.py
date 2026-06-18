@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 """测试汉诺塔示例"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
-code = '''# 汉诺塔问题（递归实现）
+code = """# 汉诺塔问题（递归实现）
 # 汉诺塔递归函数
 定义 汉诺塔 = 函 n：
   如果 n 等于 1 那么：
@@ -33,7 +34,7 @@ code = '''# 汉诺塔问题（递归实现）
   定义 次数 = 汉诺塔 盘子数。
   打印 盘子数 "个盘子需要" 次数 "步移动"。
   定义 盘子数 = 盘子数 相加 1。
-。'''
+。"""
 
 print("测试汉诺塔代码...")
 try:
@@ -51,4 +52,5 @@ try:
 except Exception as e:
     print(f"错误: {e}")
     import traceback
+
     traceback.print_exc()

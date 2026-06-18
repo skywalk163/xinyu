@@ -3,8 +3,9 @@
 调试词法分析器
 """
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.lexer.lexer import Lexer
@@ -18,7 +19,7 @@ test_code = """定义 加 = 函 x, y：
 
 print("测试代码:")
 print(test_code)
-print("\n" + "="*50 + "\n")
+print("\n" + "=" * 50 + "\n")
 
 # 词法分析
 lexer = Lexer(test_code)

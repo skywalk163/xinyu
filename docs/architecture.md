@@ -239,18 +239,18 @@ from src.lexer.tokens import Token
 
 class ILexer(Protocol):
     """词法分析器接口"""
-    
+
     def tokenize(self) -> List[Token]:
         """将源代码转换为Token序列
-        
+
         Returns:
             Token列表
         """
         ...
-    
+
     def get_errors(self) -> List['LexerError']:
         """获取词法错误列表
-        
+
         Returns:
             错误列表
         """
@@ -265,18 +265,18 @@ from src.parser.ast_nodes import ProgramNode
 
 class IParser(Protocol):
     """语法分析器接口"""
-    
+
     def parse(self) -> ProgramNode:
         """将Token序列转换为AST
-        
+
         Returns:
             程序根节点
         """
         ...
-    
+
     def get_errors(self) -> List['ParseError']:
         """获取语法错误列表
-        
+
         Returns:
             错误列表
         """
@@ -291,29 +291,29 @@ from src.parser.ast_nodes import ProgramNode
 
 class ISemanticAnalyzer(Protocol):
     """语义分析器接口"""
-    
+
     def analyze(self, ast: ProgramNode) -> bool:
         """分析AST的语义正确性
-        
+
         Args:
             ast: 抽象语法树
-            
+
         Returns:
             是否通过分析
         """
         ...
-    
+
     def get_errors(self) -> List['SemanticError']:
         """获取语义错误列表
-        
+
         Returns:
             错误列表
         """
         ...
-    
+
     def get_symbol_table(self) -> Dict:
         """获取符号表
-        
+
         Returns:
             符号表字典
         """
@@ -328,13 +328,13 @@ from src.parser.ast_nodes import ProgramNode
 
 class ICodegen(Protocol):
     """代码生成器接口"""
-    
+
     def generate(self, ast: ProgramNode) -> str:
         """将AST转换为目标代码
-        
+
         Args:
             ast: 抽象语法树
-            
+
         Returns:
             生成的代码字符串
         """
@@ -348,13 +348,13 @@ from typing import Tuple, Any, Optional, Protocol
 
 class IRuntime(Protocol):
     """运行时接口"""
-    
+
     def execute(self, code: str) -> Tuple[bool, Optional[Any], Optional[str]]:
         """执行代码
-        
+
         Args:
             code: 代码字符串
-            
+
         Returns:
             (是否成功, 结果, 错误信息)
         """

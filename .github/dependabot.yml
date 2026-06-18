@@ -24,7 +24,7 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-    
+
   # 更新GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -44,7 +44,7 @@ updates:
       - "maintainers"
     assignees:
       - "maintainers"
-    
+
   # 更新预提交钩子
   - package-ecosystem: "pip"
     directory: "/"
@@ -82,20 +82,20 @@ updates:
 security-updates:
   # 自动创建安全更新的PR
   enabled: true
-  
+
   # 安全更新的标签
   labels:
     - "security"
     - "dependencies"
-  
+
   # 安全更新的审查者
   reviewers:
     - "security-team"
-  
+
   # 安全更新的分配者
   assignees:
     - "security-maintainer"
-  
+
   # 安全更新的提交信息
   commit-message:
     prefix: "security"
@@ -109,7 +109,7 @@ versioning-strategy:
       version_requirement: ">=0.a, <1"
     versioning: "semver"
     update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-  
+
   # 对于1.x及以上版本，只允许补丁更新
   - match:
       dependency-name: "*"
@@ -126,7 +126,7 @@ groups:
       - "pytest-*"
       - "coverage"
     update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-  
+
   # 开发工具分组
   dev-tools:
     patterns:
@@ -136,7 +136,7 @@ groups:
       - "mypy"
       - "bandit"
     update-types: ["version-update:semver-minor", "version-update:semver-patch"]
-  
+
   # 运行时依赖分组
   runtime-dependencies:
     patterns:
@@ -153,7 +153,7 @@ ignored-dependencies:
   # 忽略有已知问题的版本
   - dependency-name: "some-problematic-package"
     versions: ["1.2.3", "1.2.4"]
-  
+
   # 忽略不兼容的版本
   - dependency-name: "incompatible-package"
     versions: [">=2.0.0"]
@@ -166,31 +166,31 @@ pull-request-branch-name:
 auto-merge:
   # 启用自动合并
   enabled: true
-  
+
   # 自动合并的条件
   conditions:
     # 所有检查通过
     - "status-success=test"
     - "status-success=quality"
-    
+
     # 至少有一个审查通过
     - "approved-reviews-by>=1"
-    
+
     # 没有请求更改
     - "dismissed-stale-reviews"
-    
+
     # 没有冲突
     - "mergeable"
-  
+
   # 自动合并的方法
   method: "squash"
-  
+
   # 自动合并的提交信息
   commit-message:
     title: "chore(deps): update {{depName}} to {{newVersion}}"
     body: |
       Bumps {{depName}} from {{currentVersion}} to {{newVersion}}.
-      
+
       ### Release Notes
       {{#each releases}}
         ### {{title}}
@@ -198,7 +198,7 @@ auto-merge:
           - {{message}}
         {{/each}}
       {{/each}}
-      
+
       ### Dependencies
       {{#each dependencies}}
         - {{name}}: {{version}}
@@ -217,30 +217,30 @@ notifications:
       {{else}}
       :arrow_up: *依赖更新*: {{package}} 从 {{currentVersion}} 更新到 {{newVersion}}
       {{/if}}
-      
+
       仓库: {{repository}}
       PR: {{prUrl}}
       状态: {{status}}
-      
+
       {{#if isSecurityUpdate}}
       :rotating_light: *这是一个安全更新，请尽快审查和合并*
       {{/if}}
-  
+
   # 邮件通知
   - type: "email"
     recipients:
       - "maintainers@xinyu-lang.org"
     template: |
       主题: [Dependabot] {{#if isSecurityUpdate}}[安全] {{/if}}{{package}} 更新
-      
+
       内容:
       依赖: {{package}}
       版本: {{currentVersion}} -> {{newVersion}}
       仓库: {{repository}}
       PR: {{prUrl}}
-      
+
       {{#if isSecurityUpdate}}
       注意: 这是一个安全更新，包含重要的安全修复。
       {{/if}}
-      
+
       请及时审查和合并此更新。

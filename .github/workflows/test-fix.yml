@@ -1,0 +1,30 @@
+name: Test Fix for upload-artifact v3 issue
+
+on:
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  test-upload:
+    name: Test upload-artifact v4
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create test file
+      run: |
+        echo "Test file for upload-artifact v4" > test.txt
+        echo "Current time: $(date)" >> test.txt
+
+    - name: Upload artifact with v4
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-artifact
+        path: test.txt
+        retention-days: 1
+
+    - name: Verify upload
+      run: |
+        echo "Artifact uploaded successfully with v4"
+        echo "This confirms that upload-artifact@v4 works correctly"

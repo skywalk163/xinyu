@@ -14,15 +14,15 @@ def _parse_statement(self) -> ASTNode:
     # 变量定义：定 x = ...
     if self._check(TokenType.VAR):
         return self._parse_var_def()
-    
+
     # 函数定义：函数 ...
     if self._check(TokenType.FUNCTION):
         return self._parse_function_def_statement()
-    
+
     # 条件语句：若 ... 则 ...
     if self._check(TokenType.IF):
         return self._parse_if()
-    
+
     # ... 其他语句
 ```
 
@@ -33,18 +33,18 @@ def _parse_statement(self) -> ASTNode:
 ```python
 def _parse_function_def_statement(self) -> FunctionDefNode:
     """解析函数定义语句
-    
+
     语法：函数 名字：
             参数 参数名。
             语句。
           结束。
     """
     token = self._advance()  # 消费 函数
-    
+
     # 解析函数名
     name_token = self._expect(TokenType.IDENTIFIER, "Expected function name")
     name = name_token.value
-    
+
     # 解析参数列表
     params = []
     # 跳过参数关键字
@@ -56,17 +56,17 @@ def _parse_function_def_statement(self) -> FunctionDefNode:
             # 消费句号
             if self._check(TokenType.PERIOD):
                 self._advance()
-    
+
     # 期望 ：
     self._expect(TokenType.COLON, "Expected '：' after function parameters")
-    
+
     # 解析函数体
     body = self._parse_block()
-    
+
     # 消费结尾的 。
     if self._check(TokenType.PERIOD):
         self._advance()
-    
+
     return FunctionDefNode(
         line=token.line,
         column=token.column,

@@ -45,15 +45,15 @@ def _parse_statement(self) -> ASTNode:
     # 变量定义：定义 ...
     if self._check(TokenType.VAR):
         return self._parse_var_def()
-    
+
     # 函数定义：函数 ...
     if self._check(TokenType.FUNCTION):
         return self._parse_function_statement()
-    
+
     # 返回语句：返回 ...
     if self._check(TokenType.RETURN):
         return self._parse_return()
-    
+
     # 表达式语句（包括赋值）
     return self._parse_expression_statement()
 ```
@@ -63,11 +63,11 @@ def _parse_statement(self) -> ASTNode:
 def _parse_function_statement(self) -> FunctionDefNode:
     """解析函数定义语句"""
     token = self._advance()  # 消费 函数
-    
+
     # 解析函数名
     name_token = self._expect(TokenType.IDENTIFIER, "Expected function name")
     name = name_token.value
-    
+
     # 解析参数列表
     params = []
     while not self._check(TokenType.COLON, TokenType.NEWLINE, TokenType.EOF):
@@ -76,17 +76,17 @@ def _parse_function_statement(self) -> FunctionDefNode:
             params.append(param_token.value)
         else:
             break
-    
+
     # 期望 ：
     self._expect(TokenType.COLON, "Expected '：' after function parameters")
-    
+
     # 解析函数体
     body = self._parse_block()
-    
+
     # 消费结尾的 。
     if self._check(TokenType.PERIOD):
         self._advance()
-    
+
     return FunctionDefNode(
         line=token.line,
         column=token.column,
@@ -142,18 +142,18 @@ for token in tokens:
 FUNCTION: 函数
 IDENTIFIER: 平方
 COLON: ：
-NEWLINE: 
-INDENT: 
+NEWLINE:
+INDENT:
 PARAM: 参数
 IDENTIFIER: n
 PERIOD: 。
-NEWLINE: 
+NEWLINE:
 RETURN: 返回
 IDENTIFIER: n
 MULTIPLY: 相乘
 IDENTIFIER: n
 PERIOD: 。
-DEDENT: 
+DEDENT:
 ```
 
 ### 步骤2：修改解析器

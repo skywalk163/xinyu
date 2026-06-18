@@ -208,4 +208,8 @@ class VerbRegistry:
 
     def __repr__(self) -> str:
         """详细表示"""
-        return f"VerbRegistry(verbs={len(self._verbs)}, operators={self._operator_verbs}, functions={self._function_verbs})"
+        return (
+            f"VerbRegistry(verbs={len(self._verbs)}, "
+            f"operators={self._operator_verbs}, "
+            f"functions={self._function_verbs})"
+        )

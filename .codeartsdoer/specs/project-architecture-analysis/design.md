@@ -97,12 +97,12 @@ graph TB
     Macro -->|变换的AST| Codegen[代码生成器]
     Codegen -->|Python代码| Runtime[运行时环境]
     Runtime -->|执行结果| Result[输出结果]
-    
+
     ErrorHandler[错误处理器] -.-> Lexer
     ErrorHandler -.-> Parser
     ErrorHandler -.-> Semantic
     ErrorHandler -.-> Codegen
-    
+
     TypeSystem[类型推断系统] -.-> Semantic
 ```
 
@@ -158,9 +158,9 @@ Python代码 (str)
 ```python
 class Lexer:
     """词法分析器
-    
+
     职责：将源代码字符串转换为Token序列
-    
+
     属性：
         source: 源代码字符串
         pos: 当前位置索引
@@ -168,23 +168,23 @@ class Lexer:
         column: 当前列号
         indent_stack: 缩进栈（Python风格缩进处理）
     """
-    
+
     def tokenize(self) -> List[Token]:
         """主词法分析方法"""
         pass
-    
+
     def _scan_identifier(self) -> Token:
         """扫描标识符（支持中文）"""
         pass
-    
+
     def _scan_number(self) -> Token:
         """扫描数字（整数和浮点数）"""
         pass
-    
+
     def _scan_string(self) -> Token:
         """扫描字符串字面量"""
         pass
-    
+
     def _handle_newline(self) -> None:
         """处理换行和缩进"""
         pass
@@ -249,31 +249,31 @@ ALL_KEYWORDS = {
 ```python
 class Parser:
     """语法分析器
-    
+
     职责：将Token序列转换为抽象语法树（AST）
     方法：递归下降解析
     """
-    
+
     def parse(self) -> ProgramNode:
         """主解析方法"""
         pass
-    
+
     def _parse_statement(self) -> ASTNode:
         """解析语句"""
         pass
-    
+
     def _parse_expression(self) -> ASTNode:
         """解析表达式"""
         pass
-    
+
     def _parse_var_def(self) -> VarDefNode:
         """解析变量定义"""
         pass
-    
+
     def _parse_function_def(self) -> FunctionDefNode:
         """解析函数定义"""
         pass
-    
+
     def _parse_if(self) -> IfNode:
         """解析条件语句"""
         pass
@@ -316,26 +316,26 @@ ASTNode (抽象基类)
 ```python
 class SemanticAnalyzer:
     """语义分析器
-    
+
     职责：
     - 作用域管理
     - 符号表构建
     - 类型检查和推断
     - 错误检测
     """
-    
+
     def analyze(self, ast: ProgramNode) -> bool:
         """分析AST，返回是否通过"""
         pass
-    
+
     def _visit(self, node: ASTNode) -> Any:
         """访问者模式入口"""
         pass
-    
+
     def _visit_var_def(self, node: VarDefNode) -> None:
         """处理变量定义"""
         pass
-    
+
     def _visit_function_call(self, node: FunctionCallNode) -> None:
         """检查函数调用"""
         pass
@@ -346,22 +346,22 @@ class SemanticAnalyzer:
 ```python
 class Scope:
     """作用域管理
-    
+
     支持嵌套作用域，用于变量查找和定义
     """
-    
+
     def define(self, name: str, symbol_type: str, **attrs) -> None:
         """定义符号"""
         pass
-    
+
     def resolve(self, name: str) -> Optional[Symbol]:
         """查找符号（沿作用域链向上查找）"""
         pass
-    
+
     def enter_scope(self) -> 'Scope':
         """进入新作用域"""
         pass
-    
+
     def exit_scope(self) -> 'Scope':
         """退出作用域"""
         pass
@@ -374,23 +374,23 @@ class Scope:
 ```python
 class PythonCodegen:
     """Python代码生成器
-    
+
     职责：将AST转换为可执行的Python代码
     方法：访问者模式遍历AST
     """
-    
+
     def generate(self, node: ASTNode) -> str:
         """生成Python代码"""
         pass
-    
+
     def _generate_program(self, node: ProgramNode) -> str:
         """生成程序代码"""
         pass
-    
+
     def _generate_function_def(self, node: FunctionDefNode) -> str:
         """生成函数定义"""
         pass
-    
+
     def _generate_binary_op(self, node: BinaryOpNode) -> str:
         """生成二元操作"""
         pass
@@ -437,15 +437,15 @@ class Error:
 
 class ErrorHandler:
     """统一错误处理器"""
-    
+
     def report(self, error: Error) -> None:
         """报告错误"""
         pass
-    
+
     def format_error(self, error: Error) -> str:
         """格式化错误信息（包含源代码上下文）"""
         pass
-    
+
     def get_statistics(self) -> Dict[ErrorType, int]:
         """获取错误统计"""
         pass
@@ -472,11 +472,11 @@ class Macro:
 
 class MacroSystem:
     """宏系统核心"""
-    
+
     def register(self, name: str, macro: Macro) -> None:
         """注册宏"""
         pass
-    
+
     def expand(self, name: str, args: Dict[str, Any]) -> str:
         """展开宏（检测递归展开）"""
         pass
@@ -491,24 +491,24 @@ class MacroSystem:
 ```python
 class SecureRuntime:
     """安全运行时环境
-    
+
     使用RestrictedPython限制危险操作
     """
-    
+
     def execute(self, code: str, allowed_modules: Set[str] = None) -> Any:
         """在受限环境中执行代码"""
         from RestrictedPython import compile_restricted
-        
+
         # 编译为受限代码
         byte_code = compile_restricted(code, '<inline>', 'exec')
-        
+
         # 创建受限全局环境
         restricted_globals = self._create_restricted_globals(allowed_modules)
-        
+
         # 执行
         exec(byte_code, restricted_globals)
         return restricted_globals.get('__result__')
-    
+
     def _create_restricted_globals(self, allowed_modules: Set[str]) -> Dict:
         """创建受限全局环境"""
         return {
@@ -526,11 +526,11 @@ class SecureRuntime:
 ```python
 class DockerRuntime:
     """Docker沙箱运行时"""
-    
+
     def execute(self, code: str) -> Any:
         """在Docker容器中执行代码"""
         import docker
-        
+
         client = docker.from_env()
         container = client.containers.run(
             "python:3.8-slim",
@@ -554,7 +554,7 @@ class DockerRuntime:
 @dataclass
 class CompilationContext:
     """编译上下文
-    
+
     贯积编译过程中的状态和信息
     """
     source: str                    # 源代码
@@ -607,24 +607,24 @@ class CachedLexer:
 ```python
 class ChineseProgram:
     """心语语言主类"""
-    
+
     def run(self, source: str) -> Optional[Any]:
         """编译并执行心语代码
-        
+
         Args:
             source: 心语源代码
-            
+
         Returns:
             执行结果，或None（如果出错）
         """
         pass
-    
+
     def compile(self, source: str) -> str:
         """编译心语代码为Python代码
-        
+
         Args:
             source: 心语源代码
-            
+
         Returns:
             生成的Python代码字符串
         """
@@ -694,18 +694,18 @@ graph TD
     A[源代码输入] --> B{词法分析}
     B -->|成功| C{语法分析}
     B -->|失败| E[词法错误]
-    
+
     C -->|成功| D{语义分析}
     C -->|失败| F[语法错误]
-    
+
     D -->|成功| G{宏展开}
     D -->|失败| H[语义错误]
-    
+
     G --> I[代码生成]
     I --> J{执行}
     J -->|成功| K[返回结果]
     J -->|失败| L[运行时错误]
-    
+
     E --> M[错误报告]
     F --> M
     H --> M
@@ -800,7 +800,7 @@ class RuntimeError(XinyuError):
 1. **缓存机制**：
    ```python
    from functools import lru_cache
-   
+
    @lru_cache(maxsize=256)
    def tokenize_cached(source_hash: int, source: str) -> List[Token]:
        return Lexer(source).tokenize()
@@ -817,7 +817,7 @@ class RuntimeError(XinyuError):
 3. **并行处理**（多文件编译）：
    ```python
    from concurrent.futures import ProcessPoolExecutor
-   
+
    def compile_parallel(files: List[str]) -> List[str]:
        with ProcessPoolExecutor() as executor:
            return list(executor.map(compile, files))
@@ -836,7 +836,7 @@ class RuntimeError(XinyuError):
 2. **对象池**（复用Token对象）：
    ```python
    from objectpool import ObjectPool
-   
+
    token_pool = ObjectPool(Token)
    ```
 
@@ -875,11 +875,11 @@ class RuntimeError(XinyuError):
 ```python
 def validate_source(source: str) -> Tuple[bool, Optional[str]]:
     """验证源代码安全性"""
-    
+
     # 长度限制
     if len(source) > MAX_SOURCE_LENGTH:
         return False, "源代码过长"
-    
+
     # 危险模式检测
     dangerous_patterns = [
         r'__import__',
@@ -890,7 +890,7 @@ def validate_source(source: str) -> Tuple[bool, Optional[str]]:
     for pattern in dangerous_patterns:
         if re.search(pattern, source):
             return False, f"检测到危险模式: {pattern}"
-    
+
     return True, None
 ```
 
@@ -913,19 +913,19 @@ def create_safe_globals() -> Dict[str, Any]:
             'int': int,
             'float': float,
             'bool': bool,
-            
+
             # 禁止的函数（不包含）
             # 'eval': ...,
             # 'exec': ...,
             # 'open': ...,
             # '__import__': ...,
         },
-        
+
         # 允许的模块
         'math': math,
         'random': random,
         'json': json,
-        
+
         # 心语内置值
         '真': True,
         '假': False,
@@ -943,7 +943,7 @@ def create_safe_globals() -> Dict[str, Any]:
        /  \  端到端测试（E2E）
       /────\  - 完整编译流程
      /      \  - REPL交互测试
-    /────────\  
+    /────────\
    /  集成测试  \  - 模块间交互
   /──────────────\  - 错误处理流程
  /                \
@@ -1041,7 +1041,7 @@ compiler:
   max_source_length: 1048576  # 1MB
   max_recursion_depth: 1000
   enable_cache: true
-  
+
 runtime:
   execution_mode: "restricted"  # restricted, docker, native
   allowed_modules:
@@ -1051,12 +1051,12 @@ runtime:
   memory_limit: "128m"
   cpu_limit: "50%"
   timeout: 30
-  
+
 security:
   enable_input_validation: true
   enable_dangerous_pattern_detection: true
   sandbox_enabled: false
-  
+
 logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

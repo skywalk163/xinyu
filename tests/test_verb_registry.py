@@ -3,8 +3,6 @@
 测试动词注册和查询功能。
 """
 
-import pytest
-
 from src.parser.arity import Arity
 from src.parser.verb_registry import VerbRegistry
 
@@ -17,9 +15,9 @@ class TestVerbRegistry:
         registry = VerbRegistry()
         registry.register("相加", Arity.fixed(2), is_operator=True)
 
-        assert registry.is_operator("相加") == True
-        assert registry.is_function("相加") == False
-        assert registry.is_registered("相加") == True
+        assert registry.is_operator("相加") is True
+        assert registry.is_function("相加") is False
+        assert registry.is_registered("相加") is True
 
         arity = registry.get("相加")
         assert arity is not None
@@ -30,9 +28,9 @@ class TestVerbRegistry:
         registry = VerbRegistry()
         registry.register("打印", Arity.variable(min=1), is_function=True)
 
-        assert registry.is_function("打印") == True
-        assert registry.is_operator("打印") == False
-        assert registry.is_registered("打印") == True
+        assert registry.is_function("打印") is True
+        assert registry.is_operator("打印") is False
+        assert registry.is_registered("打印") is True
 
         arity = registry.get("打印")
         assert arity is not None
@@ -43,8 +41,8 @@ class TestVerbRegistry:
         registry = VerbRegistry()
         registry.register("相加", Arity.fixed(2), is_operator=True, is_function=True)
 
-        assert registry.is_operator("相加") == True
-        assert registry.is_function("相加") == True
+        assert registry.is_operator("相加") is True
+        assert registry.is_function("相加") is True
 
     def test_get_unregistered_verb(self):
         """测试获取未注册的动词"""
@@ -55,20 +53,20 @@ class TestVerbRegistry:
     def test_is_registered(self):
         """测试判断是否已注册"""
         registry = VerbRegistry()
-        assert registry.is_registered("相加") == False
+        assert registry.is_registered("相加") is False
 
         registry.register("相加", Arity.fixed(2), is_operator=True)
-        assert registry.is_registered("相加") == True
+        assert registry.is_registered("相加") is True
 
     def test_unregister(self):
         """测试注销动词"""
         registry = VerbRegistry()
         registry.register("相加", Arity.fixed(2), is_operator=True)
-        assert registry.is_registered("相加") == True
+        assert registry.is_registered("相加") is True
 
         registry.unregister("相加")
-        assert registry.is_registered("相加") == False
-        assert registry.is_operator("相加") == False
+        assert registry.is_registered("相加") is False
+        assert registry.is_operator("相加") is False
 
     def test_clear(self):
         """测试清空注册表"""
@@ -78,8 +76,8 @@ class TestVerbRegistry:
 
         registry.clear()
 
-        assert registry.is_registered("相加") == False
-        assert registry.is_registered("打印") == False
+        assert registry.is_registered("相加") is False
+        assert registry.is_registered("打印") is False
 
     def test_builtin_verbs(self):
         """测试内置动词"""
@@ -87,15 +85,15 @@ class TestVerbRegistry:
         registry.register_builtin_verbs()
 
         # 测试操作符动词
-        assert registry.is_operator("相加") == True
-        assert registry.is_operator("相减") == True
-        assert registry.is_operator("相乘") == True
-        assert registry.is_operator("相除") == True
+        assert registry.is_operator("相加") is True
+        assert registry.is_operator("相减") is True
+        assert registry.is_operator("相乘") is True
+        assert registry.is_operator("相除") is True
 
         # 测试函数动词
-        assert registry.is_function("打印") == True
-        assert registry.is_function("输入") == True
-        assert registry.is_function("求和") == True
+        assert registry.is_function("打印") is True
+        assert registry.is_function("输入") is True
+        assert registry.is_function("求和") is True
 
         # 测试元数
         assert registry.get("相加").count == 2
@@ -156,15 +154,15 @@ class TestVerbRegistry:
         registry.register_builtin_verbs()
 
         # 平方根：固定1个参数
-        assert registry.is_function("平方根") == True
+        assert registry.is_function("平方根") is True
         assert registry.get("平方根").count == 1
 
         # 绝对值：固定1个参数
-        assert registry.is_function("绝对值") == True
+        assert registry.is_function("绝对值") is True
         assert registry.get("绝对值").count == 1
 
         # 最大值：可变参数（最少1个）
-        assert registry.is_function("最大值") == True
+        assert registry.is_function("最大值") is True
         assert registry.get("最大值").min_count == 1
 
     def test_list_functions(self):
@@ -173,11 +171,11 @@ class TestVerbRegistry:
         registry.register_builtin_verbs()
 
         # 长度：固定1个参数
-        assert registry.is_function("长度") == True
+        assert registry.is_function("长度") is True
         assert registry.get("长度").count == 1
 
         # 范围：1-3个参数
-        assert registry.is_function("范围") == True
+        assert registry.is_function("范围") is True
         arity = registry.get("范围")
         assert arity.min_count == 1
         assert arity.max_count == 3
@@ -188,13 +186,13 @@ class TestVerbRegistry:
         registry.register_builtin_verbs()
 
         # 转整数：固定1个参数
-        assert registry.is_function("转整数") == True
+        assert registry.is_function("转整数") is True
         assert registry.get("转整数").count == 1
 
         # 转浮点：固定1个参数
-        assert registry.is_function("转浮点") == True
+        assert registry.is_function("转浮点") is True
         assert registry.get("转浮点").count == 1
 
         # 转字符串：固定1个参数
-        assert registry.is_function("转字符串") == True
+        assert registry.is_function("转字符串") is True
         assert registry.get("转字符串").count == 1

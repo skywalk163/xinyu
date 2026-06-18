@@ -19,7 +19,7 @@
 **核心逻辑**：
 ```python
 while self._check(TokenType.PLUS, TokenType.MINUS) or \
-      (self._check(TokenType.IDENTIFIER) and 
+      (self._check(TokenType.IDENTIFIER) and
        self._current_token().value in ("相加", "相减")):
     op_token = self._advance()
     # 映射操作符动词到符号

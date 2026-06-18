@@ -1,7 +1,7 @@
 # 元数驱动解析解决方案
 
-**日期：** 2026-05-27  
-**目标：** 实现元数驱动解析，解决无括号函数调用的歧义问题  
+**日期：** 2026-05-27
+**目标：** 实现元数驱动解析，解决无括号函数调用的歧义问题
 **学习对象：** newlisp/yan
 
 ---
@@ -108,7 +108,7 @@ class ArityType(Enum):
 
 class Arity:
     """元数定义"""
-    
+
     def __init__(
         self,
         type: ArityType,
@@ -120,27 +120,27 @@ class Arity:
         self.count = count
         self.min_count = min_count
         self.max_count = max_count
-    
+
     @classmethod
     def fixed(cls, count: int) -> 'Arity':
         """固定元数"""
         return cls(ArityType.FIXED, count=count)
-    
+
     @classmethod
     def variable(cls, min: int = 0) -> 'Arity':
         """可变元数（最少min个）"""
         return cls(ArityType.VARIABLE, min_count=min)
-    
+
     @classmethod
     def min(cls, min_count: int) -> 'Arity':
         """最小元数"""
         return cls(ArityType.MINIMUM, min_count=min_count)
-    
+
     @classmethod
     def range(cls, min: int, max: int) -> 'Arity':
         """范围元数"""
         return cls(ArityType.RANGE, min_count=min, max_count=max)
-    
+
     def is_satisfied(self, arg_count: int) -> bool:
         """检查参数数量是否满足要求"""
         if self.type == ArityType.FIXED:
@@ -152,7 +152,7 @@ class Arity:
         elif self.type == ArityType.RANGE:
             return self.min_count <= arg_count <= self.max_count
         return False
-    
+
     def should_stop_collecting(self, arg_count: int) -> bool:
         """是否应该停止收集参数"""
         if self.type == ArityType.FIXED:
@@ -173,11 +173,11 @@ from .arity import Arity
 
 class VerbRegistry:
     """动词元数注册表"""
-    
+
     def __init__(self):
         self._verbs: Dict[str, Arity] = {}
         self._operator_verbs: set = set()  # 操作符动词
-    
+
     def register(
         self,
         name: str,
@@ -188,19 +188,19 @@ class VerbRegistry:
         self._verbs[name] = arity
         if is_operator:
             self._operator_verbs.add(name)
-    
+
     def get(self, name: str) -> Optional[Arity]:
         """获取动词元数"""
         return self._verbs.get(name)
-    
+
     def is_operator(self, name: str) -> bool:
         """判断是否是操作符动词"""
         return name in self._operator_verbs
-    
+
     def is_registered(self, name: str) -> bool:
         """判断动词是否已注册"""
         return name in self._verbs
-    
+
     def register_builtin_verbs(self) -> None:
         """注册内置动词"""
         # 操作符动词（固定2个参数，中缀）
@@ -211,11 +211,11 @@ class VerbRegistry:
         ]
         for op in operators:
             self.register(op, Arity.fixed(2), is_operator=True)
-        
+
         # 内置函数（可变参数）
         self.register("打印", Arity.variable(min=1))
         self.register("输入", Arity.fixed(1))
-        
+
         # 数学函数
         self.register("平方根", Arity.fixed(1))
         self.register("绝对值", Arity.fixed(1))
@@ -235,63 +235,63 @@ class Parser:
         self.pos = 0
         self.verb_registry = VerbRegistry()
         self.verb_registry.register_builtin_verbs()
-    
+
     def _parse_identifier_or_call(self) -> ASTNode:
         """解析标识符或函数调用（元数驱动）"""
         token = self._advance()
         name = token.value
-        
+
         # 检查是否是操作符动词
         if self.verb_registry.is_operator(name):
             # 操作符动词在中缀位置，不应该作为函数调用
             # 回退，让表达式解析器处理
             self.pos -= 1
             return IdentifierNode(line=token.line, column=token.column, name=name)
-        
+
         # 获取动词元数
         arity = self.verb_registry.get(name)
-        
+
         if arity is None:
             # 未注册的动词，可能是用户定义的函数
             # 尝试推断元数（默认收集到操作符或终止符）
             arity = Arity.variable(min=0)
-        
+
         # 根据元数收集参数
         args = self._collect_args_by_arity(arity)
-        
+
         return FunctionCallNode(
             line=token.line,
             column=token.column,
             name=name,
             args=args
         )
-    
+
     def _collect_args_by_arity(self, arity: Arity) -> List[ASTNode]:
         """根据元数收集参数"""
         args = []
-        
+
         while not self._is_at_end():
             # 检查是否应该停止收集
             if self._should_stop_collecting():
                 break
-            
+
             # 检查元数是否已满足
             if arity.should_stop_collecting(len(args)):
                 break
-            
+
             # 解析参数
             arg = self._parse_primary()  # 只解析基础表达式，避免贪婪
             args.append(arg)
-        
+
         # 验证参数数量
         if not arity.is_satisfied(len(args)):
             raise ParseError(
                 f"参数数量错误：期望{arity}，实际{len(args)}",
                 self._current_token()
             )
-        
+
         return args
-    
+
     def _should_stop_collecting(self) -> bool:
         """判断是否应该停止收集参数"""
         # 遇到操作符动词，停止收集
@@ -299,14 +299,14 @@ class Parser:
         if current.type == TokenType.IDENTIFIER:
             if self.verb_registry.is_operator(current.value):
                 return True
-        
+
         # 遇到终止符，停止收集
         if self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
                       TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
                       TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
                       TokenType.COMMA, TokenType.COLON):
             return True
-        
+
         return False
 ```
 
@@ -333,7 +333,7 @@ a 相加 b
    def _parse_addition(self) -> ASTNode:
        """解析加减表达式"""
        left = self._parse_multiplication()
-       
+
        while self._check(TokenType.PLUS, TokenType.MINUS):
            op = self._advance()
            right = self._parse_multiplication()
@@ -344,7 +344,7 @@ a 相加 b
                operator=self._get_operator(op),
                right=right
            )
-       
+
        return left
    ```
 
@@ -372,13 +372,13 @@ a 相加 b
 1. 修改 `_parse_identifier_or_call` 方法
    - 实现元数驱动参数收集
    - 区分操作符动词和函数动词
-   
+
 2. 修改 `_parse_primary` 方法
    - 只解析基础表达式（不贪婪）
-   
+
 3. 修改表达式解析器
    - 处理操作符动词的中缀用法
-   
+
 4. 添加单元测试
 
 **预期结果：**
@@ -392,10 +392,10 @@ a 相加 b
 **任务：**
 1. 修改 FunctionCallNode
    - 添加元数字段
-   
+
 2. 修改 PythonCodegen
    - 支持可变参数函数调用
-   
+
 3. 添加测试
 
 **预期结果：**
@@ -410,12 +410,12 @@ a 相加 b
 1. 实现用户定义函数的元数推断
    - 从函数定义中提取参数数量
    - 注册到 VerbRegistry
-   
+
 2. 添加元数声明语法（可选）
    ```yan
    定义 斐波那契 = 函数 n：元数 1。
    ```
-   
+
 3. 添加测试
 
 **预期结果：**
@@ -566,10 +566,10 @@ BinaryOpNode(
 3. **分阶段实施，风险可控**
 4. **测试驱动，确保质量**
 
-**预计时间：** 8天  
+**预计时间：** 8天
 **预期结果：** 测试通过率 99%+，无歧义解析
 
 ---
 
-**文档版本：** v1.0  
+**文档版本：** v1.0
 **最后更新：** 2026-05-27

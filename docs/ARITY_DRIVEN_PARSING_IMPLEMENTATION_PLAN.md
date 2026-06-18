@@ -1,7 +1,7 @@
 # 元数驱动解析实施计划
 
-**日期：** 2026-05-27  
-**总工期：** 8天  
+**日期：** 2026-05-27
+**总工期：** 8天
 **目标：** 实现元数驱动解析，解决无括号函数调用歧义问题
 
 ---
@@ -40,7 +40,7 @@ class ArityType(Enum):
 
 class Arity:
     """元数定义"""
-    
+
     def __init__(
         self,
         type: ArityType,
@@ -52,31 +52,31 @@ class Arity:
         self.count = count
         self.min_count = min_count
         self.max_count = max_count
-    
+
     @classmethod
     def fixed(cls, count: int) -> 'Arity':
         """固定元数"""
         return cls(ArityType.FIXED, count=count)
-    
+
     @classmethod
     def variable(cls, min: int = 0) -> 'Arity':
         """可变元数"""
         return cls(ArityType.VARIABLE, min_count=min)
-    
+
     @classmethod
     def min(cls, min_count: int) -> 'Arity':
         """最小元数"""
         return cls(ArityType.MINIMUM, min_count=min_count)
-    
+
     @classmethod
     def range(cls, min: int, max: int) -> 'Arity':
         """范围元数"""
         return cls(ArityType.RANGE, min_count=min, max_count=max)
-    
+
     def is_satisfied(self, arg_count: int) -> bool:
         """检查参数数量是否满足要求"""
         # 实现详见解决方案文档
-    
+
     def should_stop_collecting(self, arg_count: int) -> bool:
         """是否应该停止收集参数"""
         # 实现详见解决方案文档
@@ -99,12 +99,12 @@ from .arity import Arity
 
 class VerbRegistry:
     """动词元数注册表"""
-    
+
     def __init__(self):
         self._verbs: Dict[str, Arity] = {}
         self._operator_verbs: Set[str] = set()
         self._function_verbs: Set[str] = set()
-    
+
     def register(
         self,
         name: str,
@@ -118,23 +118,23 @@ class VerbRegistry:
             self._operator_verbs.add(name)
         if is_function:
             self._function_verbs.add(name)
-    
+
     def get(self, name: str) -> Optional[Arity]:
         """获取动词元数"""
         return self._verbs.get(name)
-    
+
     def is_operator(self, name: str) -> bool:
         """判断是否是操作符动词"""
         return name in self._operator_verbs
-    
+
     def is_function(self, name: str) -> bool:
         """判断是否是函数动词"""
         return name in self._function_verbs
-    
+
     def is_registered(self, name: str) -> bool:
         """判断动词是否已注册"""
         return name in self._verbs
-    
+
     def register_builtin_verbs(self) -> None:
         """注册内置动词"""
         # 实现详见解决方案文档
@@ -190,7 +190,7 @@ def test_register_operator():
     """测试注册操作符"""
     registry = VerbRegistry()
     registry.register("相加", Arity.fixed(2), is_operator=True)
-    
+
     assert registry.is_operator("相加") == True
     assert registry.is_function("相加") == False
     assert registry.get("相加").count == 2
@@ -199,7 +199,7 @@ def test_register_function():
     """测试注册函数"""
     registry = VerbRegistry()
     registry.register("打印", Arity.variable(min=1), is_function=True)
-    
+
     assert registry.is_function("打印") == True
     assert registry.is_operator("打印") == False
 
@@ -207,7 +207,7 @@ def test_builtin_verbs():
     """测试内置动词"""
     registry = VerbRegistry()
     registry.register_builtin_verbs()
-    
+
     assert registry.is_operator("相加") == True
     assert registry.is_function("打印") == True
 ```
@@ -238,7 +238,7 @@ def test_builtin_verbs():
    def _is_operator_verb(self, name: str) -> bool:
        """判断是否是操作符动词"""
        return self.verb_registry.is_operator(name)
-   
+
    def _get_verb_arity(self, name: str) -> Optional[Arity]:
        """获取动词元数"""
        return self.verb_registry.get(name)
@@ -282,24 +282,24 @@ def _parse_identifier_or_call(self) -> ASTNode:
     """解析标识符或函数调用（元数驱动）"""
     token = self._advance()
     name = token.value
-    
+
     # 检查是否是操作符动词
     if self._is_operator_verb(name):
         # 操作符动词在中缀位置，不应该作为函数调用
         # 回退，让表达式解析器处理
         self.pos -= 1
         return IdentifierNode(line=token.line, column=token.column, name=name)
-    
+
     # 获取动词元数
     arity = self._get_verb_arity(name)
-    
+
     if arity is None:
         # 未注册的动词，可能是用户定义的函数
         arity = Arity.variable(min=0)
-    
+
     # 根据元数收集参数
     args = self._collect_args_by_arity(arity)
-    
+
     return FunctionCallNode(
         line=token.line,
         column=token.column,
@@ -320,27 +320,27 @@ def _parse_identifier_or_call(self) -> ASTNode:
 def _collect_args_by_arity(self, arity: Arity) -> List[ASTNode]:
     """根据元数收集参数"""
     args = []
-    
+
     while not self._is_at_end():
         # 检查是否应该停止收集
         if self._should_stop_collecting():
             break
-        
+
         # 检查元数是否已满足
         if arity.should_stop_collecting(len(args)):
             break
-        
+
         # 解析参数（只解析基础表达式，不贪婪）
         arg = self._parse_primary()
         args.append(arg)
-    
+
     # 验证参数数量
     if not arity.is_satisfied(len(args)):
         raise ParseError(
             f"参数数量错误：期望{arity}，实际{len(args)}",
             self._current_token()
         )
-    
+
     return args
 ```
 
@@ -360,14 +360,14 @@ def _should_stop_collecting(self) -> bool:
     if current.type == TokenType.IDENTIFIER:
         if self._is_operator_verb(current.value):
             return True
-    
+
     # 遇到终止符，停止收集
     if self._check(TokenType.NEWLINE, TokenType.EOF, TokenType.PERIOD,
                   TokenType.THEN, TokenType.ELSE, TokenType.ELIF,
                   TokenType.RPAREN, TokenType.RBRACKET, TokenType.RBRACE,
                   TokenType.COMMA, TokenType.COLON):
         return True
-    
+
     return False
 ```
 
@@ -389,20 +389,20 @@ def _should_stop_collecting(self) -> bool:
    def _parse_addition(self) -> ASTNode:
        """解析加减表达式"""
        left = self._parse_multiplication()
-       
+
        # 检查当前token是否是操作符动词
        while self._check(TokenType.PLUS, TokenType.MINUS) or \
-             (self._check(TokenType.IDENTIFIER) and 
+             (self._check(TokenType.IDENTIFIER) and
               self._is_operator_verb(self._current_token().value)):
-           
+
            op = self._advance()
-           
+
            # 映射操作符动词到符号
            if op.type == TokenType.IDENTIFIER:
                op_symbol = self._get_operator_symbol(op.value)
            else:
                op_symbol = self._get_operator(op)
-           
+
            right = self._parse_multiplication()
            left = BinaryOpNode(
                line=op.line,
@@ -411,7 +411,7 @@ def _should_stop_collecting(self) -> bool:
                operator=op_symbol,
                right=right
            )
-       
+
        return left
    ```
 
@@ -448,28 +448,28 @@ def _parse_primary(self) -> ASTNode:
     if self._check(TokenType.NUMBER):
         token = self._advance()
         return NumberNode(line=token.line, column=token.column, value=token.value)
-    
+
     # 字符串
     if self._check(TokenType.STRING):
         token = self._advance()
         return StringNode(line=token.line, column=token.column, value=token.value)
-    
+
     # 标识符或函数调用
     if self._check(TokenType.IDENTIFIER):
         return self._parse_identifier_or_call()
-    
+
     # 括号
     if self._check(TokenType.LPAREN):
         self._advance()
         expr = self._parse_expression()
         self._expect(TokenType.RPAREN, "Expected ')' after expression")
         return expr
-    
+
     # 列表
     if self._check(TokenType.LBRACKET):
         return self._parse_list()
-    
-    raise ParseError(f"Unexpected token: {self._current_token().type.name}", 
+
+    raise ParseError(f"Unexpected token: {self._current_token().type.name}",
                      self._current_token())
 ```
 
@@ -493,7 +493,7 @@ def test_fixed_arity_function_call():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     assert isinstance(ast.statements[0], FunctionCallNode)
     assert ast.statements[0].name == "斐波那契"
     assert len(ast.statements[0].args) == 1
@@ -505,7 +505,7 @@ def test_variable_arity_function_call():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     assert isinstance(ast.statements[0], FunctionCallNode)
     assert len(ast.statements[0].args) == 3
 
@@ -516,7 +516,7 @@ def test_operator_verb_in_expression():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     assert isinstance(ast.statements[0], BinaryOpNode)
     assert ast.statements[0].operator == "+"
 
@@ -527,7 +527,7 @@ def test_function_call_with_operator_args():
     tokens = lexer.tokenize()
     parser = Parser(tokens)
     ast = parser.parse()
-    
+
     # 应该解析为：(斐波那契(n-1)) + (斐波那契(n-2))
     expr = ast.statements[0]
     assert isinstance(expr, BinaryOpNode)
@@ -574,10 +574,10 @@ def _generate_functioncall(self, node: FunctionCallNode) -> str:
     """生成函数调用表达式"""
     # 映射内置函数名
     func_name = self.BUILTIN_FUNCTIONS.get(node.name, node.name)
-    
+
     # 生成参数列表
     args = [self.generate(arg) for arg in node.args]
-    
+
     return f"{func_name}({', '.join(args)})"
 ```
 
@@ -602,10 +602,10 @@ def test_generate_function_call_with_arity():
             StringNode(line=1, column=9, value="世界")
         ]
     )
-    
+
     codegen = PythonCodegen()
     result = codegen.generate(node)
-    
+
     assert result == 'print("你好", "世界")'
 ```
 
@@ -627,7 +627,7 @@ def test_generate_function_call_with_arity():
 def _parse_function_def(self, name: str, line: int, column: int) -> FunctionDefNode:
     """解析函数定义"""
     self._advance()  # 消费 函数
-    
+
     # 解析参数列表
     params = []
     while not self._check(TokenType.COLON, TokenType.NEWLINE, TokenType.EOF):
@@ -636,19 +636,19 @@ def _parse_function_def(self, name: str, line: int, column: int) -> FunctionDefN
             params.append(param_token.value)
         else:
             break
-    
+
     # 推断元数
     arity = Arity.fixed(len(params))  # 固定元数
-    
+
     # 期望 ：
     self._expect(TokenType.COLON, "Expected '：' after function parameters")
-    
+
     # 解析函数体
     body = self._parse_block()
-    
+
     # 注册动词
     self.verb_registry.register(name, arity, is_function=True)
-    
+
     return FunctionDefNode(
         line=line,
         column=column,
@@ -773,7 +773,7 @@ python -m pytest tests/ -v
 
 ## 总结
 
-**总工期：** 8天  
+**总工期：** 8天
 **预期结果：**
 - 测试通过率 > 95%
 - 无歧义解析
@@ -786,5 +786,5 @@ python -m pytest tests/ -v
 
 ---
 
-**文档版本：** v1.0  
+**文档版本：** v1.0
 **最后更新：** 2026-05-27

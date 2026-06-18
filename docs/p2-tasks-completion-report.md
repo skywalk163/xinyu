@@ -206,7 +206,7 @@ pytest tests/test_cache.py::TestCachePerformance -v
    - 编写入门教程
    - 补充示例代码
 
-**预计总工时**：20小时  
+**预计总工时**：20小时
 **建议周期**：2-3周
 
 ---

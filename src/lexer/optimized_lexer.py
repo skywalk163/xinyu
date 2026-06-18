@@ -9,7 +9,7 @@
 5. 减少字符串切片操作
 """
 
-from typing import List, Optional, Tuple
+from typing import List
 
 from src.lexer.keywords import ALL_KEYWORDS, BUILTIN_FUNCTIONS, OPERATORS, SYMBOLS
 from src.lexer.tokens import Token, TokenType

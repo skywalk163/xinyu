@@ -15,7 +15,7 @@ target_file: G:\dumategithub\chineseprogram/output.txt
 ## 多个文档可以用逗号分隔
 # urls: <SOME DOCUMENTATION URLs>
 
-## The type of your project. py,ts or you can use the suffix e.g. .java .scala .go 
+## The type of your project. py,ts or you can use the suffix e.g. .java .scala .go
 ## If you use the suffix, you can combind multiple types with comma e.g. .java,.scala
 ## 你项目的类型，py,ts或者你可以使用后缀，例如.java .scala .go
 ## 如果你使用后缀，你可以使用逗号来组合多个类型，例如.java,.scala
@@ -63,7 +63,7 @@ index_filter_workers: 1
 ## 如果您有一个大项目，可以增加这个数字
 ## Make sure you you have the proper workers when you use `byzerllm` to deploy model.
 ## 当您使用 `byzerllm` 部署模型时，请确保你也配置了合适的 num_workers 参数。
-index_build_workers: 1    
+index_build_workers: 1
 
 ## enable RAG context
 ## 启用RAG上下文
@@ -80,7 +80,7 @@ enable_rag_context: false
 ## 在环境变量中获取搜索引擎令牌
 ## Ask for Bing Search API Token. You can visit https://www.microsoft.com/en-us/bing/apis/bing-web-search-api to get the token.
 ## 申请 Bing 搜索API Token。你可以访问 https://www.microsoft.com/en-us/bing/apis/bing-web-search-api 获取 token。
-# search_engine_token: ENV  
+# search_engine_token: ENV
 
 
 ##  The model to build index for the project
@@ -102,8 +102,8 @@ human_as_model: true
 
 ## What you want the model to do
 ## 你想让模型做什么
-query: |  
-  YOUR QUERY HERE   
+query: |
+  YOUR QUERY HERE
 
 
 ## You can execute this file with the following command

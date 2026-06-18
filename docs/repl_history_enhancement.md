@@ -102,7 +102,7 @@ repl.run_interactive()
   1. [2024-01-15 10:30:30] [成功] [expression] (0.002s)
      命令: 加法(1, 2)
      结果: 3
-     标签: 
+     标签:
 
 心语> 历史 搜索 加法
 找到 2 条包含 '加法' 的历史记录:
@@ -293,11 +293,11 @@ class AdvancedHistoryManager(HistoryManager):
     def analyze_patterns(self) -> List[CommandPattern]:
         """分析命令使用模式"""
         pass
-    
+
     def suggest_commands(self, context: str) -> List[str]:
         """基于上下文推荐命令"""
         pass
-    
+
     def export_to_cloud(self, cloud_provider: str):
         """导出到云端存储"""
         pass

@@ -5,9 +5,8 @@
 """
 
 import time
-import weakref
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Optional, Set
 
 
 @dataclass

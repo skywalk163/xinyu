@@ -2,21 +2,22 @@
 # -*- coding: utf-8 -*-
 """测试修改后的hello示例"""
 
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
 # 修改后的hello示例
-test_code = '''# 你好，世界
+test_code = """# 你好，世界
 定义 问候 = "你好，心语！"。
 打印 问候。
 
 定义 名字 = "世界"。
-打印 "你好，" 名字。'''
+打印 "你好，" 名字。"""
 
 print("=" * 60)
 print("测试修改后的hello示例")
@@ -46,4 +47,5 @@ try:
 except Exception as e:
     print(f"❌ 错误: {e}")
     import traceback
+
     traceback.print_exc()

@@ -2,26 +2,41 @@
 # -*- coding: utf-8 -*-
 """从index.html提取并测试所有示例"""
 
-import sys
 import os
 import re
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.codegen.python_codegen import PythonCodegen
 
 # 从index.html读取示例
-with open('index.html', 'r', encoding='utf-8') as f:
+with open("index.html", "r", encoding="utf-8") as f:
     content = f.read()
 
 # 提取示例代码
 examples = {}
-pattern = r'(\w+):\s*`([^`]+)`'
+pattern = r"(\w+):\s*`([^`]+)`"
 for match in re.finditer(pattern, content, re.DOTALL):
     name = match.group(1)
     code = match.group(2).strip()
-    if name in ['hello', 'variables', 'function', 'condition', 'loop', 'fibonacci', 'list', 'dict', 'math', 'hanoi', 'bubble', 'turing', 'prime']:
+    if name in [
+        "hello",
+        "variables",
+        "function",
+        "condition",
+        "loop",
+        "fibonacci",
+        "list",
+        "dict",
+        "math",
+        "hanoi",
+        "bubble",
+        "turing",
+        "prime",
+    ]:
         examples[name] = code
 
 print("=" * 80)

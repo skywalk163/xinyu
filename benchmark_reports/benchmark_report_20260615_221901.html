@@ -86,7 +86,7 @@
     <div class="container">
         <h1>算法性能基准测试</h1>
         <div class="timestamp">生成时间: 2026-06-15 22:19:01</div>
-        
+
         <div class="summary">
             <h2>测试概览</h2>
             <div class="stat-box">
@@ -98,7 +98,7 @@
                 <div class="stat-label">总迭代次数</div>
             </div>
         </div>
-        
+
         <h2>详细结果</h2>
         <table class="result-table">
             <thead>
@@ -160,22 +160,22 @@
                 </tr>
             </tbody>
         </table>
-        
+
         <div class="chart-container">
             <h2>性能对比图表</h2>
             <canvas id="performanceChart" width="800" height="400"></canvas>
         </div>
-        
+
         <script>
-            
+
             // 图表数据
             const benchmarkNames = ["冒泡排序", "快速排序", "斐波那契递归", "斐波那契迭代", "斐波那契记忆化"];
             const timeData = [0.048519, 0.003200, 0.002464, 0.001135, 0.000174];
             const memoryData = [1.40, 8.87, 1.49, 1.54, 1.44];
-        
+
             const cpuData = [99.92, 0.00, 0.00, 0.00, 19.54];
-            
-            
+
+
             // 创建图表
             const ctx = document.getElementById('performanceChart').getContext('2d');
             new Chart(ctx, {

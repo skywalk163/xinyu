@@ -189,12 +189,12 @@
 ```python
 def parse_expression(self) -> ASTNode:
     """解析表达式
-    
+
     使用递归下降方法解析表达式，支持各种操作符。
-    
+
     Returns:
         ASTNode: 解析后的表达式节点
-    
+
     Raises:
         ParseError: 如果语法错误
     """
@@ -250,19 +250,19 @@ def test_parse_expression_with_addition_returns_binary_op():
 ```python
 class TestFeature:
     """功能测试"""
-    
+
     def setup_method(self):
         """测试初始化"""
         pass
-    
+
     def test_normal_case(self):
         """测试正常情况"""
         pass
-    
+
     def test_edge_case(self):
         """测试边界情况"""
         pass
-    
+
     def test_error_case(self):
         """测试错误情况"""
         pass
@@ -307,19 +307,19 @@ pytest --cov=src --cov-report=html
 ```python
 def function_name(param1: Type1, param2: Type2) -> ReturnType:
     """函数简述
-    
+
     详细描述函数的功能和行为。
-    
+
     Args:
         param1: 参数1说明
         param2: 参数2说明
-    
+
     Returns:
         返回值说明
-    
+
     Raises:
         ExceptionType: 异常说明
-    
+
     Example:
         >>> result = function_name(value1, value2)
         >>> print(result)

@@ -27,7 +27,7 @@
    ```python
    # 按长度分组的快速查找
    self.keywords_by_len[length][keyword] = token_type
-   
+
    # 快速字符判断
    @staticmethod
    def _is_identifier_start(char: str) -> bool:
@@ -66,7 +66,7 @@
    ```python
    def _execute(self, instruction: Instruction):
        opcode = instruction.opcode
-       
+
        # 使用if-elif链进行快速分派
        if opcode == OpCode.PUSH:
            self.stack.append(operand)
@@ -109,7 +109,7 @@
    def remove_reference(self, obj_id: int):
        if obj_id in self.objects:
            self.objects[obj_id].ref_count -= 1
-           
+
            # 引用计数为0，立即回收
            if self.objects[obj_id].ref_count <= 0:
                self._free_object(obj_id)
@@ -120,7 +120,7 @@
    def collect(self):
        # 标记阶段
        self._mark()
-       
+
        # 清除阶段
        collected = self._sweep()
    ```

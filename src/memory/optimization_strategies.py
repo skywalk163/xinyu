@@ -271,7 +271,10 @@ class ASTNodePoolStrategy(MemoryOptimizationStrategy):
                 objects_reduced=max(0, objects_reduced),
                 execution_time_ms=0.0,
                 success=True,
-                message=f"AST节点池优化应用成功，复用率: {self._reuses/(self._allocations+self._reuses)*100:.1f}%",
+                message=(
+                    f"AST节点池优化应用成功，"
+                    f"复用率: {self._reuses/(self._allocations+self._reuses)*100:.1f}%"
+                ),
                 details={
                     "allocations": self._allocations,
                     "reuses": self._reuses,

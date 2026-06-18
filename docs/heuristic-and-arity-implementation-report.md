@@ -45,7 +45,7 @@ operator_tokens = (TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY,
                   TokenType.DIVIDE, TokenType.MODULO,
                   TokenType.EQUALS, TokenType.NOT_EQUALS,
                   TokenType.LESS, TokenType.GREATER, TokenType.LESS_EQ,
-                  TokenType.GREATER_EQ, 
+                  TokenType.GREATER_EQ,
                   TokenType.AND, TokenType.OR, TokenType.NOT,
                   TokenType.ASSIGN)
 ```

@@ -206,13 +206,13 @@
   参数 count = 4。
   import subprocess。
   import platform。
-  
+
   # 根据操作系统选择ping命令
   如果 platform.system().lower() 等于 'windows' 那么
     定义 cmd = f'ping -n {count} {host}'。
   否则
     定义 cmd = f'ping -c {count} {host}'。
-  
+
   定义 result = subprocess.run(cmd, shell=True, capture_output=True, text=True)。
   返回 result.returncode 等于 0。
 
@@ -224,13 +224,13 @@
   参数 path。
   参数 chunk_size = 8192。
   import requests。
-  
+
   定义 response = requests.get(url, stream=True)。
   定义 f = open(path, 'wb')。
-  
+
   循环 chunk 遍历 response.iter_content(chunk_size=chunk_size)：
     f.write(chunk)。
-  
+
   f.close()。
 
 函数 下载文件进度：
@@ -240,18 +240,18 @@
   参数 callback = None。
   参数 chunk_size = 8192。
   import requests。
-  
+
   定义 response = requests.get(url, stream=True)。
   定义 total = int(response.headers.get('content-length', 0))。
   定义 downloaded = 0。
   定义 f = open(path, 'wb')。
-  
+
   循环 chunk 遍历 response.iter_content(chunk_size=chunk_size)：
     f.write(chunk)。
     downloaded = downloaded 相加 长度 chunk。
     如果 callback 那么
       callback(downloaded, total)。
-  
+
   f.close()。
 
 # ===== 邮件发送 =====
@@ -265,18 +265,18 @@
   参数 receiver。
   参数 subject。
   参数 body。
-  
+
   import smtplib。
   from email.mime.text import MIMEText。
   from email.mime.multipart import MIMEMultipart。
-  
+
   定义 msg = MIMEMultipart()。
   msg['From'] = sender。
   msg['To'] = receiver。
   msg['Subject'] = subject。
-  
+
   msg.attach(MIMEText(body, 'plain', 'utf-8'))。
-  
+
   定义 server = smtplib.SMTP(smtp_server, port)。
   server.starttls()。
   server.login(sender, password)。

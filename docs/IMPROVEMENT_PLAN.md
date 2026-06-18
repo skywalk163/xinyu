@@ -1,7 +1,7 @@
 # 心语项目改进实施计划
 
-**创建日期**：2026-06-04  
-**Python版本要求**：3.12+（优先支持3.12，学有余力支持3.13和3.14）  
+**创建日期**：2026-06-04
+**Python版本要求**：3.12+（优先支持3.12，学有余力支持3.13和3.14）
 **目标**：系统性地改进心语项目，确保无遗漏
 
 ---
@@ -41,35 +41,35 @@ pytest tests/test_parser.py::test_function_with_parameters -v
 ```
 
 #### 步骤1.1.2：修复while循环解析
-**文件**：`src/parser/parser.py`  
-**位置**：`parse_while_statement` 方法  
-**问题**：Unexpected token: COLON  
+**文件**：`src/parser/parser.py`
+**位置**：`parse_while_statement` 方法
+**问题**：Unexpected token: COLON
 **修复方案**：
 1. 检查while循环的语法规则
 2. 修复冒号处理逻辑
 3. 添加测试验证
 
 #### 步骤1.1.3：修复for循环解析
-**文件**：`src/parser/parser.py`  
-**位置**：`parse_for_statement` 方法  
-**问题**：Unexpected token: IN  
+**文件**：`src/parser/parser.py`
+**位置**：`parse_for_statement` 方法
+**问题**：Unexpected token: IN
 **修复方案**：
 1. 检查for循环的语法规则
 2. 修复"遍历"关键字处理
 3. 添加测试验证
 
 #### 步骤1.1.4：修复字典字面量解析
-**文件**：`src/lexer/lexer.py` 和 `src/parser/parser.py`  
-**问题**：词法错误: Unexpected character: :  
+**文件**：`src/lexer/lexer.py` 和 `src/parser/parser.py`
+**问题**：词法错误: Unexpected character: :
 **修复方案**：
 1. 在词法分析器中添加冒号支持
 2. 在语法分析器中添加字典解析逻辑
 3. 添加测试验证
 
 #### 步骤1.1.5：修复函数参数解析
-**文件**：`src/parser/parser.py`  
-**位置**：`parse_function_def` 方法  
-**问题**：Expected '：' after function parameters  
+**文件**：`src/parser/parser.py`
+**位置**：`parse_function_def` 方法
+**问题**：Expected '：' after function parameters
 **修复方案**：
 1. 检查函数定义的语法规则
 2. 修复参数列表解析
@@ -95,21 +95,21 @@ pytest tests/test_parser.py::test_function_with_parameters -v
 **实施步骤**：
 
 #### 步骤1.2.1：完善参数验证
-**文件**：`src/semantic/analyzer.py`  
+**文件**：`src/semantic/analyzer.py`
 **修复方案**：
 1. 实现函数调用参数数量检查
 2. 添加参数类型检查
 3. 提供清晰的错误信息
 
 #### 步骤1.2.2：完善返回语句检查
-**文件**：`src/semantic/analyzer.py`  
+**文件**：`src/semantic/analyzer.py`
 **修复方案**：
 1. 跟踪当前是否在函数内
 2. 检查返回语句的上下文
 3. 验证返回值类型
 
 #### 步骤1.2.3：完善字典操作语义
-**文件**：`src/semantic/analyzer.py`  
+**文件**：`src/semantic/analyzer.py`
 **修复方案**：
 1. 添加字典类型推断
 2. 检查字典访问操作
@@ -134,21 +134,21 @@ pytest tests/test_parser.py::test_function_with_parameters -v
 **实施步骤**：
 
 #### 步骤1.3.1：修复fibonacci测试
-**问题**：函数调用参数传递问题  
+**问题**：函数调用参数传递问题
 **修复方案**：
 1. 检查函数调用的参数传递机制
 2. 验证递归函数的正确性
 3. 添加更多递归测试
 
 #### 步骤1.3.2：修复内置函数集成
-**问题**：内置函数调用问题  
+**问题**：内置函数调用问题
 **修复方案**：
 1. 检查内置函数注册
 2. 验证参数传递
 3. 测试所有内置函数
 
 #### 步骤1.3.3：修复完整流程测试
-**问题**：编译到执行的完整流程  
+**问题**：编译到执行的完整流程
 **修复方案**：
 1. 测试词法分析 → 语法分析 → 语义分析 → 代码生成 → 执行
 2. 验证每个阶段的正确性
@@ -173,14 +173,14 @@ pytest tests/test_parser.py::test_function_with_parameters -v
 **实施步骤**：
 
 #### 步骤1.4.1：修复AST展开
-**文件**：`src/macro/macro_expander.py`  
+**文件**：`src/macro/macro_expander.py`
 **修复方案**：
 1. 检查AST节点展开逻辑
 2. 修复节点转换
 3. 验证展开结果
 
 #### 步骤1.4.2：修复循环宏展开
-**文件**：`src/macro/builtin_macros.py`  
+**文件**：`src/macro/builtin_macros.py`
 **修复方案**：
 1. 检查for循环宏定义
 2. 检查repeat循环宏定义
@@ -204,14 +204,14 @@ pytest tests/test_parser.py::test_function_with_parameters -v
 **实施步骤**：
 
 #### 步骤1.5.1：修复函数调用解析
-**文件**：`src/parser/parser.py`  
+**文件**：`src/parser/parser.py`
 **修复方案**：
 1. 检查函数调用解析逻辑
 2. 验证元数驱动解析
 3. 添加更多测试
 
 #### 步骤1.5.2：修复安全运行时
-**文件**：`src/runtime/secure_runtime.py`  
+**文件**：`src/runtime/secure_runtime.py`
 **修复方案**：
 1. 检查安全执行环境
 2. 验证print函数执行
@@ -244,17 +244,17 @@ from src.lexer.lexer import Lexer
 
 class TestLexerPerformance:
     """词法分析性能测试"""
-    
+
     def test_large_file_lexing(self):
         """测试大文件词法分析性能"""
         # 生成10000行代码
         code = "\n".join([f'定义 x{i} = {i}。' for i in range(10000)])
-        
+
         start = time.time()
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         elapsed = time.time() - start
-        
+
         # 应该在1秒内完成
         assert elapsed < 1.0
         assert len(tokens) > 10000
@@ -289,15 +289,15 @@ from pathlib import Path
 
 class CompileCache:
     """编译缓存管理器"""
-    
+
     def __init__(self, cache_dir: str = ".xinyu_cache"):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
-    
+
     def get_cache_key(self, source: str) -> str:
         """计算源码的缓存键"""
         return hashlib.md5(source.encode()).hexdigest()
-    
+
     def get(self, source: str):
         """获取缓存的编译结果"""
         key = self.get_cache_key(source)
@@ -306,7 +306,7 @@ class CompileCache:
             with open(cache_file, 'rb') as f:
                 return pickle.load(f)
         return None
-    
+
     def set(self, source: str, result):
         """保存编译结果到缓存"""
         key = self.get_cache_key(source)
@@ -316,14 +316,14 @@ class CompileCache:
 ```
 
 #### 步骤2.2.2：优化Token处理
-**文件**：`src/lexer/optimized_lexer.py`  
+**文件**：`src/lexer/optimized_lexer.py`
 **优化点**：
 1. 使用生成器而非列表
 2. 减少字符串拷贝
 3. 优化关键字查找
 
 #### 步骤2.2.3：优化AST构建
-**文件**：`src/parser/parser.py`  
+**文件**：`src/parser/parser.py`
 **优化点**：
 1. 减少AST节点创建
 2. 优化节点访问
@@ -404,7 +404,7 @@ my_package/
 ```python
 class PackageManager:
     """心语包管理器"""
-    
+
     def install(self, package_name: str, version: str = None):
         """安装包"""
         # 1. 从仓库获取包信息
@@ -413,19 +413,19 @@ class PackageManager:
         # 4. 安装依赖
         # 5. 验证安装
         pass
-    
+
     def uninstall(self, package_name: str):
         """卸载包"""
         pass
-    
+
     def update(self, package_name: str = None):
         """更新包"""
         pass
-    
+
     def search(self, keyword: str):
         """搜索包"""
         pass
-    
+
     def publish(self, package_path: str):
         """发布包"""
         pass
@@ -436,14 +436,14 @@ class PackageManager:
 ```python
 class PackageRepository:
     """包仓库管理"""
-    
+
     def __init__(self, repo_url: str = "https://packages.xinyu-lang.org"):
         self.repo_url = repo_url
-    
+
     def get_package_info(self, name: str) -> dict:
         """获取包信息"""
         pass
-    
+
     def download_package(self, name: str, version: str) -> str:
         """下载包"""
         pass
@@ -509,13 +509,13 @@ stdlib/
 class XinyuLanguageServer {
     // 提供智能提示
     provideCompletionItems(document, position): CompletionItem[]
-    
+
     // 提供错误诊断
     provideDiagnostics(document): Diagnostic[]
-    
+
     // 提供格式化
     provideDocumentFormattingEdits(document): TextEdit[]
-    
+
     // 提供定义跳转
     provideDefinition(document, position): Location
 }
@@ -542,7 +542,7 @@ class XinyuLanguageServer {
 ```python
 class TypeInference:
     """类型推断系统"""
-    
+
     def infer_expression(self, expr: ASTNode) -> Type:
         """推断表达式类型"""
         if isinstance(expr, NumberNode):
@@ -627,15 +627,15 @@ def generate_with_types(self, ast: ASTNode) -> str:
 ```python
 class TypeChecker:
     """类型检查器"""
-    
+
     def check_assignment(self, lhs_type: Type, rhs_type: Type) -> bool:
         """检查赋值类型兼容"""
         pass
-    
+
     def check_function_call(self, func_type: Type, arg_types: List[Type]) -> bool:
         """检查函数调用类型"""
         pass
-    
+
     def check_binary_op(self, op: str, left_type: Type, right_type: Type) -> Type:
         """检查二元操作类型"""
         pass
@@ -795,20 +795,20 @@ def test_all_examples():
 ```python
 def parse_expression(self) -> ASTNode:
     """解析表达式
-    
+
     使用元数驱动解析技术，根据动词的元数自动收集参数。
-    
+
     算法：
     1. 解析第一个表达式
     2. 如果遇到动词，根据元数收集参数
     3. 递归解析参数表达式
-    
+
     Returns:
         ASTNode: 表达式的AST节点
-        
+
     Raises:
         ParseError: 解析错误时抛出
-        
+
     Example:
         >>> parser.parse_expression("3 相加 5")
         BinaryOpNode(op='相加', left=3, right=5)

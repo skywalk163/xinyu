@@ -21,7 +21,7 @@ Playwright �Զ������� - Playgroundʾ������
 [OK] �ѵ��ʾ����ť
 
 �༭�����ݳ���: 0
-�༭��ǰ100�ַ�: 
+�༭��ǰ100�ַ�:
 [FAIL] �༭��Ϊ�գ�ʾ��δ����
 python : Traceback (most recent call last):
 At line:1 char:160
@@ -29,7 +29,7 @@ At line:1 char:160
 +                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
+
   File "G:\dumategithub\chineseprogram\playground\test_playwright.py", line 189, in <module>
 ��ǰ�ַ���: 0 �ַ�
 

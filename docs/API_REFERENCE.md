@@ -221,7 +221,7 @@ def __init__(self, allowed_modules: Optional[List[str]] = None)
     构造(参数) {
         # 构造函数
     }
-    
+
     方法名(参数) {
         # 方法体
     }
