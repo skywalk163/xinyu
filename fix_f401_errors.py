@@ -4,10 +4,11 @@
 批量修复F401错误（未使用的导入）
 """
 
+import ast
 import os
 import re
-import ast
 from pathlib import Path
+
 
 def remove_unused_imports(filepath):
     """移除单个文件中未使用的导入"""

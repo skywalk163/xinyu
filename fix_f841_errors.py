@@ -8,6 +8,7 @@ import os
 import re
 from pathlib import Path
 
+
 def fix_f841_in_file(filepath):
     """修复单个文件中的F841错误"""
     with open(filepath, 'r', encoding='utf-8') as f:

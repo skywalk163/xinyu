@@ -5,7 +5,12 @@
 """
 
 from .memory_monitor import MemoryMonitor
-from .memory_utils import estimate_memory_usage, find_memory_leaks, optimize_memory_usage, track_memory_allocation
+from .memory_utils import (
+    estimate_memory_usage,
+    find_memory_leaks,
+    optimize_memory_usage,
+    track_memory_allocation,
+)
 from .object_pool import LexerPool, ObjectPool, ParserPool
 from .optimization_strategies import (
     ASTNodePoolStrategy,
