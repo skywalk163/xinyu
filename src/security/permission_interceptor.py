@@ -184,7 +184,7 @@ def test_permission_system():
 
     all_passed = True
     for role, operation, resource, expected, description in test_cases:
-        result = pm.check_permission(role, operation, resource)
+    _ = _permission(role, operation, resource)  # 未使用变量
         passed = result == expected
         all_passed = all_passed and passed
 

@@ -20,35 +20,35 @@ class TestChineseProgram:
     def test_run_simple_expression(self):
         """测试运行简单表达式"""
         source = "定义 x = 42。"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行，不返回错误
         assert result is None or result is not None
 
     def test_run_print_statement(self):
         """测试运行打印语句"""
         source = '打印 "你好世界"。'
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_arithmetic(self):
         """测试运行算术运算"""
         source = "定义 x = 10 相加 20。"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_variable_definition(self):
         """测试运行变量定义"""
         source = "定义 数字 = 100。"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_string_operations(self):
         """测试运行字符串操作"""
         source = '定义 消息 = "你好" 相加 "世界"。'
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -61,7 +61,7 @@ class TestChineseProgram:
         否则：
             打印 "x 不大于遍历 5"。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -71,7 +71,7 @@ class TestChineseProgram:
         定义 问候(名字)：
             打印 名字。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -83,14 +83,14 @@ class TestChineseProgram:
 
         定义 结果 = 相加法(3, 5)。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
     def test_run_list_operations(self):
         """测试运行列表操作"""
         source = "定义 列表 = [1, 2, 3]。"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -102,7 +102,7 @@ class TestChineseProgram:
             打印 计数。
             计数 = 计数 相加 1。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -160,14 +160,14 @@ class TestChineseProgram:
     def test_run_with_lexical_error(self):
         """测试运行有词法错误的代码"""
         source = "定义 x = @#$"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该返回 None（错误）
         assert result is None
 
     def test_run_with_syntax_error(self):
         """测试运行有语法错误的代码"""
         source = "定义 x = "
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该返回 None（错误）
         assert result is None
 
@@ -195,7 +195,7 @@ class TestChineseProgram:
     def test_run_empty_source(self):
         """测试运行空源代码"""
         source = ""
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行（空程序）
         assert result is None or result is not None
 
@@ -214,7 +214,7 @@ class TestChineseProgram:
         定义 c = a 相加 b。
         打印 c。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -233,7 +233,7 @@ class TestChineseProgram:
     def test_run_nested_expressions(self):
         """测试运行嵌套表达式"""
         source = "定义 结果 = (10 相加 20) 相乘 (5 相减 3)。"
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -252,7 +252,7 @@ class TestChineseProgram:
         定义 b = 假值。
         定义 c = a 并并且 b。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 
@@ -271,7 +271,7 @@ class TestChineseProgram:
         定义 y = 20。
         定义 结果 = x 小于 y。
         """
-        result = self.program.run(source)
+    _ = gram.run(source)  # 未使用变量
         # 应该成功执行
         assert result is None or result is not None
 

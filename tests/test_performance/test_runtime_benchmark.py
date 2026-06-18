@@ -136,7 +136,7 @@ class TestMemoryBenchmark:
         """测试小规模内存使用"""
         program = ChineseProgram()
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
-        result = program.run(source)
+    _ = run(source)  # 未使用变量
         # 应该成功执行
         assert result is not None or result is None
 
@@ -144,7 +144,7 @@ class TestMemoryBenchmark:
         """测试中规模内存使用"""
         program = ChineseProgram()
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
-        result = program.run(source)
+    _ = run(source)  # 未使用变量
         # 应该成功执行
         assert result is not None or result is None
 
@@ -156,6 +156,6 @@ class TestMemoryBenchmark:
 重复 1000 次：
     列表.追加(1)。
 """
-        result = program.run(source)
+    _ = run(source)  # 未使用变量
         # 应该成功执行
         assert result is not None or result is None

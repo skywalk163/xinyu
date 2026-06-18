@@ -36,7 +36,7 @@ class TestBasicImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "4.0" in output
@@ -54,7 +54,7 @@ class TestBasicImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "5.0" in output
@@ -76,7 +76,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "6.0" in output
@@ -94,7 +94,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "7.0" in output
@@ -112,7 +112,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "8.0" in output
@@ -134,7 +134,7 @@ class TestImportUsage:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "3.14" in output
@@ -153,7 +153,7 @@ class TestImportUsage:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "10.0" in output

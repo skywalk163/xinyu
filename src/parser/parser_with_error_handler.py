@@ -7,7 +7,6 @@
 
 from typing import List, Optional
 
-from src.error_handling import ErrorCode, ErrorHandler, ErrorType
 from src.lexer.tokens import Token, TokenType
 from src.parser.ast_nodes import (
     AssignNode,

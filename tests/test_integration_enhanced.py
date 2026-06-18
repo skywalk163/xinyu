@@ -23,7 +23,7 @@ class TestLexerWithErrorHandler:
         source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         assert not error_handler.has_errors()
         assert len(tokens) > 0
@@ -34,7 +34,7 @@ class TestLexerWithErrorHandler:
         source = "定义 x = @#$"  # 非法字符
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         # 应该收集到错误
         assert error_handler.has_errors()
@@ -70,7 +70,7 @@ class TestLexerWithErrorHandler:
         source = "相加 相减 相乘 除"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         assert not error_handler.has_errors()
         # 检查操作符被正确识别
@@ -88,10 +88,10 @@ class TestSemanticAnalyzerWithInference:
         source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         success = analyzer.analyze(ast)
@@ -104,10 +104,10 @@ class TestSemanticAnalyzerWithInference:
         source = "定义 x = 42"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
@@ -122,10 +122,10 @@ class TestSemanticAnalyzerWithInference:
         source = '定义 x = "你好"'
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
@@ -140,10 +140,10 @@ class TestSemanticAnalyzerWithInference:
         source = "打印 未定义变量"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
@@ -158,10 +158,10 @@ class TestSemanticAnalyzerWithInference:
         source = "定义 x = 1。定义 x = 2。"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)
@@ -175,10 +175,10 @@ class TestSemanticAnalyzerWithInference:
         """测试内置函数"""
         source = '打印 "你好"。'
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         success = analyzer.analyze(ast)
@@ -198,10 +198,10 @@ class TestIntegration:
 打印 y。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         success = analyzer.analyze(ast)
@@ -220,14 +220,14 @@ class TestIntegration:
         source = "定义 y = 42。打印 y。"
         error_handler = ErrorHandler()
         lexer = LexerWithErrorHandler(source, error_handler)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         # 不应该有词法错误
         assert not error_handler.has_errors()
 
         # 可以正常分析
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzerWithInference(error_handler)
         analyzer.analyze(ast)

@@ -16,9 +16,9 @@ class TestCodegenBoundary:
     def test_empty_program(self):
         """测试空程序代码生成"""
         lexer = Lexer("")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         # 空程序应该生成空代码或最小代码
@@ -28,9 +28,9 @@ class TestCodegenBoundary:
         """测试简单打印语句"""
         source = '打印"你好"。'
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "print" in code
@@ -40,9 +40,9 @@ class TestCodegenBoundary:
         """测试变量定义"""
         source = "定义 变量 = 42。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "变量" in code
@@ -52,9 +52,9 @@ class TestCodegenBoundary:
         """测试函数定义"""
         source = "定义 函数名 = 函数 x：返回 x 相乘 2。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "def" in code
@@ -68,9 +68,9 @@ class TestCodegenBoundary:
 定义 结果 = 函数名 5。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "函数名" in code
@@ -85,9 +85,9 @@ class TestCodegenBoundary:
     打印"假"。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "if" in code
@@ -101,9 +101,9 @@ class TestCodegenBoundary:
     定义 计数 = 计数 相加 1。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "while" in code
@@ -116,9 +116,9 @@ class TestCodegenBoundary:
     打印 元素。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "for" in code
@@ -132,9 +132,9 @@ class TestCodegenBoundary:
 定义 d = 6 相除 2。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "+" in code or "相加" in code
@@ -150,9 +150,9 @@ class TestCodegenBoundary:
 定义 结果3 = 1 等于 1。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "<" in code or "小于" in code
@@ -163,9 +163,9 @@ class TestCodegenBoundary:
         """测试列表字面量"""
         source = "定义 列表 = [1, 2, 3]。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "[" in code
@@ -175,9 +175,9 @@ class TestCodegenBoundary:
         """测试字典字面量"""
         source = '定义 字典 = {"键": 1}。'
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "{" in code
@@ -192,9 +192,9 @@ class TestCodegenBoundary:
     返回 内层函数 x。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "def" in code
@@ -210,9 +210,9 @@ class TestCodegenBoundary:
 打印 变量3。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         code = codegen.generate(ast)
         assert "变量1" in code

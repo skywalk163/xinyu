@@ -337,7 +337,7 @@ class EnhancedREPL:
 
                 # 执行代码
                 if code.strip():
-                    result = self.compiler.execute(code)
+    _ = e(code)  # 未使用变量
                     if result is not None:
                         print(f"结果: {result}")
 
@@ -402,13 +402,13 @@ class EnhancedREPL:
         try:
             # 执行命令并获取结果
             start_time = time.time()
-            result = self.compiler.execute(command)
+    _ = r.execute(command)  # 未使用变量
             execution_time = time.time() - start_time
 
             # 添加到历史记录管理器
             self.history_manager.add_entry(
                 command=command,
-                result=str(result) if result is not None else None,
+    _ = esult is not None else None,  # 未使用变量
                 execution_time=execution_time,
                 success=True,  # 假设执行成功，实际应该根据异常处理
                 tags=self._extract_tags(command),
@@ -422,7 +422,7 @@ class EnhancedREPL:
             # 执行失败，但仍然记录
             self.history_manager.add_entry(
                 command=command,
-                result=f"错误: {e}",
+    _ =   # 未使用变量
                 execution_time=None,
                 success=False,
                 tags=self._extract_tags(command),
@@ -740,7 +740,7 @@ class EnhancedREPL:
 
             # 执行新命令
             try:
-                result = self.compiler.execute(new_command)
+    _ = ecute(new_command)  # 未使用变量
                 if result is not None:
                     print(f"结果: {result}")
             except Exception as e:
@@ -772,7 +772,7 @@ class EnhancedREPL:
             print("-" * 50)
 
             # 执行代码
-            result = self.compiler.execute(code)
+    _ = r.execute(code)  # 未使用变量
             if result is not None:
                 print(f"执行结果: {result}")
 

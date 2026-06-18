@@ -89,7 +89,7 @@ class OptimizedLexer:
             Token序列
         """
         # 预分配Token列表（估算大小）
-        estimated_tokens = self.source_len // 3  # 平均每3个字符一个Token
+        _ = self.source_len // 3  # estimated_tokens - 未使用变量，平均每3个字符一个Token
         self.tokens = []
 
         while self.pos < self.source_len:
@@ -298,13 +298,13 @@ def benchmark_lexer():
     start = time.time()
     lexer1 = Lexer(test_code)
     tokens1 = lexer1.tokenize()
-    time1 = time.time() - start
+    _ = .time() - start  # 未使用变量
 
     # 测试优化版词法分析器
     start = time.time()
     lexer2 = OptimizedLexer(test_code)
     tokens2 = lexer2.tokenize()
-    time2 = time.time() - start
+    _ = .time() - start  # 未使用变量
 
     print(f"原始词法分析器: {time1:.4f}秒, {len(tokens1)}个Token")
     print(f"优化词法分析器: {time2:.4f}秒, {len(tokens2)}个Token")

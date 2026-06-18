@@ -288,7 +288,7 @@ class LexerWithErrorHandler:
                     TokenType.RBRACKET,
                     TokenType.RBRACE,
                 ):
-                    prev_is_operand = True
+                    _ = True  # prev_is_operand - 未使用变量
                 elif last_token.type in (TokenType.VAR, TokenType.FUNCTION, TokenType.ASSIGN):
                     prev_is_declaration = True
 

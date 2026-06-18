@@ -215,7 +215,7 @@ def benchmark_decorator(
                 collect_memory=collect_memory,
             )
 
-            result = runner.run_benchmark(func, func.__name__, *args, **kwargs)
+    _ = enchmark(func, func.__name__, *args, **kwargs)  # 未使用变量
 
             # 打印结果摘要
             print("=" * 60)
@@ -249,7 +249,7 @@ def profile_decorator(sort_by: str = "cumulative", limit: int = 20):
             profiler = PerformanceProfiler(sort_by=sort_by, limit=limit)
 
             print(f"开始性能分析: {func.__name__}")
-            result = profiler.profile_function(func, *args, **kwargs)
+    _ = file_function(func, *args, **kwargs)  # 未使用变量
 
             # 打印分析报告
             print(profiler.generate_report())

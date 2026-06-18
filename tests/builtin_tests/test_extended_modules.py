@@ -71,8 +71,8 @@ def test_database_modules():
     # 查询数据
     游标.execute("SELECT * FROM users")
     results = 游标.fetchall()
-    print(f"   创建表: users")
-    print(f"   插入数据: 2条")
+    print("   创建表: users")
+    print("   插入数据: 2条")
     print(f"   查询结果: {results}")
 
     连接.close()

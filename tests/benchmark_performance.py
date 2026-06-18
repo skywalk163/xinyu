@@ -65,7 +65,7 @@ class TestParserPerformance:
         """测试小程序语法分析性能"""
         source = "定 x = 5。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         benchmark(Parser(tokens).parse)
 
     def test_parser_medium_program(self, benchmark):
@@ -81,7 +81,7 @@ class TestParserPerformance:
 定 结果 = 加法(3, 4)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         benchmark(Parser(tokens).parse)
 
     def test_parser_nested_functions(self, benchmark):
@@ -95,7 +95,7 @@ class TestParserPerformance:
 定 结果 = 外层(5)(3)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         benchmark(Parser(tokens).parse)
 
     def test_parser_complex_control_flow(self, benchmark):
@@ -116,7 +116,7 @@ class TestParserPerformance:
         印i。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         benchmark(Parser(tokens).parse)
 
 
@@ -127,9 +127,9 @@ class TestSemanticPerformance:
         """测试小程序语义分析性能"""
         source = "定 x = 5。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         benchmark(analyzer.analyze, ast)
@@ -147,9 +147,9 @@ class TestSemanticPerformance:
 定 结果 = 加法(3, 4)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         benchmark(analyzer.analyze, ast)
@@ -171,9 +171,9 @@ class TestSemanticPerformance:
 定 结果 = 函数1(5)(3)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         benchmark(analyzer.analyze, ast)
@@ -186,9 +186,9 @@ class TestCodegenPerformance:
         """测试小程序代码生成性能"""
         source = "定 x = 5。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         codegen = PythonCodegen()
         benchmark(codegen.generate, ast)
@@ -206,9 +206,9 @@ class TestCodegenPerformance:
 定 结果 = 加法(3, 4)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         codegen = PythonCodegen()
         benchmark(codegen.generate, ast)
@@ -226,9 +226,9 @@ class TestCodegenPerformance:
     印斐波那契(i)。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         codegen = PythonCodegen()
         benchmark(codegen.generate, ast)
@@ -300,7 +300,7 @@ class TestMemoryUsage:
 
         # 编译
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
 
         # 检查Token数量
         assert len(tokens) > 1000
@@ -330,9 +330,9 @@ class TestScalability:
             # 测量编译时间
             start = time.time()
             lexer = Lexer(source)
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
-            ast = parser.parse()
+    _ = ()  # 未使用变量
             end = time.time()
 
             times.append(end - start)

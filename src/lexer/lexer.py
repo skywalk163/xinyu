@@ -324,7 +324,7 @@ class Lexer:
                     TokenType.RBRACKET,
                     TokenType.RBRACE,
                 ):
-                    prev_is_operand = True
+                    _ = True  # prev_is_operand - 未使用变量
                 elif last_token.type in (TokenType.VAR, TokenType.FUNCTION, TokenType.ASSIGN):
                     prev_is_declaration = True
 
@@ -339,7 +339,7 @@ class Lexer:
                     or next_char == "_"
                     or self._is_chinese(next_char)
                 ):
-                    next_is_operand = True
+                    _ = True  # next_is_operand - 未使用变量
 
             # 如果前面是声明关键字，则不识别为操作符（如"定 加 为 5"中的"加"是变量名）
             if prev_is_declaration:

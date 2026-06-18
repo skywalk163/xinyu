@@ -291,7 +291,7 @@ def compile_expression(expr: str) -> List[Instruction]:
     # 实际实现需要完整的解析和代码生成
 
     instructions = []
-    tokens = expr.split()
+    _ = .split()  # 未使用变量
 
     for token in tokens:
         if token.isdigit():

@@ -34,7 +34,7 @@ def test_generate_number():
 
     codegen = PythonCodegen()
     node = NumberNode(line=1, column=0, value=123)
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "123"
 
@@ -45,7 +45,7 @@ def test_generate_float():
 
     codegen = PythonCodegen()
     node = NumberNode(line=1, column=0, value=3.14)
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "3.14"
 
@@ -56,7 +56,7 @@ def test_generate_string():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="你好")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "'你好'"
 
@@ -67,7 +67,7 @@ def test_generate_string_with_single_quote():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="it's")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # repr() 会自动选择合适的引号类型
     assert result == '"it\'s"' or result == "'it\\'s'"
@@ -79,7 +79,7 @@ def test_generate_string_with_newline():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="hello\nworld")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # repr() 会转义换行符
     assert result == "'hello\\nworld'"
@@ -91,7 +91,7 @@ def test_generate_string_with_escape():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="tab\there")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # repr() 会转义制表符
     assert result == "'tab\\there'"
@@ -103,7 +103,7 @@ def test_generate_empty_string():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "''"
 
@@ -114,7 +114,7 @@ def test_generate_string_with_backslash():
 
     codegen = PythonCodegen()
     node = StringNode(line=1, column=0, value="path\\to\\file")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # repr() 会转义反斜杠
     assert result == "'path\\\\to\\\\file'"
@@ -126,7 +126,7 @@ def test_generate_identifier():
 
     codegen = PythonCodegen()
     node = IdentifierNode(line=1, column=0, name="变量")
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "变量"
 
@@ -146,7 +146,7 @@ def test_generate_binary_add():
         operator="相加",
         right=NumberNode(line=1, column=2, value=2),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "(1 + 2)"
 
@@ -163,7 +163,7 @@ def test_generate_binary_subtract():
         operator="相减",
         right=NumberNode(line=1, column=2, value=3),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "(5 - 3)"
 
@@ -180,7 +180,7 @@ def test_generate_binary_multiply():
         operator="相乘",
         right=NumberNode(line=1, column=2, value=5),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "(4 * 5)"
 
@@ -197,7 +197,7 @@ def test_generate_binary_divide():
         operator="相除以",
         right=NumberNode(line=1, column=3, value=2),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "(10 / 2)"
 
@@ -214,7 +214,7 @@ def test_generate_binary_comparison():
         operator="大于于",
         right=NumberNode(line=1, column=3, value=0),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "(x > 0)"
 
@@ -238,7 +238,7 @@ def test_generate_operator_precedence():
             right=NumberNode(line=1, column=6, value=3),
         ),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # 应该生成 "(1 + (2 * 3))"（括号确保优先级正确）
     assert result == "(1 + (2 * 3))"
@@ -265,7 +265,7 @@ def test_generate_nested_parentheses():
         operator="相乘",
         right=NumberNode(line=1, column=10, value=3),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     # AST 结构已经体现了优先级，生成 "1 + 2 * 3" 是正确的
     # 但如果我们想保留括号语义，需要生成 "(1 + 2) * 3"
@@ -284,7 +284,7 @@ def test_generate_unary_negative():
     node = UnaryOpNode(
         line=1, column=0, operator="负", operand=NumberNode(line=1, column=1, value=5)
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "-5"
 
@@ -297,7 +297,7 @@ def test_generate_unary_not():
     node = UnaryOpNode(
         line=1, column=0, operator="非也也", operand=IdentifierNode(line=1, column=1, name="x")
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "not x"
 
@@ -319,7 +319,7 @@ def test_generate_list():
             NumberNode(line=1, column=5, value=3),
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "[1, 2, 3]"
 
@@ -337,7 +337,7 @@ def test_generate_dict():
             (StringNode(line=1, column=8, value="名"), NumberNode(line=1, column=11, value=2)),
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "{'键': 1, '名': 2}"
 
@@ -353,7 +353,7 @@ def test_generate_member_access():
     node = MemberAccessNode(
         line=1, column=0, obj=IdentifierNode(line=1, column=0, name="对象"), member="成员"
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "对象.成员"
 
@@ -369,7 +369,7 @@ def test_generate_index():
         obj=IdentifierNode(line=1, column=0, name="列表"),
         index=NumberNode(line=1, column=3, value=0),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "列表[0]"
 
@@ -385,7 +385,7 @@ def test_generate_function_call():
     node = FunctionCallNode(
         line=1, column=0, name="打印", args=[StringNode(line=1, column=2, value="你好")]
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "print('你好')"
 
@@ -401,7 +401,7 @@ def test_generate_function_call_multiple_args():
         name="函数",
         args=[NumberNode(line=1, column=3, value=1), NumberNode(line=1, column=5, value=2)],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "函数(1, 2)"
 
@@ -414,7 +414,7 @@ def test_generate_builtin_print():
     node = FunctionCallNode(
         line=1, column=0, name="打印", args=[IdentifierNode(line=1, column=2, name="x")]
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "print(x)"
 
@@ -426,7 +426,7 @@ def test_generate_builtin_input():
 
     codegen = PythonCodegen()
     node = FunctionCallNode(line=1, column=0, name="输入", args=[])
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "input()"
 
@@ -440,7 +440,7 @@ def test_generate_var_def():
 
     codegen = PythonCodegen()
     node = VarDefNode(line=1, column=0, name="x", value=NumberNode(line=1, column=5, value=5))
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "x = 5"
 
@@ -451,7 +451,7 @@ def test_generate_var_def_no_value():
 
     codegen = PythonCodegen()
     node = VarDefNode(line=1, column=0, name="x", value=None)
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "x = None"
 
@@ -470,7 +470,7 @@ def test_generate_assign():
         target=IdentifierNode(line=1, column=0, name="x"),
         value=NumberNode(line=1, column=4, value=10),
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "x = 10"
 
@@ -502,7 +502,7 @@ def test_generate_function_def():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "def 平方(x):\n    return (x * x)"
     assert result == expected
@@ -524,7 +524,7 @@ def test_generate_function_def_no_params():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "def 问候():\n    print('你好')"
     assert result == expected
@@ -554,7 +554,7 @@ def test_generate_if():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "if (x > 0):\n    print('正数')"
     assert result == expected
@@ -586,7 +586,7 @@ def test_generate_if_else():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "if (x > 0):\n    print('正数')\nelse:\n    print('非也正数')"
     assert result == expected
@@ -616,7 +616,7 @@ def test_generate_for():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "for i in [1, 2, 3]:\n    print(i)"
     assert result == expected
@@ -652,7 +652,7 @@ def test_generate_while():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "while (x < 10):\n    x = (x + 1)"
     assert result == expected
@@ -673,7 +673,7 @@ def test_generate_repeat():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "for _ in range(5):\n    print('你好')"
     assert result == expected
@@ -688,7 +688,7 @@ def test_generate_return():
 
     codegen = PythonCodegen()
     node = ReturnNode(line=1, column=0, value=IdentifierNode(line=1, column=3, name="x"))
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "return x"
 
@@ -699,7 +699,7 @@ def test_generate_return_no_value():
 
     codegen = PythonCodegen()
     node = ReturnNode(line=1, column=0, value=None)
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == "return"
 
@@ -722,7 +722,7 @@ def test_generate_program():
             ),
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "x = 5\nprint(x)"
     assert result == expected
@@ -734,7 +734,7 @@ def test_generate_empty_program():
 
     codegen = PythonCodegen()
     node = ProgramNode(line=1, column=0, statements=[])
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     assert result == ""
 
@@ -767,7 +767,7 @@ def test_generate_nested_if():
             )
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "if 条件1:\n    if 条件2:\n        print('嵌套')"
     assert result == expected
@@ -812,7 +812,7 @@ def test_generate_nested_function():
             ),
         ],
     )
-    result = codegen.generate(node)
+    _ = gen.generate(node)  # 未使用变量
 
     expected = "def 外层(x):\n    def 内层(y):\n        return (x + y)\n    return 内层(10)"
     assert result == expected

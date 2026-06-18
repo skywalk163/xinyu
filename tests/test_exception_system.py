@@ -179,7 +179,7 @@ class TestTryBlock:
 
         block.set_finally(finally_test)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "no exception"  # else代码的结果
         assert finally_called == [True]  # finally代码被调用
 
@@ -206,7 +206,7 @@ class TestTryBlock:
 
         block.set_finally(finally_test)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "捕获到: 测试错误"
         assert finally_called == [True]
 
@@ -242,7 +242,7 @@ class TestTryBlock:
         block.set_try(try_code)
         block.add_except("ValueError", except_handler)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "Python异常: Python错误"
 
     def test_execute_catch_all_exception(self):
@@ -258,7 +258,7 @@ class TestTryBlock:
         block.set_try(try_code)
         block.add_except("所有", except_handler)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "捕获所有异常"
 
         # 测试"异常"关键字
@@ -274,7 +274,7 @@ class TestTryBlock:
         block = TryBlock()
 
         # 没有设置try代码，应该返回None
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result is None
 
 
@@ -305,7 +305,7 @@ class TestXinyuTryExcept:
 
         # 测试处理器函数
         exc = XinyuException("测试", XinyuExceptionType.值错误)
-        result = handler(exc)
+    _ = exc)  # 未使用变量
         assert result == "handled"
 
     def test_xinyu_try_except_chain(self):
@@ -316,7 +316,7 @@ class TestXinyuTryExcept:
         def handle_zero_div(e):
             return "除零错误已处理"
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "除零错误已处理"
 
 
@@ -354,7 +354,7 @@ class TestXinyuThrow:
         block.set_try(try_code)
         block.add_except("ValueError", except_handler)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         assert result == "捕获: 测试错误"
 
 
@@ -387,7 +387,7 @@ class TestExceptionSystemIntegration:
         block.set_else(else_code)
         block.set_finally(finally_code)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
 
         assert events == ["try", "else", "finally"]
         assert result == "else_result"
@@ -418,7 +418,7 @@ class TestExceptionSystemIntegration:
         block.set_else(else_code)
         block.set_finally(finally_code)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
 
         assert events == ["try", "except", "finally"]
         assert result == "except_result"

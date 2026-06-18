@@ -63,13 +63,13 @@ class TestTypeInferencerDetailed:
     def test_infer_number_node(self):
         """测试推断NumberNode类型"""
         node = NumberNode(value=42, line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "number"
 
     def test_infer_string_node(self):
         """测试推断StringNode类型"""
         node = StringNode(value="测试", line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "string"
 
     def test_infer_identifier_node_with_context(self):
@@ -77,24 +77,24 @@ class TestTypeInferencerDetailed:
         node = IdentifierNode(name="x", line=1, column=1)
 
         # 没有上下文
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "unknown"
 
         # 有上下文
         context = {"x": "number"}
-        result = self.inferencer.infer(node, context)
+    _ = erencer.infer(node, context)  # 未使用变量
         assert result == "number"
 
     def test_infer_identifier_node_boolean_keywords(self):
         """测试推断布尔关键字IdentifierNode类型"""
         # 真
         node = IdentifierNode(name="真值", line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
         # 假
         node = IdentifierNode(name="假值", line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
     def test_infer_binary_op_node_arithmetic(self):
@@ -107,7 +107,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "number"
 
         # 减法
@@ -118,7 +118,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "number"
 
     def test_infer_binary_op_node_comparison(self):
@@ -131,7 +131,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
         # 等于
@@ -142,7 +142,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
     def test_infer_binary_op_node_logical(self):
@@ -155,7 +155,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
     def test_infer_binary_op_node_string_concat(self):
@@ -168,7 +168,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "string"
 
     def test_infer_binary_op_node_mixed_types(self):
@@ -181,7 +181,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "string"
 
         # 字符串加数字（应为字符串）
@@ -192,7 +192,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "string"
 
     def test_infer_binary_op_node_unknown_types(self):
@@ -205,7 +205,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "unknown"
 
     def test_infer_unary_op_node(self):
@@ -214,21 +214,21 @@ class TestTypeInferencerDetailed:
         node = UnaryOpNode(
             operator="非也", operand=IdentifierNode(name="真值", line=1, column=2), line=1, column=1
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "boolean"
 
         # 负号
         node = UnaryOpNode(
             operator="负", operand=NumberNode(value=5, line=1, column=2), line=1, column=1
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "number"
 
         # 未知操作符
         node = UnaryOpNode(
             operator="未知操作符", operand=NumberNode(value=5, line=1, column=6), line=1, column=1
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "unknown"
 
     def test_infer_function_call_node_builtin(self):
@@ -237,26 +237,26 @@ class TestTypeInferencerDetailed:
         node = FunctionCallNode(
             name="打印", args=[StringNode(value="测试", line=1, column=4)], line=1, column=1
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result is None  # 印函数无返回值
 
         # 内置函数 长度
         node = FunctionCallNode(
             name="长度", args=[ListNode(elements=[], line=1, column=4)], line=1, column=1
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "number"
 
         # 内置函数 读取
         node = FunctionCallNode(name="读取", args=[], line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "string"
 
     def test_infer_function_call_node_unknown(self):
         """测试推断未知函数FunctionCallNode类型"""
         # 未知函数
         node = FunctionCallNode(name="未知函数", args=[], line=1, column=1)
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "unknown"
 
     def test_infer_list_node(self):
@@ -270,7 +270,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "list"
 
     def test_infer_dict_node(self):
@@ -282,7 +282,7 @@ class TestTypeInferencerDetailed:
             line=1,
             column=1,
         )
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "dict"
 
     def test_infer_unknown_node_type(self):
@@ -293,17 +293,17 @@ class TestTypeInferencerDetailed:
             pass
 
         node = UnknownNode()
-        result = self.inferencer.infer(node)
+    _ = erencer.infer(node)  # 未使用变量
         assert result == "unknown"
 
     def test_infer_function_return_type_builtin(self):
         """测试推断内置函数返回类型（直接调用方法）"""
         node = FunctionCallNode(name="长度", args=[], line=1, column=1)
-        result = self.inferencer._infer_function_return_type(node, {})
+    _ = erencer._infer_function_return_type(node, {})  # 未使用变量
         assert result == "number"
 
         node = FunctionCallNode(name="求和", args=[], line=1, column=1)
-        result = self.inferencer._infer_function_return_type(node, {})
+    _ = erencer._infer_function_return_type(node, {})  # 未使用变量
         assert result == "number"
 
     def test_infer_function_return_type_identifier_name(self):
@@ -311,7 +311,7 @@ class TestTypeInferencerDetailed:
         node = FunctionCallNode(
             name=IdentifierNode(name="长度", line=1, column=1), args=[], line=1, column=1
         )
-        result = self.inferencer._infer_function_return_type(node, {})
+    _ = erencer._infer_function_return_type(node, {})  # 未使用变量
         assert result == "number"
 
     def test_check_type_compatibility(self):

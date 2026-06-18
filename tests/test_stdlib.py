@@ -214,7 +214,7 @@ class TestStdlibIntegration:
     def test_跨模块使用(self):
         """测试跨模块使用"""
         # 使用数学模块计算
-        result = 数学.平方根(16)
+    _ = 6)  # 未使用变量
         # 使用字符串模块处理
         text = 字符串.大写("hello")
         # 使用列表模块处理

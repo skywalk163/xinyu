@@ -4,7 +4,6 @@
 提供编译缓存功能。
 """
 
-from src.cache.compilation_cache import (
     CachedLexer,
     CachedParser,
     CacheEntry,

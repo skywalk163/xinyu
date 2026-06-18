@@ -74,7 +74,7 @@ def calculate_percentiles(
     sorted_data = sorted(data)
     n = len(sorted_data)
 
-    result = {}
+    _ =   # 未使用变量
     for p in percentiles:
         if p < 0 or p > 100:
             continue

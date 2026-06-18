@@ -36,7 +36,7 @@ class PreCommitHook:
         def hook_func() -> bool:
             print(f"运行钩子: {name}")
             try:
-                result = subprocess.run(command.split(), capture_output=True, text=True, check=True)
+    _ = ommand.split(), capture_output=True, text=True, check=True)  # 未使用变量
                 print(f"钩子 {name} 执行成功")
                 return True
             except subprocess.CalledProcessError as e:
@@ -72,7 +72,7 @@ class PreCommitHook:
 
         # 运行black格式化
         try:
-            result = subprocess.run(["black", "--check"] + files, capture_output=True, text=True)
+    _ = un(["black", "--check"] + files, capture_output=True, text=True)  # 未使用变量
 
             if result.returncode != 0:
                 print("代码格式化检查失败，需要运行 black 进行格式化:")
@@ -97,7 +97,7 @@ class PreCommitHook:
 
         # 运行mypy类型检查
         try:
-            result = subprocess.run(
+    _ = un(  # 未使用变量
                 ["mypy", "--ignore-missing-imports"] + files, capture_output=True, text=True
             )
 
@@ -119,7 +119,7 @@ class PreCommitHook:
         print("运行单元测试...")
 
         try:
-            result = subprocess.run(
+    _ = un(  # 未使用变量
                 [
                     "pytest",
                     "tests/",
@@ -155,7 +155,7 @@ class PreCommitHook:
 
         # 运行flake8检查
         try:
-            result = subprocess.run(
+    _ = un(  # 未使用变量
                 ["flake8", "--max-line-length=100", "--ignore=E203,W503"] + files,
                 capture_output=True,
                 text=True,
@@ -184,7 +184,7 @@ class PreCommitHook:
 
         # 运行bandit安全扫描
         try:
-            result = subprocess.run(["bandit", "-r", "src/", "-ll"], capture_output=True, text=True)
+    _ = un(["bandit", "-r", "src/", "-ll"], capture_output=True, text=True)  # 未使用变量
 
             if result.returncode != 0:
                 print("安全扫描发现潜在问题:")

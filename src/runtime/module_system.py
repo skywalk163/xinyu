@@ -140,11 +140,11 @@ class ModuleSystem:
 
             # 词法分析
             lexer = Lexer(code)
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
 
             # 语法分析
             parser = Parser(tokens)
-            ast = parser.parse()
+    _ = ()  # 未使用变量
 
             # 代码生成
             codegen = PythonCodegen()

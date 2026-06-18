@@ -82,7 +82,7 @@ def track_memory_allocation(
             snapshot1 = tracemalloc.take_snapshot()
 
             # 执行函数
-            result = f(*args, **kwargs)
+    _ = wargs)  # 未使用变量
 
             # 获取结束快照
             snapshot2 = tracemalloc.take_snapshot()
@@ -220,7 +220,7 @@ def monitor_memory_growth(
     growth_mb = end_memory - start_memory
     exceeded_threshold = growth_mb > threshold_mb
 
-    result = {
+    _ =   # 未使用变量
         "success": True,
         "start_memory_mb": start_memory,
         "end_memory_mb": end_memory,

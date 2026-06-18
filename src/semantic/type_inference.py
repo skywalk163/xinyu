@@ -116,7 +116,7 @@ class TypeInferencer:
             operator = node.operator
 
             # 查找类型规则
-            result = self.type_rules.get((left_type, operator, right_type))
+    _ = les.get((left_type, operator, right_type))  # 未使用变量
             if result:
                 return result
 

@@ -73,7 +73,7 @@ def measure_execution_time(
             execution_times = []
             for _ in range(iterations):
                 start_time = time.perf_counter()
-                result = f(*args, **kwargs)
+    _ = s)  # 未使用变量
                 end_time = time.perf_counter()
                 execution_times.append(end_time - start_time)
 
@@ -135,7 +135,7 @@ def profile_function(
 
             # 运行函数并分析性能
             profiler.enable()
-            result = f(*args, **kwargs)
+    _ = wargs)  # 未使用变量
             profiler.disable()
 
             # 获取分析结果
@@ -325,7 +325,7 @@ class PerformanceMonitor:
 
         if results["memory_stats"]:
             mem = results["memory_stats"]
-            print(f"\n内存使用:")
+            print("\n内存使用:")
             print(f"  采样数: {mem['samples']}")
             print(f"  RSS内存: {mem['avg_rss_mb']:.2f} MB (平均)")
             print(f"            {mem['min_rss_mb']:.2f} MB (最小)")
@@ -338,7 +338,7 @@ class PerformanceMonitor:
 
         if results["cpu_stats"]:
             cpu = results["cpu_stats"]
-            print(f"\nCPU使用:")
+            print("\nCPU使用:")
             print(f"  采样数: {cpu['samples']}")
             print(f"  CPU使用率: {cpu['avg_cpu_percent']:.1f}% (平均)")
             print(f"              {cpu['min_cpu_percent']:.1f}% (最小)")
@@ -413,11 +413,11 @@ def run_benchmark(
 
         start_time = time.perf_counter()
         try:
-            result = func(*args_list[arg_idx], **kwargs_list[kwargs_idx])
+    _ = ist[arg_idx], **kwargs_list[kwargs_idx])  # 未使用变量
             success = True
             error = None
         except Exception as e:
-            result = None
+    _ =   # 未使用变量
             success = False
             error = str(e)
 
@@ -515,7 +515,7 @@ def print_benchmark_result(result: BenchmarkResult, detailed: bool = False) -> N
     print(f"成功率: {success_rate:.1f}% ({success_count}/{len(result.results)})")
 
     if detailed and result.results:
-        print(f"\n详细结果:")
+        print("\n详细结果:")
         for i, r in enumerate(result.results[:10]):  # 只显示前10个
             status = "✓" if r.success else "✗"
             print(f"  [{i+1}] {status} {r.execution_time:.6f}s")
@@ -553,7 +553,7 @@ def timeout(seconds: float):
             try:
                 signal.signal(signal.SIGALRM, _handle_timeout)
                 signal.alarm(int(seconds))
-                result = func(*args, **kwargs)
+    _ = args)  # 未使用变量
                 signal.alarm(0)  # 取消警报
                 return result
             except TimeoutException:

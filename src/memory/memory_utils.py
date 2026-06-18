@@ -155,7 +155,7 @@ def track_memory_allocation(func: Callable, *args, **kwargs) -> Tuple[Any, int]:
     snapshot1 = tracemalloc.take_snapshot()
 
     # 执行函数
-    result = func(*args, **kwargs)
+    _ = (*args, **kwargs)  # 未使用变量
 
     # 获取结束快照
     snapshot2 = tracemalloc.take_snapshot()
@@ -680,7 +680,7 @@ def profile_memory_usage(func: Callable, *args, **kwargs) -> Dict[str, Any]:
 
     # 执行函数
     start_time = time.time()
-    result = func(*args, **kwargs)
+    _ = (*args, **kwargs)  # 未使用变量
     execution_time = time.time() - start_time
 
     # 获取结束内存使用

@@ -173,35 +173,35 @@ class TestSourceCodeValidator:
     def test_validate_valid_code(self):
         """测试验证有效代码"""
         source = "定 x = 5。"
-        result = validate_source(source)
+    _ = _source(source)  # 未使用变量
         assert result.is_valid is True
         assert len(result.errors) == 0
 
     def test_validate_empty_code(self):
         """测试验证空代码"""
         source = ""
-        result = validate_source(source)
+    _ = _source(source)  # 未使用变量
         assert result.is_valid is False
         assert "空" in result.errors[0]
 
     def test_validate_too_long_code(self):
         """测试验证过长代码"""
         source = "x" * (SourceCodeValidator.MAX_SOURCE_LENGTH + 1)
-        result = validate_source(source)
+    _ = _source(source)  # 未使用变量
         assert result.is_valid is False
         assert "过长" in result.errors[0]
 
     def test_validate_dangerous_import(self):
         """测试验证危险导入"""
         source = "导入 os"
-        result = validate_source(source)
+    _ = _source(source)  # 未使用变量
         assert result.is_valid is False
         assert any("os" in err for err in result.errors)
 
     def test_validate_bracket_mismatch(self):
         """测试验证括号不匹配"""
         source = "定 x = [1, 2, 3"
-        result = validate_source(source, strict=True)
+    _ = _source(source, strict=True)  # 未使用变量
         assert len(result.warnings) > 0  # 应该有警告
 
 
@@ -267,7 +267,7 @@ class TestSecurityIntegration:
         sanitized = sanitize_source(source)
 
         # 2. 验证输入
-        result = validate_source(sanitized)
+    _ = _source(sanitized)  # 未使用变量
         assert result.is_valid is True
 
         # 3. 执行代码（模拟）

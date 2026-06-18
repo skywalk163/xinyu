@@ -217,7 +217,7 @@ def get_implemented_modules():
 
 if __name__ == "__main__":
     total, implemented, pending = get_total_modules()
-    print(f"Python 3.12 标准库模块统计:")
+    print("Python 3.12 标准库模块统计:")
     print(f"  总计: {total}个模块")
     print(f"  已实现: {implemented}个模块")
     print(f"  待实现: {pending}个模块")

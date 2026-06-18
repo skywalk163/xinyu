@@ -70,14 +70,14 @@ class XinyuCompiler(Compiler):
         try:
             # 1. 词法分析
             lexer = self.lexer(source, self.error_handler)
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
 
             # 收集词法错误
             self._collect_lexer_errors()
 
             # 2. 语法分析
             parser = self.parser(tokens, self.error_handler)
-            ast = parser.parse()
+    _ = ()  # 未使用变量
 
             # 收集语法错误
             self._collect_parser_errors()
@@ -195,7 +195,7 @@ class XinyuCompiler(Compiler):
         try:
             # 只进行词法和语法分析
             lexer = self.lexer(source, self.error_handler)
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
 
             parser = self.parser(tokens, self.error_handler)
             parser.parse()

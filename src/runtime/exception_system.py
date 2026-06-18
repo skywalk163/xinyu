@@ -115,13 +115,13 @@ class TryBlock:
         Returns:
             执行结果
         """
-        result = None
+    _ =   # 未使用变量
         exception_occurred = False
 
         try:
             # 执行尝试代码
             if self.try_code:
-                result = self.try_code()
+    _ =   # 未使用变量
 
         except XinyuException as e:
             exception_occurred = True
@@ -129,11 +129,11 @@ class TryBlock:
             exception_type = e.exception_type.value
 
             if exception_type in self.except_handlers:
-                result = self.except_handlers[exception_type](e)
+    _ = lers[exception_type](e)  # 未使用变量
             elif "所有" in self.except_handlers or "异常" in self.except_handlers:
                 # 捕获所有异常
                 handler = self.except_handlers.get("所有") or self.except_handlers.get("异常")
-                result = handler(e)
+    _ =   # 未使用变量
             else:
                 # 未捕获的异常，重新抛出
                 raise
@@ -144,17 +144,17 @@ class TryBlock:
             exception_type = type(e).__name__
 
             if exception_type in self.except_handlers:
-                result = self.except_handlers[exception_type](e)
+    _ = lers[exception_type](e)  # 未使用变量
             elif "所有" in self.except_handlers or "异常" in self.except_handlers:
                 handler = self.except_handlers.get("所有") or self.except_handlers.get("异常")
-                result = handler(e)
+    _ =   # 未使用变量
             else:
                 raise
 
         else:
             # 无异常，执行else代码
             if self.else_code:
-                result = self.else_code()
+    _ =   # 未使用变量
 
         finally:
             # 执行最终代码
@@ -225,7 +225,7 @@ if __name__ == "__main__":
         block.set_try(try_code)
         block.add_except("ValueError", except_handler)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         print(f"结果: {result}")
 
     example1()
@@ -241,7 +241,7 @@ if __name__ == "__main__":
             print(f"捕获除零错误: {e}")
             return "无穷大"
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         print(f"结果: {result}")
 
     example2()
@@ -267,7 +267,7 @@ if __name__ == "__main__":
         block.set_else(else_code)
         block.set_finally(finally_code)
 
-        result = block.execute()
+    _ = ecute()  # 未使用变量
         print(f"结果: {result}")
 
     example3()

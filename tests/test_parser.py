@@ -369,9 +369,9 @@ class TestParserBasic:
     def test_parse_empty_program(self):
         """测试空程序"""
         lexer = Lexer("")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 0
@@ -379,9 +379,9 @@ class TestParserBasic:
     def test_parse_number(self):
         """测试数字解析"""
         lexer = Lexer("42")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -391,9 +391,9 @@ class TestParserBasic:
     def test_parse_string(self):
         """测试字符串解析"""
         lexer = Lexer('"你好世界"')
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -403,9 +403,9 @@ class TestParserBasic:
     def test_parse_identifier(self):
         """测试标识符解析"""
         lexer = Lexer("变量名")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -419,9 +419,9 @@ class TestParserExpression:
     def test_parse_binary_add(self):
         """测试相加法表达式"""
         lexer = Lexer("1 相加 2")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -434,9 +434,9 @@ class TestParserExpression:
     def test_parse_binary_subtract(self):
         """测试相减法表达式"""
         lexer = Lexer("5 相减 3")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -446,9 +446,9 @@ class TestParserExpression:
     def test_parse_binary_multiply(self):
         """测试相乘法表达式"""
         lexer = Lexer("3 相乘 4")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -458,9 +458,9 @@ class TestParserExpression:
     def test_parse_binary_divide(self):
         """测试相除法表达式"""
         lexer = Lexer("10 相除 2")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -470,9 +470,9 @@ class TestParserExpression:
     def test_parse_comparison_equals(self):
         """测试相等于比较"""
         lexer = Lexer("x 等于 5")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -482,9 +482,9 @@ class TestParserExpression:
     def test_parse_comparison_less(self):
         """测试小于比较"""
         lexer = Lexer("a 小于 b")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -494,9 +494,9 @@ class TestParserExpression:
     def test_parse_unary_not(self):
         """测试逻辑非也"""
         lexer = Lexer("非也也 真值")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -506,9 +506,9 @@ class TestParserExpression:
     def test_parse_unary_negative(self):
         """测试负号"""
         lexer = Lexer("-5")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -518,9 +518,9 @@ class TestParserExpression:
     def test_parse_parentheses(self):
         """测试括号表达式"""
         lexer = Lexer("（1 相加 2）")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -530,9 +530,9 @@ class TestParserExpression:
     def test_parse_operator_precedence(self):
         """测试运算符优先级：1 相加 2 相乘 3 应该解析为 1 + (2 * 3)"""
         lexer = Lexer("1 相加 2 相乘 3")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -544,9 +544,9 @@ class TestParserExpression:
     def test_parse_logical_and(self):
         """测试逻辑与操作"""
         lexer = Lexer("x 并且 y")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -556,9 +556,9 @@ class TestParserExpression:
     def test_parse_logical_or(self):
         """测试逻辑或者操作"""
         lexer = Lexer("x 或者 y")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -568,9 +568,9 @@ class TestParserExpression:
     def test_parse_logical_precedence(self):
         """测试逻辑操作符优先级：x 或者 y 并且 z 应该解析为 x 或者 (y 并且 z)"""
         lexer = Lexer("x 或者 y 并且 z")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         expr = ast.statements[0]
@@ -586,9 +586,9 @@ class TestParserStatement:
     def test_parse_var_def(self):
         """测试变量定义"""
         lexer = Lexer("定义 x = 5")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -600,9 +600,9 @@ class TestParserStatement:
     def test_parse_assignment(self):
         """测试赋值语句"""
         lexer = Lexer("x = 10")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -614,9 +614,9 @@ class TestParserStatement:
     def test_parse_function_call_no_args(self):
         """测试无参数函数调用（使用括号）"""
         lexer = Lexer("函数名（）")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -628,9 +628,9 @@ class TestParserStatement:
     def test_parse_identifier_not_call(self):
         """测试单独的标识符不是函数调用"""
         lexer = Lexer("变量名")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -646,9 +646,9 @@ class TestParserStatement:
 定义 结果 = 函数名 1 2 3。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         # 第二个语句是函数调用
@@ -668,9 +668,9 @@ class TestParserControlFlow:
     打印 1
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -689,9 +689,9 @@ class TestParserControlFlow:
     打印 2
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         stmt = ast.statements[0]
@@ -705,9 +705,9 @@ class TestParserControlFlow:
     打印 x。
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -723,9 +723,9 @@ class TestParserControlFlow:
     打印 1
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -740,9 +740,9 @@ class TestParserControlFlow:
     打印 1
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -761,9 +761,9 @@ class TestParserFunction:
     返回 1
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -781,9 +781,9 @@ class TestParserFunction:
     返回 x 相加 y
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         stmt = ast.statements[0]
@@ -797,9 +797,9 @@ class TestParserFunction:
         """测试带返回值的返回语句"""
         source = "返回 42"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -811,9 +811,9 @@ class TestParserFunction:
         """测试不带返回值的返回语句"""
         source = "返回"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -828,7 +828,7 @@ class TestParserError:
     def test_parse_error_unexpected_token(self):
         """测试意外的token错误"""
         lexer = Lexer("定义 = 5")  # 缺少变量名
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
 
         with pytest.raises(ParseError):
@@ -840,7 +840,7 @@ class TestParserError:
     打印 x
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
 
         with pytest.raises(ParseError):
@@ -856,9 +856,9 @@ class TestParserComplex:
 定义 y = 2
 打印 x 相加 y"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 3
@@ -871,9 +871,9 @@ class TestParserComplex:
     。
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         stmt = ast.statements[0]
@@ -889,9 +889,9 @@ class TestParserComplex:
     返回 内层
 。"""
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert isinstance(ast, ProgramNode)
         stmt = ast.statements[0]

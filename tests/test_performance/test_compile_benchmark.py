@@ -35,7 +35,7 @@ class TestCompileBenchmark:
         """测试语法分析性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
         parser.parse()
 
@@ -44,7 +44,7 @@ class TestCompileBenchmark:
         """测试语法分析性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
         parser.parse()
 
@@ -53,9 +53,9 @@ class TestCompileBenchmark:
         """测试语义分析性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -64,9 +64,9 @@ class TestCompileBenchmark:
         """测试语义分析性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -75,9 +75,9 @@ class TestCompileBenchmark:
         """测试代码生成性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         codegen.generate(ast)
 
@@ -86,9 +86,9 @@ class TestCompileBenchmark:
         """测试代码生成性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         codegen = PythonCodegen()
         codegen.generate(ast)
 

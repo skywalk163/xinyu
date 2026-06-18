@@ -36,7 +36,7 @@ class TestLexerErrors:
         # 某些特殊字符可能不被支持
         try:
             lexer = Lexer("定义 结果 = 1 ^ 2。")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             # 如果不抛出异常，检查是否正确处理
         except LexerError:
             pass  # 预期的错误
@@ -44,7 +44,7 @@ class TestLexerErrors:
     def test_empty_string(self):
         """测试空字符串"""
         lexer = Lexer("")
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         # 空字符串应该返回空列表或仅EOF
         assert len(tokens) <= 1
 
@@ -56,7 +56,7 @@ class TestParserErrors:
         """测试不完整语句"""
         with pytest.raises(ParseError):
             lexer = Lexer("如果 真")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
             parser.parse()
 
@@ -64,7 +64,7 @@ class TestParserErrors:
         """测试缺少冒号"""
         with pytest.raises(ParseError):
             lexer = Lexer("定义 函数名 = 函数 x 返回 x。")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
             parser.parse()
 
@@ -72,7 +72,7 @@ class TestParserErrors:
         """测试不匹配的括号"""
         with pytest.raises(ParseError):
             lexer = Lexer("定义 结果 = (1 + 2。")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
             parser.parse()
 
@@ -80,7 +80,7 @@ class TestParserErrors:
         """测试无效表达式"""
         with pytest.raises(ParseError):
             lexer = Lexer("定义 结果 = + +。")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
             parser.parse()
 
@@ -89,7 +89,7 @@ class TestParserErrors:
         # 某些语句可能需要结束标记
         try:
             lexer = Lexer("定义 变量 = 1")
-            tokens = lexer.tokenize()
+    _ = ze()  # 未使用变量
             parser = Parser(tokens)
             parser.parse()
         except ParseError:
@@ -103,11 +103,11 @@ class TestSemanticErrors:
         """测试未定义变量"""
         source = "打印 未定义变量。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 应该检测到错误
         assert result is False or len(analyzer.errors) > 0
 
@@ -115,11 +115,11 @@ class TestSemanticErrors:
         """测试未定义函数"""
         source = "定义 结果 = 未定义函数 1。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 应该检测到错误
         assert result is False or len(analyzer.errors) > 0
 
@@ -130,11 +130,11 @@ class TestSemanticErrors:
 定义 结果 = 函数名 1 2。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 可能检测到参数数量错误
         # 根据实际实现决定
 
@@ -145,11 +145,11 @@ class TestSemanticErrors:
 定义 变量 = 2。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 可能允许重定义，也可能报错
         # 根据实际实现决定
 
@@ -157,11 +157,11 @@ class TestSemanticErrors:
         """测试函数外的return"""
         source = "返回 42。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 应该检测到错误
         assert result is False or len(analyzer.errors) > 0
 
@@ -177,11 +177,11 @@ class TestCompileErrorRecovery:
 打印 未定义变量3。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         # 应该收集多个错误
         if not result:
             assert len(analyzer.errors) >= 1
@@ -190,11 +190,11 @@ class TestCompileErrorRecovery:
         """测试错误位置准确性"""
         source = "打印 未定义变量。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         analyzer = SemanticAnalyzer()
-        result = analyzer.analyze(ast)
+    _ = .analyze(ast)  # 未使用变量
         if not result and len(analyzer.errors) > 0:
             # 错误应该包含位置信息
             error = analyzer.errors[0]
@@ -208,8 +208,8 @@ class TestCompileErrorRecovery:
 定义 变量2 = 2。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
         # 即使有错误，也应该生成部分AST
         assert ast is not None

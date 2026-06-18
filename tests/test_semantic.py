@@ -66,12 +66,12 @@ class TestScope(unittest.TestCase):
         scope.define("x", "variable", value_type="unknown")
 
         # 更新类型
-        result = scope.assign("x", "number")
+    _ = sign("x", "number")  # 未使用变量
         self.assertTrue(result)
         self.assertEqual(scope.symbols["x"]["value_type"], "number")
 
         # 更新不存在的符号
-        result = scope.assign("y", "number")
+    _ = sign("y", "number")  # 未使用变量
         self.assertFalse(result)
 
     def test_nested_scope_assign(self):
@@ -82,17 +82,17 @@ class TestScope(unittest.TestCase):
         child = Scope(parent=parent)
 
         # 子作用域可以更新父作用域的变量
-        result = child.assign("x", "number")
+    _ = sign("x", "number")  # 未使用变量
         self.assertTrue(result)
         self.assertEqual(parent.symbols["x"]["value_type"], "number")
 
         # 更新不存在的变量
-        result = child.assign("y", "number")
+    _ = sign("y", "number")  # 未使用变量
         self.assertFalse(result)
 
         # 多层嵌套
         grandchild = Scope(parent=child)
-        result = grandchild.assign("x", "string")
+    _ = ld.assign("x", "string")  # 未使用变量
         self.assertTrue(result)
         self.assertEqual(parent.symbols["x"]["value_type"], "string")
 
@@ -103,9 +103,9 @@ class TestSemanticAnalyzer(unittest.TestCase):
     def _analyze(self, code: str) -> tuple:
         """辅助方法：分析代码并返回结果和错误列表"""
         lexer = Lexer(code)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         success = analyzer.analyze(ast)
@@ -117,9 +117,9 @@ class TestSemanticAnalyzer(unittest.TestCase):
         # 使用内置函数 打印，但变量 x 未定义
         code = "打印 x。"
         lexer = Lexer(code)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         success = analyzer.analyze(ast)
@@ -246,9 +246,9 @@ x = 10。"""
         """测试数字类型推断"""
         code = "定义 x = 5。"
         lexer = Lexer(code)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
@@ -261,9 +261,9 @@ x = 10。"""
         """测试字符串类型推断"""
         code = '定义 x = "你好"。'
         lexer = Lexer(code)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)

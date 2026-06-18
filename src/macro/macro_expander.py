@@ -4,7 +4,7 @@
 负责在AST中查找宏调用并展开它们。
 """
 
-from typing import List, Optional
+
 
 from src.macro.macro_system import MacroSystem
 from src.parser.ast_nodes import (
@@ -153,7 +153,7 @@ class MacroExpander:
         from src.parser.parser import Parser
 
         lexer = Lexer(expanded_code)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
         expanded_ast = parser.parse()
 

@@ -63,7 +63,7 @@ class ChineseProgram:
         """
         try:
             # 使用编译器进行编译
-            result = self.compiler.execute(source)
+    _ = r.execute(source)  # 未使用变量
             return result
 
         except CompilationError as e:

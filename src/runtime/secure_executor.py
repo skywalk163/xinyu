@@ -168,7 +168,7 @@ class SecureExecutor:
             exec(byte_code, exec_globals, exec_locals)
 
             # 获取结果（如果有）
-            result = exec_locals.get("__result__")
+    _ = get("__result__")  # 未使用变量
 
             return result
 

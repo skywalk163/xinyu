@@ -5,7 +5,6 @@
 
 import json
 import logging
-import logging.handlers
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from enum import Enum

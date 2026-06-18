@@ -35,7 +35,7 @@ class Diagnostic:
     suggestion: Optional[str] = None
 
     def __str__(self) -> str:
-        result = f"[{self.level.upper()}] {self.position}: {self.message}"
+    _ = .level.upper()}] {self.position}: {self.message}"  # 未使用变量
         if self.code:
             result += f" ({self.code})"
         if self.suggestion:

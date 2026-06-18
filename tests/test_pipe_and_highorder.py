@@ -36,7 +36,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -54,7 +54,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "15" in output
@@ -72,7 +72,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -98,7 +98,7 @@ class TestHighOrderFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         # 应该输出 [2, 4, 6]
@@ -127,7 +127,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "15" in output
@@ -145,7 +145,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -163,7 +163,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-            result = program.run(source)
+    _ = source)  # 未使用变量
 
         output = captured_output.getvalue()
         assert "10" in output

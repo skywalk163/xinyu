@@ -59,9 +59,9 @@ class Error:
                 ErrorSeverity.FATAL: "💀",
             }.get(error_info.get("severity", ErrorSeverity.ERROR), "❓")
 
-            result = f"{severity_emoji} {type_name}（{self.error_code.name}）"
+    _ = emoji} {type_name}（{self.error_code.name}）"  # 未使用变量
         else:
-            result = f"❌ {type_name}"
+    _ = me}"  # 未使用变量
 
         # 添加位置信息
         result += f"：第 {self.line} 行，第 {self.column} 列"
@@ -257,7 +257,7 @@ class ErrorHandler:
         if not self.errors:
             return "✅ 没有发现错误"
 
-        result = []
+    _ =   # 未使用变量
         for i, error in enumerate(self.errors, 1):
             result.append(f"错误 {i}:")
             result.append(str(error))

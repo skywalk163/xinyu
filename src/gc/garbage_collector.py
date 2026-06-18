@@ -271,7 +271,7 @@ def test_gc():
     gc.add_root(obj1)
     gc.add_root(obj2)
 
-    print(f"添加了2个根引用")
+    print("添加了2个根引用")
 
     # 查看统计
     stats = gc.get_stats()
@@ -279,7 +279,7 @@ def test_gc():
 
     # 移除根引用
     gc.remove_root(obj2)
-    print(f"移除了obj2的根引用")
+    print("移除了obj2的根引用")
 
     # 手动触发GC
     gc.collect()

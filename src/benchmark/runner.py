@@ -208,7 +208,7 @@ class BenchmarkRunner:
 
         for i, (func, bench_name, args, kwargs) in enumerate(benchmarks, 1):
             self.logger.info(f"运行测试 {i}/{len(benchmarks)}: {bench_name}")
-            result = self.run_benchmark(func, bench_name, *args, **kwargs)
+    _ = chmark(func, bench_name, *args, **kwargs)  # 未使用变量
             results.append(result)
             self.logger.info(f"  平均执行时间: {result.statistics['time_mean']:.6f}s")
             self.logger.info(f"  平均内存使用: {result.statistics['memory_mean'] / 1024:.2f}KB")
@@ -368,7 +368,7 @@ class BenchmarkRunner:
 
         results = []
         for result_data in data.get("results", []):
-            result = BenchmarkResult(
+    _ = ult(  # 未使用变量
                 name=result_data["name"],
                 function_name=result_data["function_name"],
                 execution_times=result_data["execution_times"],

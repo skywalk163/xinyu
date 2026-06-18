@@ -47,12 +47,12 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # 默认实现应该总是返回有效
-        result = validator.validate(None, (), {})
+    _ = r.validate(None, (), {})  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 带参数的测试
-        result = validator.validate("func", (1, 2, 3), {"a": 1})
+    _ = r.validate("func", (1, 2, 3), {"a": 1})  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
@@ -62,25 +62,25 @@ class TestParamValidator:
 
         # 正好在范围内
         args = (1, 2, 3)
-        result = validator.check_count(args, min_args=1, max_args=3)
+    _ = r.check_count(args, min_args=1, max_args=3)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 最小值边界
         args = (1,)
-        result = validator.check_count(args, min_args=1, max_args=5)
+    _ = r.check_count(args, min_args=1, max_args=5)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 最大值边界
         args = (1, 2, 3, 4, 5)
-        result = validator.check_count(args, min_args=0, max_args=5)
+    _ = r.check_count(args, min_args=0, max_args=5)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 无最大值限制
         args = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-        result = validator.check_count(args, min_args=0, max_args=None)
+    _ = r.check_count(args, min_args=0, max_args=None)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
@@ -89,7 +89,7 @@ class TestParamValidator:
         validator = ParamValidator()
 
         args = (1, 2)  # 只有2个参数
-        result = validator.check_count(args, min_args=3, max_args=5)
+    _ = r.check_count(args, min_args=3, max_args=5)  # 未使用变量
 
         assert result.is_valid is False
         assert result.error_message is not None
@@ -99,7 +99,7 @@ class TestParamValidator:
 
         # 边界情况：0个参数但需要1个
         args = ()
-        result = validator.check_count(args, min_args=1, max_args=3)
+    _ = r.check_count(args, min_args=1, max_args=3)  # 未使用变量
         assert result.is_valid is False
         assert "需要至少1个参数" in result.error_message
         assert "但只提供了0个" in result.error_message
@@ -109,7 +109,7 @@ class TestParamValidator:
         validator = ParamValidator()
 
         args = (1, 2, 3, 4, 5)  # 5个参数
-        result = validator.check_count(args, min_args=1, max_args=3)
+    _ = r.check_count(args, min_args=1, max_args=3)  # 未使用变量
 
         assert result.is_valid is False
         assert result.error_message is not None
@@ -119,7 +119,7 @@ class TestParamValidator:
 
         # 边界情况：正好超过最大值
         args = (1, 2, 3, 4)
-        result = validator.check_count(args, min_args=0, max_args=3)
+    _ = r.check_count(args, min_args=0, max_args=3)  # 未使用变量
         assert result.is_valid is False
         assert "最多接受3个参数" in result.error_message
         assert "但提供了4个" in result.error_message
@@ -129,37 +129,37 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # 整数类型
-        result = validator.check_type(42, int)
+    _ = r.check_type(42, int)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 字符串类型
-        result = validator.check_type("hello", str)
+    _ = r.check_type("hello", str)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 浮点数类型
-        result = validator.check_type(3.14, float)
+    _ = r.check_type(3.14, float)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 布尔类型
-        result = validator.check_type(True, bool)
+    _ = r.check_type(True, bool)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 列表类型
-        result = validator.check_type([1, 2, 3], list)
+    _ = r.check_type([1, 2, 3], list)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 字典类型
-        result = validator.check_type({"a": 1}, dict)
+    _ = r.check_type({"a": 1}, dict)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # None类型
-        result = validator.check_type(None, type(None))
+    _ = r.check_type(None, type(None))  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
@@ -168,7 +168,7 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # 期望整数但得到字符串
-        result = validator.check_type("42", int)
+    _ = r.check_type("42", int)  # 未使用变量
         assert result.is_valid is False
         assert result.error_message is not None
         assert "参数类型错误" in result.error_message
@@ -176,19 +176,19 @@ class TestParamValidator:
         assert "实际str" in result.error_message
 
         # 期望字符串但得到整数
-        result = validator.check_type(42, str)
+    _ = r.check_type(42, str)  # 未使用变量
         assert result.is_valid is False
         assert "期望str" in result.error_message
         assert "实际int" in result.error_message
 
         # 期望列表但得到字典
-        result = validator.check_type({"a": 1}, list)
+    _ = r.check_type({"a": 1}, list)  # 未使用变量
         assert result.is_valid is False
         assert "期望list" in result.error_message
         assert "实际dict" in result.error_message
 
         # 期望布尔但得到整数
-        result = validator.check_type(1, bool)
+    _ = r.check_type(1, bool)  # 未使用变量
         assert result.is_valid is False
         assert "期望bool" in result.error_message
         assert "实际int" in result.error_message
@@ -206,13 +206,13 @@ class TestParamValidator:
 
         # 子类实例应该通过基类检查
         derived = DerivedClass()
-        result = validator.check_type(derived, BaseClass)
+    _ = r.check_type(derived, BaseClass)  # 未使用变量
         assert result.is_valid is True
         assert result.error_message is None
 
         # 基类实例不应该通过子类检查
         base = BaseClass()
-        result = validator.check_type(base, DerivedClass)
+    _ = r.check_type(base, DerivedClass)  # 未使用变量
         assert result.is_valid is False
         assert "期望DerivedClass" in result.error_message
         assert "实际BaseClass" in result.error_message
@@ -222,11 +222,11 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # None应该通过None类型检查
-        result = validator.check_type(None, type(None))
+    _ = r.check_type(None, type(None))  # 未使用变量
         assert result.is_valid is True
 
         # None不应该通过其他类型检查
-        result = validator.check_type(None, int)
+    _ = r.check_type(None, int)  # 未使用变量
         assert result.is_valid is False
         assert "期望int" in result.error_message
         assert "实际NoneType" in result.error_message
@@ -236,7 +236,7 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # 测试错误消息包含正确的类型名称
-        result = validator.check_type("hello", int)
+    _ = r.check_type("hello", int)  # 未使用变量
         assert result.is_valid is False
         error_msg = result.error_message
 
@@ -250,7 +250,7 @@ class TestParamValidator:
         class CustomType:
             pass
 
-        result = validator.check_type(42, CustomType)
+    _ = r.check_type(42, CustomType)  # 未使用变量
         assert result.is_valid is False
         assert "期望CustomType" in result.error_message
         assert "实际int" in result.error_message
@@ -260,22 +260,22 @@ class TestParamValidator:
         validator = ParamValidator()
 
         # 空元组
-        result = validator.check_count((), min_args=0, max_args=0)
+    _ = r.check_count((), min_args=0, max_args=0)  # 未使用变量
         assert result.is_valid is True
 
         # 负最小值（不应该发生，但测试处理）
-        result = validator.check_count((1, 2), min_args=-1, max_args=5)
+    _ = r.check_count((1, 2), min_args=-1, max_args=5)  # 未使用变量
         assert result.is_valid is True
 
         # 相同的最小值和最大值
-        result = validator.check_count((1, 2, 3), min_args=3, max_args=3)
+    _ = r.check_count((1, 2, 3), min_args=3, max_args=3)  # 未使用变量
         assert result.is_valid is True
 
-        result = validator.check_count((1, 2), min_args=3, max_args=3)
+    _ = r.check_count((1, 2), min_args=3, max_args=3)  # 未使用变量
         assert result.is_valid is False
         assert "参数数量不足" in result.error_message
 
-        result = validator.check_count((1, 2, 3, 4), min_args=3, max_args=3)
+    _ = r.check_count((1, 2, 3, 4), min_args=3, max_args=3)  # 未使用变量
         assert result.is_valid is False
         assert "参数数量过多" in result.error_message
 
@@ -298,17 +298,17 @@ class TestParamValidator:
         # 有效调用：提供所有必需参数
         args = (42, "hello")
         kwargs = {}
-        result = validator.validate(func_info, args, kwargs)
+    _ = r.validate(func_info, args, kwargs)  # 未使用变量
         assert result.is_valid is True
 
         # 有效调用：提供所有参数（包括可选参数）
         args = (42, "hello", 2.71)
-        result = validator.validate(func_info, args, kwargs)
+    _ = r.validate(func_info, args, kwargs)  # 未使用变量
         assert result.is_valid is True
 
         # 无效调用：参数不足
         args = (42,)  # 缺少第二个参数
-        result = validator.validate(func_info, args, kwargs)
+    _ = r.validate(func_info, args, kwargs)  # 未使用变量
         # 注意：默认实现总是返回True，所以这里我们直接测试check_count
         count_result = validator.check_count(args, min_args=2, max_args=3)
         assert count_result.is_valid is False
@@ -325,7 +325,7 @@ class TestParamValidator:
         # 测试多个值的类型检查
         values = [42, 100, 0, -5]
         for value in values:
-            result = validator.check_type(value, int)
+    _ = eck_type(value, int)  # 未使用变量
             assert result.is_valid is True
 
         # 混合类型测试
@@ -333,11 +333,11 @@ class TestParamValidator:
         expected_types = [int, str, float, bool, type(None)]
 
         for value, expected_type in zip(mixed_values, expected_types):
-            result = validator.check_type(value, expected_type)
+    _ = eck_type(value, expected_type)  # 未使用变量
             assert result.is_valid is True
 
             # 测试错误类型
             wrong_type = str if expected_type != str else int
-            result = validator.check_type(value, wrong_type)
+    _ = eck_type(value, wrong_type)  # 未使用变量
             if type(value) != wrong_type:
                 assert result.is_valid is False

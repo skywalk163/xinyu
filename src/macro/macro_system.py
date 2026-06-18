@@ -76,7 +76,7 @@ class MacroSystem:
 
         try:
             # 参数替换
-            result = macro.body
+    _ =   # 未使用变量
             for param in macro.params:
                 if param in args:
                     # 获取参数的实际值（如果是AST节点，提取其值）
@@ -118,7 +118,7 @@ class MacroSystem:
                     else:
                         # 其他情况使用字符串表示
                         replacement = str(arg_value)
-                    result = result.replace(param, replacement)
+    _ = , replacement)  # 未使用变量
 
             return result
         finally:

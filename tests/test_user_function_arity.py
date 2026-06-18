@@ -22,9 +22,9 @@ class TestUserDefinedFunctionArity:
 平方 5。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         # 检查变量定义（值为函数定义）
         var_def = ast.statements[0]
@@ -47,9 +47,9 @@ class TestUserDefinedFunctionArity:
 。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         # 检查函数已注册
         assert parser.verb_registry.is_registered("自定义函数")
@@ -68,9 +68,9 @@ class TestUserDefinedFunctionArity:
 。
 """
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         # 检查变量定义
         var_def = ast.statements[0]

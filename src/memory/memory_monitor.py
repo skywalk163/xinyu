@@ -20,8 +20,6 @@ from src.utils.imports import (
     with_time,
     with_tracemalloc,
 )
-from src.utils.logging_utils import Timer, get_logger
-from src.utils.stats_utils import calculate_statistics
 
 # 导入可选模块
 tracemalloc = import_optional("tracemalloc")

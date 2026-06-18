@@ -23,9 +23,9 @@ class TestArityDrivenParsing:
         """测试固定元数函数调用"""
         source = "平方根 16。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -39,9 +39,9 @@ class TestArityDrivenParsing:
         """测试可变元数函数调用"""
         source = '打印 "你好" "世界" "！"。'
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -53,9 +53,9 @@ class TestArityDrivenParsing:
         """测试操作符动词在表达式中"""
         source = "a 相加 b。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -66,9 +66,9 @@ class TestArityDrivenParsing:
         """测试操作符动词乘法"""
         source = "a 相乘 b。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -79,9 +79,9 @@ class TestArityDrivenParsing:
         """测试操作符动词除法"""
         source = "a 相除 b。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -92,9 +92,9 @@ class TestArityDrivenParsing:
         """测试操作符动词减法"""
         source = "a 相减 b。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -105,9 +105,9 @@ class TestArityDrivenParsing:
         """测试函数调用参数包含操作符"""
         source = "平方根 n 相减 1。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         # 实际解析为：平方根(n - 1)，即函数调用，参数是二元操作
         assert len(ast.statements) == 1
@@ -123,9 +123,9 @@ class TestArityDrivenParsing:
         """测试多个函数调用"""
         source = "平方根 16。平方根 25。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 2
         assert isinstance(ast.statements[0], FunctionCallNode)
@@ -135,9 +135,9 @@ class TestArityDrivenParsing:
         """测试嵌套函数调用"""
         source = "平方根 平方根 16。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -151,9 +151,9 @@ class TestArityDrivenParsing:
         """测试操作符动词与数字"""
         source = "5 相加 3。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -168,9 +168,9 @@ class TestArityDrivenParsing:
         """测试链式操作符动词"""
         source = "a 相加 b 相乘 c。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -185,9 +185,9 @@ class TestArityDrivenParsing:
         # 绝对值：固定1个参数（使用括号避免歧义）
         source = "绝对值（-5）。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -199,9 +199,9 @@ class TestArityDrivenParsing:
         """测试可变元数多参数"""
         source = "求和 1 2 3 4 5。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -214,9 +214,9 @@ class TestArityDrivenParsing:
         # 范围：1-3个参数
         source = "范围 10。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -228,9 +228,9 @@ class TestArityDrivenParsing:
         """测试范围元数函数（2个参数）"""
         source = "范围 1 10。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -242,9 +242,9 @@ class TestArityDrivenParsing:
         """测试未注册函数（默认可变元数）"""
         source = "自定义函数 1 2 3。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         assert len(ast.statements) == 1
         stmt = ast.statements[0]
@@ -256,9 +256,9 @@ class TestArityDrivenParsing:
         """测试操作符动词在参数中的处理"""
         source = "平方根 16 相加 平方根 25。"
         lexer = Lexer(source)
-        tokens = lexer.tokenize()
+    _ = kenize()  # 未使用变量
         parser = Parser(tokens)
-        ast = parser.parse()
+    _ = arse()  # 未使用变量
 
         # 实际解析为：平方根(16 + 平方根(25))，即函数调用，参数是二元操作
         assert len(ast.statements) == 1

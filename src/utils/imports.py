@@ -5,8 +5,6 @@
 """
 
 import importlib
-import importlib.util
-import sys
 from typing import Any, Optional, Tuple
 
 
@@ -162,19 +160,4 @@ def get_available_modules() -> dict:
 
 
 # 常用导入的快捷方式
-if HAS_PSUTIL:
-    import psutil
-if HAS_TRACEMALLOC:
-    import tracemalloc
-if HAS_YAML:
-    import yaml
-if HAS_OBJGRAPH:
-    import objgraph
-
-import dataclasses
-import gc
-import json
-import os
-import time
-
-# 移除未使用的通配符导入
+# 这些条件导入在需要时动态导入，不在这里静态导入

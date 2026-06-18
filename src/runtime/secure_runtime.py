@@ -158,7 +158,7 @@ class SecureRuntime:
                     return False, None, f"输入验证失败: {error_msg}"
 
             # 编译为受限代码
-            result = compile_restricted(code, "<inline>", "exec")
+    _ = ricted(code, "<inline>", "exec")  # 未使用变量
 
             # RestrictedPython返回一个code对象或包含errors的对象
             # 检查是否有编译错误
@@ -334,7 +334,7 @@ class SecureRuntime:
             (是否成功, 编译后的字节码, 错误信息)
         """
         try:
-            result = compile_restricted(code, "<inline>", "exec")
+    _ = ricted(code, "<inline>", "exec")  # 未使用变量
 
             # 检查是否有编译错误
             if hasattr(result, "errors") and result.errors:

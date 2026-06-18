@@ -279,10 +279,10 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 空模块名应该返回None或抛出异常
-        result = ms._find_module_file("")
+    _ = _module_file("")  # 未使用变量
         assert result is None
 
-        result = ms.get_module_attribute("", "attr")
+    _ = odule_attribute("", "attr")  # 未使用变量
         assert result is None
 
         # import_module会抛出ValueError，我们测试这个
@@ -296,11 +296,11 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 不存在的模块应该返回None
-        result = ms.import_module("non_existent_module_xyz_123")
+    _ = t_module("non_existent_module_xyz_123")  # 未使用变量
         assert result is None
 
         # 获取不存在的模块属性应该返回None
-        result = ms.get_module_attribute("non_existent_module_xyz_123", "attr")
+    _ = odule_attribute("non_existent_module_xyz_123", "attr")  # 未使用变量
         assert result is None
 
     def test_module_with_special_characters(self):
@@ -308,10 +308,10 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 包含特殊字符的模块名
-        result = ms.import_module("module-name")
+    _ = t_module("module-name")  # 未使用变量
         assert result is None  # Python模块名不能包含连字符
 
-        result = ms.import_module("module.name")
+    _ = t_module("module.name")  # 未使用变量
         assert result is None  # 暂时不支持点分隔的模块名
 
     def test_relative_paths(self):

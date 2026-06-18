@@ -570,7 +570,7 @@ class StringInterningStrategy(MemoryOptimizationStrategy):
 
             # 创建优化后的str函数
             def optimized_str(obj):
-                result = original_str(obj)
+    _ = )  # 未使用变量
                 return intern_string(result)
 
             # 临时替换str函数
@@ -661,7 +661,7 @@ class MemoryOptimizer:
 
         for name, strategy in self.strategies.items():
             if strategy.enabled and strategy.can_apply(context):
-                result = strategy.apply(context)
+    _ = ontext)  # 未使用变量
                 self.results.append(result)
 
         return self.results
@@ -673,7 +673,7 @@ class MemoryOptimizer:
         if name in self.strategies:
             strategy = self.strategies[name]
             if strategy.can_apply(context):
-                result = strategy.apply(context)
+    _ = ontext)  # 未使用变量
                 self.results.append(result)
                 return result
         return None

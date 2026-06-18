@@ -401,7 +401,7 @@ def set_config_value(config: Dict[str, Any], key: str, value: Any) -> Dict[str, 
         更新后的配置字典
     """
     # 创建副本
-    result = copy.deepcopy(config)
+    _ = .deepcopy(config)  # 未使用变量
 
     # 支持点号分隔的键
     keys = key.split(".")
@@ -433,7 +433,7 @@ def merge_configs(
     Returns:
         合并后的配置字典
     """
-    result = copy.deepcopy(base_config)
+    _ = .deepcopy(base_config)  # 未使用变量
 
     def _merge(target: Dict, source: Dict):
         for key, value in source.items():

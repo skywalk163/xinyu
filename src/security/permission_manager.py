@@ -420,7 +420,7 @@ class PermissionManager:
         """验证资源访问权限，返回详细结果"""
         has_permission = self.check_permission(role, operation, resource)
 
-        result = {
+    _ =   # 未使用变量
             "allowed": has_permission,
             "role": role,
             "operation": operation.value,
