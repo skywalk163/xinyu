@@ -1,6 +1,8 @@
 # tests/test_lexer.py
 import pytest
 
+from src.lexer.keywords import CORE_KEYWORDS, OPERATORS, SYNTAX_MARKERS
+from src.lexer.lexer import Lexer
 from src.lexer.tokens import Token, TokenType
 
 
@@ -24,7 +26,6 @@ def test_token_equality():
 
 
 # ===== 任务3：中文关键字定义测试 =====
-from src.lexer.keywords import CORE_KEYWORDS, OPERATORS, SYNTAX_MARKERS
 
 
 def test_core_keywords():
@@ -53,13 +54,12 @@ def test_operators():
 
 
 # ===== 任务4：词法分析器基础测试 =====
-from src.lexer.lexer import Lexer
 
 
 def test_lexer_number():
     """词法分析器：数字"""
     lexer = Lexer("123")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert len(tokens) == 2  # NUMBER + EOF
     assert tokens[0].type == TokenType.NUMBER
     assert tokens[0].value == 123
@@ -68,7 +68,7 @@ def test_lexer_number():
 def test_lexer_string():
     """词法分析器：字符串"""
     lexer = Lexer('"你好世界"')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == "你好世界"
 
@@ -76,7 +76,7 @@ def test_lexer_string():
 def test_lexer_identifier():
     """词法分析器：标识符"""
     lexer = Lexer("用户数据")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.IDENTIFIER
     assert tokens[0].value == "用户数据"
 
@@ -84,7 +84,7 @@ def test_lexer_identifier():
 def test_lexer_keyword():
     """词法分析器：关键字"""
     lexer = Lexer("如果")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.IF
 
 
@@ -94,7 +94,7 @@ def test_lexer_keyword():
 def test_lexer_float():
     """词法分析器：浮点数"""
     lexer = Lexer("3.14")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.NUMBER
     assert tokens[0].value == 3.14
 
@@ -104,7 +104,7 @@ def test_lexer_indent():
     source = """定义 x = 1。
   定义 y = 2。"""
     lexer = Lexer(source)
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     # 查找 INDENT token
     indent_tokens = [t for t in tokens if t.type == TokenType.INDENT]
@@ -118,7 +118,7 @@ def test_lexer_dedent():
   定义 y = 2。
 定义 z = 3。"""
     lexer = Lexer(source)
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     # 查找 INDENT 和 DEDENT tokens
     indent_tokens = [t for t in tokens if t.type == TokenType.INDENT]
@@ -131,7 +131,7 @@ def test_lexer_dedent():
 def test_lexer_comment():
     """词法分析器：注释处理"""
     lexer = Lexer("定义 x = 1。 -- 这是注释\n定义 y = 2。")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     # 注释应该被跳过，不应该出现在 tokens 中
     comment_tokens = [t for t in tokens if "注释" in str(t.value)]
@@ -145,7 +145,7 @@ def test_lexer_comment():
 def test_lexer_string_escape_newline():
     """词法分析器：字符串转义 - 换行符"""
     lexer = Lexer('"第一行\\n第二行"')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == "第一行\n第二行"
 
@@ -153,7 +153,7 @@ def test_lexer_string_escape_newline():
 def test_lexer_string_escape_tab():
     """词法分析器：字符串转义 - 制表符"""
     lexer = Lexer('"列1\\t列2"')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == "列1\t列2"
 
@@ -161,7 +161,7 @@ def test_lexer_string_escape_tab():
 def test_lexer_string_escape_quote():
     """词法分析器：字符串转义 - 引号"""
     lexer = Lexer('"他说\\"你好\\""')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == '他说"你好"'
 
@@ -169,7 +169,7 @@ def test_lexer_string_escape_quote():
 def test_lexer_string_escape_backslash():
     """词法分析器：字符串转义 - 反斜杠"""
     lexer = Lexer('"路径：C:\\\\Users"')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == "路径：C:\\Users"
 
@@ -177,7 +177,7 @@ def test_lexer_string_escape_backslash():
 def test_lexer_string_escape_multiple():
     """词法分析器：字符串转义 - 多个转义字符"""
     lexer = Lexer('"行1\\n行2\\t缩进\\\\反斜杠\\"引号\\""')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.STRING
     assert tokens[0].value == '行1\n行2\t缩进\\反斜杠"引号"'
 
@@ -223,7 +223,7 @@ def test_lexer_multiple_indent_levels():
   定义 d = 4。
 定义 e = 5。"""
     lexer = Lexer(source)
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     indent_tokens = [t for t in tokens if t.type == TokenType.INDENT]
     dedent_tokens = [t for t in tokens if t.type == TokenType.DEDENT]
@@ -237,7 +237,7 @@ def test_lexer_multiple_indent_levels():
 def test_lexer_empty_source():
     """词法分析器：空源代码"""
     lexer = Lexer("")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     assert len(tokens) == 1
     assert tokens[0].type == TokenType.EOF
@@ -246,7 +246,7 @@ def test_lexer_empty_source():
 def test_lexer_only_comments():
     """词法分析器：只有注释"""
     lexer = Lexer("-- 这是注释\n-- 另一行注释")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     # 应该只有 NEWLINE 和 EOF（注释被跳过）
     non_eof_tokens = [t for t in tokens if t.type != TokenType.EOF]
@@ -257,7 +257,7 @@ def test_lexer_only_comments():
 def test_lexer_chinese_operators():
     """词法分析器：中文操作符"""
     lexer = Lexer("相加 相减 相乘 相除")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     operator_types = [TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE]
     for i, expected_type in enumerate(operator_types):
@@ -267,7 +267,7 @@ def test_lexer_chinese_operators():
 def test_lexer_symbols():
     """词法分析器：符号"""
     lexer = Lexer("，。：（）【】")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
 
     expected_types = [
         TokenType.COMMA,
@@ -289,7 +289,7 @@ def test_lexer_symbols():
 def test_lexer_math_expression():
     """词法分析器：数学表达式 $()"""
     lexer = Lexer("$(π * r²)")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.DOLLAR
     assert tokens[1].type == TokenType.LPAREN
 
@@ -297,7 +297,7 @@ def test_lexer_math_expression():
 def test_lexer_python_block():
     """词法分析器：Python代码块 {{}}"""
     lexer = Lexer("{{import pandas}}")
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.LBRACE
 
 
@@ -308,7 +308,7 @@ def test_lexer_indentation():
 否则：
   其他动作。"""
     lexer = Lexer(source)
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert TokenType.INDENT in [t.type for t in tokens]
     assert TokenType.DEDENT in [t.type for t in tokens]
 
@@ -316,6 +316,6 @@ def test_lexer_indentation():
 def test_lexer_mixed_chinese_english():
     """词法分析器：混合中英文标识符"""
     lexer = Lexer('用户name = "张三"')
-    _ = r.tokenize()  # 未使用变量
+    tokens = lexer.tokenize()
     assert tokens[0].type == TokenType.IDENTIFIER
     assert tokens[0].value == "用户name"
