@@ -8,13 +8,12 @@
 - 类型推断
 """
 
-from typing import List, Optional
+from typing import List
 
 from src.parser.ast_nodes import (
     AssignNode,
     ASTNode,
     BinaryOpNode,
-    BlockNode,
     DictNode,
     ForNode,
     FromImportNode,
@@ -434,7 +433,7 @@ class SemanticAnalyzer:
 
     def _visit_member_access(self, node: MemberAccessNode) -> str:
         """访问成员访问节点"""
-        obj_type = self._visit_expression(node.obj)
+        self._visit_expression(node.obj)
 
         # 如果是内置模块的成员访问，不报错
         if isinstance(node.obj, IdentifierNode):
@@ -447,7 +446,7 @@ class SemanticAnalyzer:
     def _visit_index(self, node: IndexNode) -> str:
         """访问索引节点"""
         obj_type = self._visit_expression(node.obj)
-        index_type = self._visit_expression(node.index)
+        self._visit_expression(node.index)
 
         if obj_type == "list":
             return "unknown"  # 列表元素类型未知

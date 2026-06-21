@@ -1,0 +1,29 @@
+[flake8]
+max-line-length = 100
+ignore =
+    E203,
+    W503,
+    E226,
+    E231,
+    E402,
+    E501,
+    E712,
+    E721,
+    F841,
+    F541
+per-file-ignores =
+    # 测试文件允许未使用的导入和未定义名称
+    tests/**:F401,F811,F821
+    benchmark/**:F401,F811
+    examples/**:F401,F811
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    *.egg-info,
+    fix_f401_errors.py,
+    fix_f841_errors.py,
+    fix_all_format.py

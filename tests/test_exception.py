@@ -4,7 +4,6 @@
 测试心语语言的异常处理功能。
 """
 import io
-import sys
 from contextlib import redirect_stdout
 
 import pytest
@@ -38,7 +37,7 @@ class TestTryExcept:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "捕获到异常" in output
@@ -58,7 +57,7 @@ class TestTryExcept:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "除零错误" in output
@@ -82,7 +81,7 @@ class TestTryExcept:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "最终执行" in output
@@ -107,7 +106,7 @@ class TestTryExcept:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "除零错误" in output
@@ -131,7 +130,7 @@ class TestRaise:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "捕获到ValueError" in output
@@ -155,7 +154,7 @@ class TestRaise:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "重新抛出成功" in output
@@ -179,7 +178,7 @@ class TestExceptionWithVariable:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "捕获到异常" in output

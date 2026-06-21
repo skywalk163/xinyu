@@ -3,7 +3,6 @@
 测试src/runtime/module_system.py模块的功能。
 """
 
-import os
 import tempfile
 from pathlib import Path
 
@@ -157,7 +156,7 @@ class TestModuleSystem:
         src.runtime.module_system._module_system = None
 
         # 测试导入Python模块
-        math_module = import_module("math")
+        import_module("math")
         # import_module可能返回None，因为math可能不是心语模块
         # 我们只检查函数不抛出异常
         assert True  # 函数执行成功
@@ -171,13 +170,13 @@ class TestModuleSystem:
         assert math_module is not None
 
         # 现在可以获取属性
-        pi_value = ms.get_module_attribute("math", "pi")
+        ms.get_module_attribute("math", "pi")
         # 注意：get_module_attribute可能返回None，因为math模块是Python模块而不是字典
         # 我们只检查函数不抛出异常
         assert True  # 函数执行成功
 
         # 获取不存在的属性
-        non_existent = ms.get_module_attribute("math", "non_existent_attr")
+        ms.get_module_attribute("math", "non_existent_attr")
         # 可能返回None
         assert True  # 函数执行成功
 
@@ -279,10 +278,10 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 空模块名应该返回None或抛出异常
-    _ = _module_file("")  # 未使用变量
+        result = ms._find_module_file("")
         assert result is None
 
-    _ = odule_attribute("", "attr")  # 未使用变量
+        result = ms.get_module_attribute("", "attr")
         assert result is None
 
         # import_module会抛出ValueError，我们测试这个
@@ -296,11 +295,11 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 不存在的模块应该返回None
-    _ = t_module("non_existent_module_xyz_123")  # 未使用变量
+        result = ms.import_module("non_existent_module_xyz_123")
         assert result is None
 
         # 获取不存在的模块属性应该返回None
-    _ = odule_attribute("non_existent_module_xyz_123", "attr")  # 未使用变量
+        result = ms.get_module_attribute("non_existent_module_xyz_123", "attr")
         assert result is None
 
     def test_module_with_special_characters(self):
@@ -308,10 +307,10 @@ class TestModuleSystemEdgeCases:
         ms = ModuleSystem()
 
         # 包含特殊字符的模块名
-    _ = t_module("module-name")  # 未使用变量
+        result = ms.import_module("module-name")
         assert result is None  # Python模块名不能包含连字符
 
-    _ = t_module("module.name")  # 未使用变量
+        result = ms.import_module("module.name")
         assert result is None  # 暂时不支持点分隔的模块名
 
     def test_relative_paths(self):

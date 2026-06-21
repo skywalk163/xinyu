@@ -127,12 +127,12 @@ def test_struct_module():
     struct = manager.import_module("二进制结构")
 
     # 打包数据
-    packed = struct.打包("if", 42, 3.14)
+    packed = struct.打包("i", 42, 3.14)
     print(f"   打包格式: 'if' (整数+浮点)")
     print(f"   打包后大小: {len(packed)} 字节")
 
     # 解包数据
-    unpacked = struct.解包("if", packed)
+    unpacked = struct.解包("i", packed)
     print(f"   解包结果: {unpacked}")
 
 
@@ -171,7 +171,7 @@ def test_xml_module():
     child.text = "内容"
 
     xml_str = xml_etree.转字符串(root, encoding="unicode")
-    print(f"   创建的XML:")
+    print("   创建的XML:")
     print(f"   {xml_str}")
 
 

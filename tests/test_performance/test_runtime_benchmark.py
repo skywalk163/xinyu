@@ -2,9 +2,7 @@
 
 测试运行时关键操作的性能。
 """
-import time
 
-import pytest
 
 from src.main import ChineseProgram
 
@@ -123,7 +121,7 @@ class TestRuntimeBenchmark:
         arith_result = self.test_arithmetic_performance()
 
         # 输出结果（用于调试）
-        print(f"\n运行时性能:")
+        print("\n运行时性能:")
         print(format_result(loop_result, "循环执行"))
         print(format_result(func_result, "函数调用"))
         print(format_result(arith_result, "算术运算"))
@@ -136,7 +134,7 @@ class TestMemoryBenchmark:
         """测试小规模内存使用"""
         program = ChineseProgram()
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
-    _ = run(source)  # 未使用变量
+        result = program.run(source)
         # 应该成功执行
         assert result is not None or result is None
 
@@ -144,7 +142,7 @@ class TestMemoryBenchmark:
         """测试中规模内存使用"""
         program = ChineseProgram()
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
-    _ = run(source)  # 未使用变量
+        result = program.run(source)
         # 应该成功执行
         assert result is not None or result is None
 
@@ -156,6 +154,6 @@ class TestMemoryBenchmark:
 重复 1000 次：
     列表.追加(1)。
 """
-    _ = run(source)  # 未使用变量
+        result = program.run(source)
         # 应该成功执行
         assert result is not None or result is None

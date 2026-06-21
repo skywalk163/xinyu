@@ -5,7 +5,7 @@
 import statistics
 import time
 from functools import wraps
-from typing import Any, Callable, Dict, List
+from typing import Callable, Dict, List
 
 
 def benchmark(iterations: int = 10, warmup: int = 2) -> Callable:

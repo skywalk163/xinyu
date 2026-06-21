@@ -45,7 +45,7 @@ def test_compiler_basic():
     print(f"\n源代码（有错误）: {source3}")
 
     try:
-        result3 = compiler.compile(source3)
+        compiler.compile(source3)
         if compiler.has_errors():
             print("检测到错误:")
             for diagnostic in compiler.get_diagnostics():

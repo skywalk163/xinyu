@@ -21,7 +21,7 @@ STDLIB_MODULES = {
         "已实现": ["collections", "itertools"],
         "待实现": [
             "array",
-            "weakref",
+            "weakre",
             "types",
             "copy",
             "pprint",
@@ -93,7 +93,7 @@ STDLIB_MODULES = {
             "webbrowser",
             "cgi",
             "cgitb",
-            "wsgiref",
+            "wsgire",
             "urllib",
             "http",
             "ftplib",

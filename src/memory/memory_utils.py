@@ -5,7 +5,6 @@
 """
 
 import gc
-import inspect
 import linecache
 import sys
 import time
@@ -15,7 +14,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 # 使用统一的导入工具
-from src.utils.imports import import_optional, with_gc, with_psutil, with_time, with_tracemalloc
+from src.utils.imports import import_optional
 from src.utils.logging_utils import get_logger
 
 # 导入可选模块
@@ -155,7 +154,7 @@ def track_memory_allocation(func: Callable, *args, **kwargs) -> Tuple[Any, int]:
     snapshot1 = tracemalloc.take_snapshot()
 
     # 执行函数
-    _ = (*args, **kwargs)  # 未使用变量
+    result = func(*args, **kwargs)
 
     # 获取结束快照
     snapshot2 = tracemalloc.take_snapshot()
@@ -221,9 +220,9 @@ def find_memory_leaks(
 
             leaks.append(
                 {
-                    "size_diff": stat.size_diff,
+                    "size_dif": stat.size_diff,
                     "size_diff_mb": stat.size_diff / 1024 / 1024,
-                    "count_diff": stat.count_diff,
+                    "count_dif": stat.count_diff,
                     "filename": filename,
                     "lineno": lineno,
                     "line": line,
@@ -423,7 +422,7 @@ def clear_cyclic_references() -> int:
         int: 清除的循环引用数量
     """
     # 查找循环引用
-    cycles = gc.collect()
+    gc.collect()
 
     # 获取无法回收的对象
     garbage = gc.garbage
@@ -680,7 +679,7 @@ def profile_memory_usage(func: Callable, *args, **kwargs) -> Dict[str, Any]:
 
     # 执行函数
     start_time = time.time()
-    _ = (*args, **kwargs)  # 未使用变量
+    result = func(*args, **kwargs)
     execution_time = time.time() - start_time
 
     # 获取结束内存使用
@@ -705,9 +704,9 @@ def profile_memory_usage(func: Callable, *args, **kwargs) -> Dict[str, Any]:
             frame = stat.traceback[0]
             hotspots.append(
                 {
-                    "size_diff": stat.size_diff,
+                    "size_dif": stat.size_diff,
                     "size_diff_kb": stat.size_diff / 1024,
-                    "count_diff": stat.count_diff,
+                    "count_dif": stat.count_diff,
                     "filename": frame.filename,
                     "lineno": frame.lineno,
                     "line": linecache.getline(frame.filename, frame.lineno).strip(),

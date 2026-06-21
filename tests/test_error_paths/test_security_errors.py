@@ -28,7 +28,7 @@ class TestSecurityErrors:
             "定义 危险 = eval('1+1')。",
         ]
         for source in malicious_sources:
-    _ = source)  # 未使用变量
+            program.run(source)
             # 应该拒绝执行或安全处理
             # 根据实际实现决定
 
@@ -36,7 +36,7 @@ class TestSecurityErrors:
         """测试文件访问防护"""
         program = ChineseProgram()
         source = '定义 文件 = 打开("/etc/passwd")。'
-    _ = run(source)  # 未使用变量
+        result = program.run(source)
         # 应该拒绝文件访问
         assert result is None
 
@@ -44,7 +44,7 @@ class TestSecurityErrors:
         """测试网络访问防护"""
         program = ChineseProgram()
         source = '定义 连接 = 连接("http://malicious.com")。'
-    _ = run(source)  # 未使用变量
+        result = program.run(source)
         # 应该拒绝网络访问
         assert result is None
 
@@ -56,7 +56,7 @@ class TestSecurityErrors:
             "定义 结果 = compile('1+1', '<string>', 'eval')。",
         ]
         for source in dangerous_sources:
-    _ = source)  # 未使用变量
+            program.run(source)
             # 应该拒绝或安全处理
             # 根据实际实现决定
 
@@ -76,7 +76,7 @@ class TestInputValidation:
         ]
         for source in valid_sources:
             # 应该通过验证
-    _ = rce(source)  # 未使用变量
+            result = validate_source(source)
             assert result.is_valid, f"验证失败: {result.errors}"
 
     def test_validate_malicious_input(self):
@@ -91,7 +91,7 @@ class TestInputValidation:
         ]
         for source in malicious_sources:
             # 应该拒绝或标记为危险
-    _ = rce(source)  # 未使用变量
+            result = validate_source(source)
             assert not result.is_valid, f"恶意代码应该被拒绝: {source}"
 
     def test_validate_input_length(self):
@@ -101,7 +101,7 @@ class TestInputValidation:
 
         # 超长输入
         long_source = "打印" + "。" * 1000000
-    _ = _source(long_source)  # 未使用变量
+        result = validate_source(long_source)
         # 超长输入应该产生警告
         assert len(result.warnings) > 0, "超长输入应该产生警告"
 
@@ -115,7 +115,7 @@ class TestInputValidation:
             '定义 变量 = "\n\r\t"。',
         ]
         for source in special_sources:
-    _ = rce(source)  # 未使用变量
+            result = validate_source(source)
             # 特殊字符应该被允许（除非是控制字符）
             # 这里我们只检查验证不会崩溃
             assert result is not None, "验证应该返回结果"
@@ -134,7 +134,7 @@ class TestSandboxSecurity:
 捕获：
     返回 空。
 """
-    _ = run(source)  # 未使用变量
+        program.run(source)
         # 应该无法访问os模块
         # 根据实际实现决定
 
@@ -147,7 +147,7 @@ class TestSandboxSecurity:
 重复 100000 次：
     列表.追加(1)。
 """
-    _ = run(source)  # 未使用变量
+        program.run(source)
         # 应该有资源限制
         # 根据实际实现决定
 
@@ -155,7 +155,7 @@ class TestSandboxSecurity:
         """测试无系统访问"""
         program = ChineseProgram()
         source = "定义 系统 = __import__('sys')。"
-    _ = run(source)  # 未使用变量
+        program.run(source)
         # 应该无法访问sys模块
         # 根据实际实现决定
 
@@ -174,7 +174,7 @@ class TestSecurityErrorRecovery:
         ]
         for source in sources:
             try:
-    _ = ce)  # 未使用变量
+                program.run(source)
                 # 不应该崩溃
             except Exception as e:
                 # 异常应该是预期的类型
@@ -185,7 +185,7 @@ class TestSecurityErrorRecovery:
         program = ChineseProgram()
         source = "__import__('os').system('ls')"
         try:
-    _ = source)  # 未使用变量
+            program.run(source)
             # 应该记录安全错误
             # 根据实际实现决定
         except Exception:

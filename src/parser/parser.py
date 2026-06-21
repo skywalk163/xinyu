@@ -17,21 +17,30 @@ from src.parser.ast_nodes import (
     AssignNode,
     ASTNode,
     BinaryOpNode,
-    BlockNode,
+    ClassNode,
     DictNode,
+    ExceptNode,
+    ExportNode,
     ForNode,
+    FromImportNode,
     FunctionCallNode,
     FunctionDefNode,
     IdentifierNode,
     IfNode,
+    ImportNode,
     IndexNode,
+    InterfaceNode,
     ListNode,
     MemberAccessNode,
+    MethodNode,
     NumberNode,
     ProgramNode,
+    PropertyNode,
+    RaiseNode,
     RepeatNode,
     ReturnNode,
     StringNode,
+    TryNode,
     UnaryOpNode,
     VarDefNode,
     WhileNode,
@@ -352,6 +361,22 @@ class Parser:
         if self._check(TokenType.FROM):
             return self._parse_from_import()
 
+        # 导出语句：导出 ...
+        if self._check(TokenType.EXPORT):
+            return self._parse_export()
+
+        # 类定义：定义 类 类名：...
+        if self._check(TokenType.VAR) and self._peek(1) and self._peek(1).type == TokenType.CLASS:
+            return self._parse_class_definition()
+
+        # 接口定义：定义 接口 接口名：...
+        if (
+            self._check(TokenType.VAR)
+            and self._peek(1)
+            and self._peek(1).type == TokenType.INTERFACE
+        ):
+            return self._parse_interface_definition()
+
         # 表达式语句（包括赋值）
         return self._parse_expression_statement()
 
@@ -665,7 +690,7 @@ class Parser:
         left = self._parse_and()
 
         while self._check(TokenType.OR):
-            op_token = self._advance()
+            self._advance()
             right = self._parse_and()
 
             left = BinaryOpNode(
@@ -679,7 +704,7 @@ class Parser:
         left = self._parse_comparison()
 
         while self._check(TokenType.AND):
-            op_token = self._advance()
+            self._advance()
             right = self._parse_comparison()
 
             left = BinaryOpNode(
@@ -1373,7 +1398,7 @@ class Parser:
             finally块。
         。
         """
-        from src.parser.ast_nodes import ExceptNode, TryNode
+        from src.parser.ast_nodes import TryNode
 
         token = self._advance()  # 消费 尝试
 
@@ -1572,6 +1597,464 @@ class Parser:
 
         return FromImportNode(
             line=token.line, column=token.column, module=module_name, names=names, aliases=aliases
+        )
+
+    def _parse_export(self) -> "ExportNode":
+        """解析export语句
+
+        语法：
+        导出 名称。
+        导出 名称1, 名称2。
+        导出 名称 为 别名。
+        """
+        token = self._advance()  # 消费 导出
+
+        # 解析导出的名称列表
+        names = []
+        aliases = {}
+
+        while True:
+            # 解析名称
+            if not self._check(TokenType.IDENTIFIER):
+                raise ParseError("期望导出的名称", self._current_token())
+
+            name_token = self._advance()
+            name = name_token.value
+            names.append(name)
+
+            # 检查是否有别名
+            if self._check(TokenType.AS):
+                self._advance()  # 消费 为
+                if not self._check(TokenType.IDENTIFIER):
+                    raise ParseError("期望别名", self._current_token())
+                alias_token = self._advance()
+                aliases[name] = alias_token.value
+
+            # 检查是否有逗号（继续导出更多名称）
+            if self._check(TokenType.COMMA):
+                self._advance()
+                continue
+            else:
+                break
+
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+
+        return ExportNode(line=token.line, column=token.column, names=names, aliases=aliases)
+
+    def _parse_class_definition(self) -> "ClassNode":
+        """解析类定义
+
+        语法：
+        定义 类 类名：
+            成员...
+        。
+
+        定义 类 类名 继承 父类：
+            成员...
+        。
+
+        定义 类 类名 实现 接口1, 接口2：
+            成员...
+        。
+        """
+        var_token = self._advance()  # 消费 定义
+        class_token = self._advance()  # 消费 类
+
+        # 解析类名
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError("期望类名", self._current_token())
+
+        name_token = self._advance()
+        class_name = name_token.value
+
+        # 解析继承和实现
+        extends = None
+        implements = []
+
+        # 检查是否有继承
+        if self._check(TokenType.EXTENDS):
+            self._advance()  # 消费 继承
+            if not self._check(TokenType.IDENTIFIER):
+                raise ParseError("期望父类名", self._current_token())
+            extends_token = self._advance()
+            extends = extends_token.value
+
+        # 检查是否有实现
+        if self._check(TokenType.IMPLEMENTS):
+            self._advance()  # 消费 实现
+
+            # 解析接口列表
+            while True:
+                if not self._check(TokenType.IDENTIFIER):
+                    raise ParseError("期望接口名", self._current_token())
+
+                interface_token = self._advance()
+                implements.append(interface_token.value)
+
+                # 检查是否有逗号（继续更多接口）
+                if self._check(TokenType.COMMA):
+                    self._advance()
+                    continue
+                else:
+                    break
+
+        # 消费冒号
+        if not self._check(TokenType.COLON):
+            raise ParseError("期望 '：'", self._current_token())
+        self._advance()
+
+        # 解析类体
+        members = self._parse_class_body()
+
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+
+        return ClassNode(
+            line=var_token.line,
+            column=var_token.column,
+            name=class_name,
+            extends=extends,
+            implements=implements,
+            members=members,
+        )
+
+    def _parse_class_body(self) -> List[ASTNode]:
+        """解析类体"""
+        members = []
+
+        # 跳过换行
+        while self._check(TokenType.NEWLINE):
+            self._advance()
+
+        # 检查是否有缩进
+        if not self._check(TokenType.INDENT):
+            # 单行类体
+            member = self._parse_class_member()
+            if member:
+                members.append(member)
+        else:
+            # 多行类体
+            self._advance()  # 消费 INDENT
+
+            while not self._check(TokenType.DEDENT, TokenType.EOF):
+                # 跳过换行
+                while self._check(TokenType.NEWLINE):
+                    self._advance()
+
+                if self._check(TokenType.DEDENT, TokenType.EOF):
+                    break
+
+                member = self._parse_class_member()
+                if member:
+                    members.append(member)
+
+            # 消费 DEDENT
+            if self._check(TokenType.DEDENT):
+                self._advance()
+
+        return members
+
+    def _parse_class_member(self) -> Optional[ASTNode]:
+        """解析类成员（属性或方法）"""
+        # 跳过换行
+        while self._check(TokenType.NEWLINE):
+            self._advance()
+
+        if self._check(TokenType.EOF):
+            return None
+
+        # 检查是否是静态成员
+        is_static = False
+        if self._check(TokenType.STATIC):
+            self._advance()  # 消费 静态
+            is_static = True
+
+        # 检查是否是构造函数
+        if self._check(TokenType.FUNCTION) and self._peek(1) and self._peek(1).value == "初始化":
+            return self._parse_constructor(is_static)
+
+        # 检查是否是方法定义
+        if self._check(TokenType.FUNCTION):
+            return self._parse_method_definition(is_static)
+
+        # 检查是否是属性定义
+        if self._check(TokenType.VAR):
+            return self._parse_property_definition(is_static)
+
+        # 未知成员类型
+        raise ParseError("期望类成员（属性或方法）", self._current_token())
+
+    def _parse_constructor(self, is_static: bool) -> "MethodNode":
+        """解析构造函数"""
+        func_token = self._advance()  # 消费 函数
+        init_token = self._advance()  # 消费 初始化
+
+        # 检查方法名是否为"初始化"
+        if init_token.value != "初始化":
+            raise ParseError("构造函数名必须是'初始化'", init_token)
+
+        # 解析参数列表
+        params = []
+        if self._check(TokenType.LPAREN, TokenType.IDENTIFIER):
+            if self._check(TokenType.LPAREN):
+                self._advance()  # 消费 (
+                # 解析参数
+                while not self._check(TokenType.RPAREN, TokenType.EOF):
+                    if self._check(TokenType.PARAM):
+                        self._advance()  # 消费 参数
+                        if not self._check(TokenType.IDENTIFIER):
+                            raise ParseError("期望参数名", self._current_token())
+                        param_token = self._advance()
+                        params.append(param_token.value)
+
+                    # 检查是否有逗号
+                    if self._check(TokenType.COMMA):
+                        self._advance()
+                        continue
+                    else:
+                        break
+
+                # 消费 )
+                if not self._check(TokenType.RPAREN):
+                    raise ParseError("期望 ')'", self._current_token())
+                self._advance()
+
+        # 消费冒号
+        if not self._check(TokenType.COLON):
+            raise ParseError("期望 '：'", self._current_token())
+        self._advance()
+
+        # 解析方法体
+        body = self._parse_block()
+
+        return MethodNode(
+            line=func_token.line,
+            column=func_token.column,
+            name="初始化",
+            params=params,
+            body=body,
+            is_static=is_static,
+            is_constructor=True,
+        )
+
+    def _parse_method_definition(self, is_static: bool) -> "MethodNode":
+        """解析方法定义"""
+        func_token = self._advance()  # 消费 函数
+
+        # 解析方法名
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError("期望方法名", self._current_token())
+
+        name_token = self._advance()
+        method_name = name_token.value
+
+        # 解析参数列表
+        params = []
+        if self._check(TokenType.LPAREN, TokenType.IDENTIFIER):
+            if self._check(TokenType.LPAREN):
+                self._advance()  # 消费 (
+                # 解析参数
+                while not self._check(TokenType.RPAREN, TokenType.EOF):
+                    if self._check(TokenType.PARAM):
+                        self._advance()  # 消费 参数
+                        if not self._check(TokenType.IDENTIFIER):
+                            raise ParseError("期望参数名", self._current_token())
+                        param_token = self._advance()
+                        params.append(param_token.value)
+
+                    # 检查是否有逗号
+                    if self._check(TokenType.COMMA):
+                        self._advance()
+                        continue
+                    else:
+                        break
+
+                # 消费 )
+                if not self._check(TokenType.RPAREN):
+                    raise ParseError("期望 ')'", self._current_token())
+                self._advance()
+
+        # 消费冒号
+        if not self._check(TokenType.COLON):
+            raise ParseError("期望 '：'", self._current_token())
+        self._advance()
+
+        # 解析方法体
+        body = self._parse_block()
+
+        return MethodNode(
+            line=func_token.line,
+            column=func_token.column,
+            name=method_name,
+            params=params,
+            body=body,
+            is_static=is_static,
+            is_constructor=False,
+        )
+
+    def _parse_property_definition(self, is_static: bool) -> "PropertyNode":
+        """解析属性定义"""
+        var_token = self._advance()  # 消费 定义
+
+        # 解析属性名
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError("期望属性名", self._current_token())
+
+        name_token = self._advance()
+        property_name = name_token.value
+
+        # 解析初始值（可选）
+        value = None
+        if self._check(TokenType.ASSIGN):
+            self._advance()  # 消费 =
+            value = self._parse_expression()
+
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+
+        return PropertyNode(
+            line=var_token.line,
+            column=var_token.column,
+            name=property_name,
+            value=value,
+            is_static=is_static,
+        )
+
+    def _parse_interface_definition(self) -> "InterfaceNode":
+        """解析接口定义
+
+        语法：
+        定义 接口 接口名：
+            方法定义...
+        。
+        """
+        var_token = self._advance()  # 消费 定义
+        interface_token = self._advance()  # 消费 接口
+
+        # 解析接口名
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError("期望接口名", self._current_token())
+
+        name_token = self._advance()
+        interface_name = name_token.value
+
+        # 消费冒号
+        if not self._check(TokenType.COLON):
+            raise ParseError("期望 '：'", self._current_token())
+        self._advance()
+
+        # 解析接口体（方法定义）
+        methods = self._parse_interface_body()
+
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+
+        return InterfaceNode(
+            line=var_token.line, column=var_token.column, name=interface_name, methods=methods
+        )
+
+    def _parse_interface_body(self) -> List["MethodNode"]:
+        """解析接口体（只包含方法声明）"""
+        methods = []
+
+        # 跳过换行
+        while self._check(TokenType.NEWLINE):
+            self._advance()
+
+        # 检查是否有缩进
+        if not self._check(TokenType.INDENT):
+            # 单行接口体
+            method = self._parse_interface_method()
+            if method:
+                methods.append(method)
+        else:
+            # 多行接口体
+            self._advance()  # 消费 INDENT
+
+            while not self._check(TokenType.DEDENT, TokenType.EOF):
+                # 跳过换行
+                while self._check(TokenType.NEWLINE):
+                    self._advance()
+
+                if self._check(TokenType.DEDENT, TokenType.EOF):
+                    break
+
+                method = self._parse_interface_method()
+                if method:
+                    methods.append(method)
+
+            # 消费 DEDENT
+            if self._check(TokenType.DEDENT):
+                self._advance()
+
+        return methods
+
+    def _parse_interface_method(self) -> Optional["MethodNode"]:
+        """解析接口方法声明"""
+        # 跳过换行
+        while self._check(TokenType.NEWLINE):
+            self._advance()
+
+        if self._check(TokenType.EOF):
+            return None
+
+        # 必须是方法定义
+        if not self._check(TokenType.FUNCTION):
+            raise ParseError("接口中只能包含方法声明", self._current_token())
+
+        func_token = self._advance()  # 消费 函数
+
+        # 解析方法名
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError("期望方法名", self._current_token())
+
+        name_token = self._advance()
+        method_name = name_token.value
+
+        # 解析参数列表
+        params = []
+        if self._check(TokenType.LPAREN, TokenType.IDENTIFIER):
+            if self._check(TokenType.LPAREN):
+                self._advance()  # 消费 (
+                # 解析参数
+                while not self._check(TokenType.RPAREN, TokenType.EOF):
+                    if self._check(TokenType.PARAM):
+                        self._advance()  # 消费 参数
+                        if not self._check(TokenType.IDENTIFIER):
+                            raise ParseError("期望参数名", self._current_token())
+                        param_token = self._advance()
+                        params.append(param_token.value)
+
+                    # 检查是否有逗号
+                    if self._check(TokenType.COMMA):
+                        self._advance()
+                        continue
+                    else:
+                        break
+
+                # 消费 )
+                if not self._check(TokenType.RPAREN):
+                    raise ParseError("期望 ')'", self._current_token())
+                self._advance()
+
+        # 接口方法没有方法体，只有声明
+        # 消费语句结束符 。
+        if self._check(TokenType.PERIOD):
+            self._advance()
+
+        return MethodNode(
+            line=func_token.line,
+            column=func_token.column,
+            name=method_name,
+            params=params,
+            body=[],  # 接口方法没有实现
+            is_static=False,
+            is_constructor=False,
         )
 
     # ============ 块解析 ============

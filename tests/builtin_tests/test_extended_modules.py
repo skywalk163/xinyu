@@ -42,7 +42,7 @@ def test_compression_modules():
 
     # 测试zipfile模块
     print("\n3. zipfile模块测试:")
-    zipfile = manager.import_module("ZIP")
+    manager.import_module("ZIP")
     print("   zipfile模块已加载，可用于ZIP文件操作")
 
 
@@ -95,17 +95,17 @@ def test_network_modules():
 
     # 测试ssl模块
     print("\n2. SSL模块测试:")
-    ssl = manager.import_module("SSL")
+    manager.import_module("SSL")
     print("   SSL模块已加载，可用于安全连接")
 
     # 测试http模块
     print("\n3. HTTP模块测试:")
-    http = manager.import_module("HTTP")
+    manager.import_module("HTTP")
     print("   HTTP模块已加载，可用于HTTP协议")
 
     # 测试urllib模块
     print("\n4. urllib模块测试:")
-    urllib = manager.import_module("URL")
+    manager.import_module("URL")
     print("   urllib模块已加载，可用于URL处理")
 
 
@@ -119,12 +119,12 @@ def test_testing_modules():
 
     # 测试unittest模块
     print("\n1. unittest模块测试:")
-    unittest = manager.import_module("单元测试")
+    manager.import_module("单元测试")
     print("   unittest模块已加载，可用于单元测试")
 
     # 测试doctest模块
     print("\n2. doctest模块测试:")
-    doctest = manager.import_module("文档测试")
+    manager.import_module("文档测试")
     print("   doctest模块已加载，可用于文档测试")
 
 
@@ -138,7 +138,7 @@ def test_async_module():
 
     # 测试asyncio模块
     print("\n1. asyncio模块测试:")
-    asyncio = manager.import_module("异步")
+    manager.import_module("异步")
     print("   asyncio模块已加载，可用于异步编程")
     print("   主要功能: 运行, 创建任务, 等待, 睡眠, 队列, 锁, 事件")
 
@@ -153,7 +153,7 @@ def test_gui_module():
 
     # 测试tkinter模块
     print("\n1. tkinter模块测试:")
-    tkinter = manager.import_module("图形界面")
+    manager.import_module("图形界面")
     print("   tkinter模块已加载，可用于GUI编程")
     print("   主要组件: 主窗口, 框架, 标签, 按钮, 输入框, 文本框, 画布")
 

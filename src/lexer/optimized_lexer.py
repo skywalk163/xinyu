@@ -89,7 +89,7 @@ class OptimizedLexer:
             Token序列
         """
         # 预分配Token列表（估算大小）
-        _ = self.source_len // 3  # estimated_tokens - 未使用变量，平均每3个字符一个Token
+        estimated_tokens = self.source_len // 3  # 平均每3个字符一个Token
         self.tokens = []
 
         while self.pos < self.source_len:
@@ -264,12 +264,12 @@ class OptimizedLexer:
     @staticmethod
     def _is_identifier_start(char: str) -> bool:
         """检查是否为标识符起始字符"""
-        return char.isalpha() or char == "_" or "\u4e00" <= char <= "\u9fff"
+        return char.isalpha() or char == "_" or "\u4e00" <= char <= "鿿"
 
     @staticmethod
     def _is_identifier_char(char: str) -> bool:
         """检查是否为标识符字符"""
-        return char.isalnum() or char == "_" or "\u4e00" <= char <= "\u9fff"
+        return char.isalnum() or char == "_" or "\u4e00" <= char <= "鿿"
 
 
 # 性能对比测试
@@ -298,13 +298,13 @@ def benchmark_lexer():
     start = time.time()
     lexer1 = Lexer(test_code)
     tokens1 = lexer1.tokenize()
-    _ = .time() - start  # 未使用变量
+    time1 = time.time() - start
 
     # 测试优化版词法分析器
     start = time.time()
     lexer2 = OptimizedLexer(test_code)
     tokens2 = lexer2.tokenize()
-    _ = .time() - start  # 未使用变量
+    time2 = time.time() - start
 
     print(f"原始词法分析器: {time1:.4f}秒, {len(tokens1)}个Token")
     print(f"优化词法分析器: {time2:.4f}秒, {len(tokens2)}个Token")

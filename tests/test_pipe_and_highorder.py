@@ -4,7 +4,6 @@
 测试心语语言的管道操作和高阶函数功能。
 """
 import io
-import sys
 from contextlib import redirect_stdout
 
 import pytest
@@ -36,7 +35,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -54,7 +53,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "15" in output
@@ -72,7 +71,7 @@ class TestPipeOperation:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -98,7 +97,7 @@ class TestHighOrderFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         # 应该输出 [2, 4, 6]
@@ -127,7 +126,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "15" in output
@@ -145,7 +144,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -163,7 +162,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "10" in output

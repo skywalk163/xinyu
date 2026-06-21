@@ -6,8 +6,7 @@
 import fnmatch
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Set
 
 from src.utils.config_utils import ConfigManager
 
@@ -337,7 +336,7 @@ class PermissionManager:
 
         # 检查循环继承
         if self._has_inheritance_cycle(child_role, parent_role):
-            self.logger.warning(f"添加继承关系会导致循环继承")
+            self.logger.warning("添加继承关系会导致循环继承")
             return False
 
         if child_role not in self.role_hierarchy:
@@ -420,7 +419,7 @@ class PermissionManager:
         """验证资源访问权限，返回详细结果"""
         has_permission = self.check_permission(role, operation, resource)
 
-    _ =   # 未使用变量
+        result = {
             "allowed": has_permission,
             "role": role,
             "operation": operation.value,

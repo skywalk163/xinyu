@@ -170,7 +170,7 @@ class PerformanceProfiler:
                             args.append(None)
 
                     self.logger.info(f"分析函数: {name}")
-    _ = n(obj, *args, **kwargs)  # 未使用变量
+                    result = self.profile_function(obj, *args, **kwargs)
                     results.append(result)
 
                 except Exception as e:

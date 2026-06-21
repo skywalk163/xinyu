@@ -59,6 +59,16 @@ SYNTAX_MARKERS = {
     # 模块导入
     "导入": TokenType.IMPORT,  # import
     "从": TokenType.FROM,  # from
+    "导出": TokenType.EXPORT,  # export
+    # 面向对象编程
+    "类": TokenType.CLASS,  # class
+    "继承": TokenType.EXTENDS,  # extends
+    "实现": TokenType.IMPLEMENTS,  # implements
+    "新建": TokenType.NEW,  # new
+    "自身": TokenType.THIS,  # this/self
+    "静态": TokenType.STATIC,  # static
+    "接口": TokenType.INTERFACE,  # interface
+    "父类": TokenType.SUPER,  # super
 }
 
 # 操作符（双字，单义，明确指向运算）

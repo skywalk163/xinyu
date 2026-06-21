@@ -5,7 +5,7 @@
 """
 
 import importlib
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from .wrappers import (
     ArgparseWrapper,

@@ -4,11 +4,9 @@
 测试意合式函数调用语法：参数1、参数2，函数名。
 """
 
-import pytest
 
-from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
-from src.parser.ast_nodes import FunctionCallNode, IdentifierNode, NumberNode, StringNode
+from src.parser.ast_nodes import FunctionCallNode, NumberNode, StringNode
 from src.parser.parser import Parser
 
 
@@ -19,9 +17,9 @@ class TestIntentionalCall:
         """测试简单的意合式调用"""
         source = "北京、上海，计算距离。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 应该解析为函数调用
         assert len(ast.statements) == 1
@@ -33,9 +31,9 @@ class TestIntentionalCall:
         """测试数字参数的意合式调用"""
         source = "10、20，求和。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert len(ast.statements) == 1
         assert isinstance(ast.statements[0], FunctionCallNode)
@@ -48,9 +46,9 @@ class TestIntentionalCall:
         """测试字符串参数的意合式调用"""
         source = '"张三"、"李四"，发送消息。'
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert len(ast.statements) == 1
         assert isinstance(ast.statements[0], FunctionCallNode)
@@ -63,9 +61,9 @@ class TestIntentionalCall:
         """测试三个参数的意合式调用"""
         source = "1、2、3，计算平均值。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert len(ast.statements) == 1
         assert isinstance(ast.statements[0], FunctionCallNode)
@@ -79,9 +77,9 @@ class TestIntentionalCall:
 广州、深圳，计算距离。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert len(ast.statements) == 2
         assert all(isinstance(stmt, FunctionCallNode) for stmt in ast.statements)
@@ -94,9 +92,9 @@ class TestIntentionalCall:
 计算距离(北京, 上海)。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert len(ast.statements) == 2
         assert all(isinstance(stmt, FunctionCallNode) for stmt in ast.statements)

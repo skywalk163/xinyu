@@ -5,9 +5,6 @@
 提供基本的代码执行环境，限制危险操作。
 """
 
-import ast
-import sys
-import types
 from typing import Any, Dict, List, Optional
 
 
@@ -168,7 +165,7 @@ class SecureExecutor:
             exec(byte_code, exec_globals, exec_locals)
 
             # 获取结果（如果有）
-    _ = get("__result__")  # 未使用变量
+            result = exec_locals.get("__result__")
 
             return result
 
@@ -260,8 +257,6 @@ class SecureExecutor:
 
 class SecurityError(Exception):
     """安全错误异常"""
-
-    pass
 
 
 # 导出

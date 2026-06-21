@@ -2,8 +2,8 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com/yourusername/xinyu/actions)
-[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)](https://github.com/yourusername/xinyu/actions)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com/skywalk163/xinyu/actions)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)](https://github.com/skywalk163/xinyu/actions)
 
 心语是一个专为中文使用者设计的编程语言，使用中文关键字和语法，让编程更加直观易懂。
 
@@ -25,7 +25,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/xinyu.git
+git clone https://github.com/skywalk163/xinyu.git
 cd xinyu
 
 # 安装依赖
@@ -263,11 +263,11 @@ pre-commit run xinyu-format --all-files
 项目配置了完整的CI/CD流水线，自动化构建、测试和发布流程：
 
 #### 状态徽章
-[![代码质量检查](https://github.com/yourusername/xinyu-lang/actions/workflows/quality.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/quality.yml)
-[![测试套件](https://github.com/yourusername/xinyu-lang/actions/workflows/test.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/test.yml)
-[![发布状态](https://github.com/yourusername/xinyu-lang/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/release.yml)
-[![文档部署](https://github.com/yourusername/xinyu-lang/actions/workflows/docs.yml/badge.svg)](https://github.com/yourusername/xinyu-lang/actions/workflows/docs.yml)
-[![测试覆盖率](https://codecov.io/gh/yourusername/xinyu-lang/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/xinyu-lang)
+[![代码质量检查](https://github.com/skywalk163/xinyu-lang/actions/workflows/quality.yml/badge.svg)](https://github.com/skywalk163/xinyu-lang/actions/workflows/quality.yml)
+[![测试套件](https://github.com/skywalk163/xinyu-lang/actions/workflows/test.yml/badge.svg)](https://github.com/skywalk163/xinyu-lang/actions/workflows/test.yml)
+[![发布状态](https://github.com/skywalk163/xinyu-lang/actions/workflows/release.yml/badge.svg)](https://github.com/skywalk163/xinyu-lang/actions/workflows/release.yml)
+[![文档部署](https://github.com/skywalk163/xinyu-lang/actions/workflows/docs.yml/badge.svg)](https://github.com/skywalk163/xinyu-lang/actions/workflows/docs.yml)
+[![测试覆盖率](https://codecov.io/gh/skywalk163/xinyu-lang/branch/main/graph/badge.svg)](https://codecov.io/gh/skywalk163/xinyu-lang)
 [![PyPI版本](https://img.shields.io/pypi/v/xinyu-lang)](https://pypi.org/project/xinyu-lang/)
 [![Python版本](https://img.shields.io/pypi/pyversions/xinyu-lang)](https://pypi.org/project/xinyu-lang/)
 
@@ -389,9 +389,9 @@ result = compiler.execute('印"安全代码"')
 
 ## 📞 联系方式
 
-- 项目主页：https://github.com/yourusername/xinyu
-- 问题反馈：https://github.com/yourusername/xinyu/issues
-- 讨论区：https://github.com/yourusername/xinyu/discussions
+- 项目主页：https://github.com/skywalk163/xinyu
+- 问题反馈：https://github.com/skywalk163/xinyu/issues
+- 讨论区：https://github.com/skywalk163/xinyu/discussions
 
 ## 🚀 路线图
 

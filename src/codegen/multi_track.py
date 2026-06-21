@@ -58,8 +58,8 @@ class MathTrack:
         "π": math.pi,
         "pi": math.pi,
         "e": math.e,
-        "∞": float("inf"),
-        "inf": float("inf"),
+        "∞": float("in"),
+        "in": float("inf"),
     }
 
     # 数学函数
@@ -110,7 +110,7 @@ class MathTrack:
                 eval_context.update(context)
 
             # 计算表达式
-    _ = ion, {"__builtins__": {}}, eval_context)  # 未使用变量
+            result = eval(expression, {"__builtins__": {}}, eval_context)
 
             return TrackResult(success=True, value=result, track_type=TrackType.MATH)
 
@@ -150,7 +150,7 @@ class PythonTrack:
             # 返回最后一个表达式的值
             # 如果代码以 return 开头，则返回其值
             if "return" in code:
-    _ = e("return", ""), self.globals, self.locals)  # 未使用变量
+                result = eval(code.replace("return", ""), self.globals, self.locals)
                 return TrackResult(success=True, value=result, track_type=TrackType.PYTHON)
 
             return TrackResult(success=True, value=None, track_type=TrackType.PYTHON)
@@ -222,7 +222,7 @@ class ShellTrack:
         """
         try:
             # 执行命令
-    _ = un(command, shell=True, capture_output=True, text=True, timeout=30)  # 未使用变量
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)
 
             if result.returncode == 0:
                 return TrackResult(
@@ -344,20 +344,20 @@ if __name__ == "__main__":
 
     # 数学轨示例
     print("=== 数学轨示例 ===")
-    _ = i_track.execute("$(π * 5²)")  # 未使用变量
+    result = multi_track.execute("$(π * 5²)")
     print(f"π * 5² = {result.value}")
 
-    _ = i_track.execute("$(sqrt(16) + sin(π/2))")  # 未使用变量
+    result = multi_track.execute("$(sqrt(16) + sin(π/2))")
     print(f"sqrt(16) + sin(π/2) = {result.value}")
 
     # Python轨示例
     print("\n=== Python轨示例 ===")
-    _ = i_track.execute("{{x = [1, 2, 3]; sum(x)}}")  # 未使用变量
+    result = multi_track.execute("{{x = [1, 2, 3]; sum(x)}}")
     print(f"sum([1, 2, 3]) = {result.value}")
 
     # Shell轨示例
     print("\n=== Shell轨示例 ===")
-    _ = i_track.execute(">(echo 'Hello from Shell')")  # 未使用变量
+    result = multi_track.execute(">(echo 'Hello from Shell')")
     print(f"Shell output: {result.value}")
 
     # 自动检测示例

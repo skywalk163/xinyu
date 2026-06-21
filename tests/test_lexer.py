@@ -1,8 +1,6 @@
 # tests/test_lexer.py
 import pytest
 
-from src.lexer.keywords import CORE_KEYWORDS, OPERATORS, SYNTAX_MARKERS
-from src.lexer.lexer import Lexer
 from src.lexer.tokens import Token, TokenType
 
 
@@ -26,6 +24,7 @@ def test_token_equality():
 
 
 # ===== 任务3：中文关键字定义测试 =====
+from src.lexer.keywords import CORE_KEYWORDS, OPERATORS, SYNTAX_MARKERS
 
 
 def test_core_keywords():
@@ -54,6 +53,7 @@ def test_operators():
 
 
 # ===== 任务4：词法分析器基础测试 =====
+from src.lexer.lexer import Lexer
 
 
 def test_lexer_number():

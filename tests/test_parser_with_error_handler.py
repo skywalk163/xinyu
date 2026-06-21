@@ -7,7 +7,6 @@ import pytest
 
 from src.error_handling import ErrorHandler, ErrorType
 from src.lexer.lexer import Lexer
-from src.lexer.tokens import TokenType
 from src.parser.ast_nodes import (
     AssignNode,
     BinaryOpNode,
@@ -18,10 +17,7 @@ from src.parser.ast_nodes import (
     ListNode,
     NumberNode,
     ProgramNode,
-    RepeatNode,
     ReturnNode,
-    StringNode,
-    UnaryOpNode,
     VarDefNode,
     WhileNode,
 )
@@ -35,7 +31,7 @@ class TestParserWithErrorHandler:
         """测试解析器初始化"""
         # 创建词法分析器和错误处理器
         lexer = Lexer("定 x = 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
 
         # 创建解析器
@@ -49,11 +45,11 @@ class TestParserWithErrorHandler:
     def test_parse_simple_expression(self):
         """测试解析简单表达式"""
         lexer = Lexer("1 相加 2")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -74,11 +70,11 @@ class TestParserWithErrorHandler:
     def test_parse_variable_definition(self):
         """测试解析变量定义"""
         lexer = Lexer("定 x = 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -94,11 +90,11 @@ class TestParserWithErrorHandler:
     def test_parse_assignment(self):
         """测试解析赋值语句"""
         lexer = Lexer("x = 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -115,11 +111,11 @@ class TestParserWithErrorHandler:
     def test_parse_if_statement(self):
         """测试解析条件语句"""
         lexer = Lexer('若 真 那么 打印("hello")')
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -138,11 +134,11 @@ class TestParserWithErrorHandler:
     def test_parse_for_loop(self):
         """测试解析for循环"""
         lexer = Lexer("遍历 i 于 范围(10)：打印(i)")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -161,11 +157,11 @@ class TestParserWithErrorHandler:
     def test_parse_while_loop(self):
         """测试解析while循环"""
         lexer = Lexer('当 真：打印("hello")')
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -183,11 +179,11 @@ class TestParserWithErrorHandler:
     def test_parse_return_statement(self):
         """测试解析返回语句"""
         lexer = Lexer("返回 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -202,11 +198,11 @@ class TestParserWithErrorHandler:
     def test_error_handling_missing_equals(self):
         """测试错误处理：变量定义缺少等号"""
         lexer = Lexer("定 x 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        parser.parse()
 
         # 应该报告错误
         assert error_handler.has_errors()
@@ -221,11 +217,11 @@ class TestParserWithErrorHandler:
     def test_error_handling_missing_identifier(self):
         """测试错误处理：变量定义缺少标识符"""
         lexer = Lexer("定 = 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        parser.parse()
 
         # 应该报告错误
         assert error_handler.has_errors()
@@ -240,11 +236,11 @@ class TestParserWithErrorHandler:
     def test_error_handling_unexpected_token(self):
         """测试错误处理：意外的token"""
         lexer = Lexer("+ 42")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        parser.parse()
 
         # 应该报告错误
         assert error_handler.has_errors()
@@ -259,11 +255,11 @@ class TestParserWithErrorHandler:
     def test_error_recovery(self):
         """测试错误恢复：多个语句中的错误"""
         lexer = Lexer("定 x = 42\n定 y 100\n定 z = 200")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 应该报告错误
         assert error_handler.has_errors()
@@ -289,11 +285,11 @@ class TestParserWithErrorHandler:
 打印 x 相加 y
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 3
@@ -312,11 +308,11 @@ class TestParserWithErrorHandler:
     def test_parse_complex_expression(self):
         """测试解析复杂表达式"""
         lexer = Lexer("(1 相加 2) 相乘 3")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1
@@ -337,11 +333,11 @@ class TestParserWithErrorHandler:
     def test_parse_list_literal(self):
         """测试解析列表字面量"""
         lexer = Lexer("[1, 2, 3]")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         error_handler = ErrorHandler()
         parser = ParserWithErrorHandler(tokens, error_handler)
 
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         assert isinstance(ast, ProgramNode)
         assert len(ast.statements) == 1

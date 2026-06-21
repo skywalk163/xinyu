@@ -221,7 +221,7 @@ class CachedLexer:
 
         # 执行词法分析
         lexer = self.lexer_class(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 缓存结果
         self.cache.set_tokens(source, tokens)
@@ -262,7 +262,7 @@ class CachedParser:
 
         # 执行语法分析
         parser = self.parser_class(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 缓存结果
         self.cache.set_ast(source, ast)

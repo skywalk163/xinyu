@@ -75,7 +75,7 @@ class DebuggerManager:
             self.debug_history.append(debug_entry)
 
             # 使用调试器执行
-    _ = r.debug_execute(code, context)  # 未使用变量
+            result = self.debugger.debug_execute(code, context)
 
             # 更新调试历史
             debug_entry["result"] = result
@@ -194,7 +194,7 @@ class DebuggerManager:
     def _handle_step(self) -> bool:
         """处理单步执行（步入）命令"""
         if self.debugger:
-    _ = r.step_into()  # 未使用变量
+            result = self.debugger.step_into()
             self._print_debug_result(result)
             return True
         return False
@@ -202,7 +202,7 @@ class DebuggerManager:
     def _handle_next(self) -> bool:
         """处理单步执行（步过）命令"""
         if self.debugger:
-    _ = r.step_over()  # 未使用变量
+            result = self.debugger.step_over()
             self._print_debug_result(result)
             return True
         return False
@@ -210,7 +210,7 @@ class DebuggerManager:
     def _handle_continue(self) -> bool:
         """处理继续执行命令"""
         if self.debugger:
-    _ = r.continue_execution()  # 未使用变量
+            result = self.debugger.continue_execution()
             self._print_debug_result(result)
             return True
         return False
@@ -282,7 +282,7 @@ class DebuggerManager:
 
         expression = " ".join(args)
         if self.debugger:
-    _ = r.evaluate(expression)  # 未使用变量
+            result = self.debugger.evaluate(expression)
             print(f"{expression} = {result}")
             return True
         return False

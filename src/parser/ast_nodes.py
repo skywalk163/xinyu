@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from src.parser.arity import Arity
+
 
 @dataclass
 class ASTNode(ABC):
@@ -21,7 +23,6 @@ class ASTNode(ABC):
     @abstractmethod
     def __str__(self) -> str:
         """返回节点的字符串表示，用于调试"""
-        pass
 
 
 # ============ 基础节点 ============
@@ -409,3 +410,127 @@ class FromImportNode(ASTNode):
     def __str__(self) -> str:
         names_str = ", ".join(self.names)
         return f"FromImportNode({self.module}: {names_str})"
+
+
+# ============ 面向对象编程节点 ============
+
+
+@dataclass
+class ClassNode(ASTNode):
+    """类定义节点
+
+    表示类定义，如 '定义 类 类名：...'。
+    """
+
+    name: str  # 类名
+    extends: Optional[str] = None  # 继承的父类
+    implements: List[str] = field(default_factory=list)  # 实现的接口列表
+    members: List[ASTNode] = field(default_factory=list)  # 类成员（属性、方法等）
+
+    def __str__(self) -> str:
+        extends_str = f" extends {self.extends}" if self.extends else ""
+        implements_str = f" implements {', '.join(self.implements)}" if self.implements else ""
+        return f"ClassNode({self.name}{extends_str}{implements_str}, {len(self.members)} members)"
+
+
+@dataclass
+class InterfaceNode(ASTNode):
+    """接口定义节点
+
+    表示接口定义，如 '定义 接口 接口名：...'。
+    """
+
+    name: str  # 接口名
+    methods: List["MethodNode"] = field(default_factory=list)  # 接口方法列表
+
+    def __str__(self) -> str:
+        return f"InterfaceNode({self.name}, {len(self.methods)} methods)"
+
+
+@dataclass
+class MethodNode(ASTNode):
+    """方法定义节点
+
+    表示类或接口中的方法定义。
+    """
+
+    name: str  # 方法名
+    params: List[str]  # 参数列表
+    body: List[ASTNode]  # 方法体
+    is_static: bool = False  # 是否是静态方法
+    is_constructor: bool = False  # 是否是构造函数
+
+    def __str__(self) -> str:
+        static_str = "static " if self.is_static else ""
+        constructor_str = "constructor " if self.is_constructor else ""
+        params_str = ", ".join(self.params)
+        return f"MethodNode({static_str}{constructor_str}{self.name}({params_str}), {len(self.body)} stmts)"
+
+
+@dataclass
+class PropertyNode(ASTNode):
+    """属性定义节点
+
+    表示类中的属性定义。
+    """
+
+    name: str  # 属性名
+    value: Optional[ASTNode] = None  # 初始值
+    is_static: bool = False  # 是否是静态属性
+
+    def __str__(self) -> str:
+        static_str = "static " if self.is_static else ""
+        value_str = f" = {self.value}" if self.value else ""
+        return f"PropertyNode({static_str}{self.name}{value_str})"
+
+
+@dataclass
+class NewNode(ASTNode):
+    """新建对象节点
+
+    表示新建对象表达式，如 '新建 类名(参数)'。
+    """
+
+    class_name: str  # 类名
+    args: List[ASTNode] = field(default_factory=list)  # 构造函数参数
+
+    def __str__(self) -> str:
+        args_str = ", ".join(str(a) for a in self.args)
+        return f"NewNode({self.class_name}({args_str}))"
+
+
+@dataclass
+class ThisNode(ASTNode):
+    """自身节点
+
+    表示this/self引用。
+    """
+
+    def __str__(self) -> str:
+        return "ThisNode()"
+
+
+@dataclass
+class SuperNode(ASTNode):
+    """父类节点
+
+    表示super引用。
+    """
+
+    def __str__(self) -> str:
+        return "SuperNode()"
+
+
+@dataclass
+class ExportNode(ASTNode):
+    """导出节点
+
+    表示export语句，用于模块导出。
+    """
+
+    names: List[str] = field(default_factory=list)  # 导出的名称列表
+    aliases: Dict[str, str] = field(default_factory=dict)  # 名称到别名的映射
+
+    def __str__(self) -> str:
+        names_str = ", ".join(self.names)
+        return f"ExportNode({names_str})"

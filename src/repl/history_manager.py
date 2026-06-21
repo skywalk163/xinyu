@@ -5,7 +5,6 @@
 支持历史记录的搜索、编辑、持久化存储和导入导出功能。
 """
 
-import gzip
 import json
 import pickle
 import sqlite3
@@ -13,7 +12,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 
 class CommandType(str, Enum):
@@ -189,7 +188,7 @@ class HistoryManager:
         entry = HistoryEntry(
             timestamp=datetime.now(),
             command=command,
-    _ =   # 未使用变量
+            result=result,
             command_type=self._detect_command_type(command),
             execution_time=execution_time,
             success=success,
@@ -356,7 +355,7 @@ class HistoryManager:
             entry = HistoryEntry(
                 timestamp=datetime.fromisoformat(row[1]),
                 command=row[2],
-    _ =   # 未使用变量
+                result=row[3],
                 command_type=CommandType(row[4]),
                 execution_time=row[5],
                 success=bool(row[6]),
@@ -393,7 +392,7 @@ class HistoryManager:
             new_entry = HistoryEntry(
                 timestamp=datetime.now(),
                 command=new_command,
-    _ = 设置  # 未使用变量
+                result=None,  # 结果将在执行后设置
                 command_type=self._detect_command_type(new_command),
                 execution_time=None,
                 success=True,
@@ -429,7 +428,7 @@ class HistoryManager:
             new_entry = HistoryEntry(
                 timestamp=datetime.now(),
                 command=new_command,
-    _ =   # 未使用变量
+                result=None,
                 command_type=self._detect_command_type(new_command),
                 execution_time=None,
                 success=True,
@@ -566,7 +565,7 @@ class HistoryManager:
             entry = HistoryEntry(
                 timestamp=datetime.fromisoformat(row[1]),
                 command=row[2],
-    _ =   # 未使用变量
+                result=row[3],
                 command_type=CommandType(row[4]),
                 execution_time=row[5],
                 success=bool(row[6]),
@@ -703,7 +702,7 @@ class HistoryManager:
             return HistoryEntry(
                 timestamp=datetime.fromisoformat(row[1]),
                 command=row[2],
-    _ =   # 未使用变量
+                result=row[3],
                 command_type=CommandType(row[4]),
                 execution_time=row[5],
                 success=bool(row[6]),
@@ -727,7 +726,7 @@ class HistoryManager:
             yield HistoryEntry(
                 timestamp=datetime.fromisoformat(row[1]),
                 command=row[2],
-    _ =   # 未使用变量
+                result=row[3],
                 command_type=CommandType(row[4]),
                 execution_time=row[5],
                 success=bool(row[6]),

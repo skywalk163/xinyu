@@ -4,27 +4,20 @@
 """
 
 import os
-import random
 import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from src.memory import (
-    ASTNodePoolStrategy,
-    CacheMemoryLimitStrategy,
     LexerPool,
     MemoryMonitor,
-    MemoryOptimizer,
     ObjectPool,
     ParserPool,
-    StringInterningStrategy,
     TokenFlyweight,
-    TokenFlyweightStrategy,
     estimate_memory_usage,
     find_memory_leaks,
     generate_memory_report,
-    get_memory_monitor,
     get_memory_optimizer,
     monitor_memory_growth,
     optimize_memory_usage,
@@ -188,7 +181,6 @@ def test_token_flyweight():
             print("跳过Token享元测试：Token模块不存在")
             return True
 
-        from src.lexer.tokens import Token
 
         # 创建多个相同值的Token
         tokens = []

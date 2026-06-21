@@ -35,7 +35,7 @@ class Diagnostic:
     suggestion: Optional[str] = None
 
     def __str__(self) -> str:
-    _ = .level.upper()}] {self.position}: {self.message}"  # 未使用变量
+        result = f"[{self.level.upper()}] {self.position}: {self.message}"
         if self.code:
             result += f" ({self.code})"
         if self.suggestion:
@@ -49,12 +49,10 @@ class Analyzer(ABC):
     @abstractmethod
     def analyze(self, source: str) -> List[Diagnostic]:
         """分析源代码，返回诊断信息列表"""
-        pass
 
     @abstractmethod
     def is_valid(self) -> bool:
         """检查源代码是否有效"""
-        pass
 
 
 class CodeGenerator(ABC):
@@ -63,12 +61,10 @@ class CodeGenerator(ABC):
     @abstractmethod
     def generate(self, ast: Any, target: str = "python") -> str:
         """生成目标代码"""
-        pass
 
     @abstractmethod
     def get_supported_targets(self) -> List[str]:
         """获取支持的目标语言列表"""
-        pass
 
 
 class Runtime(ABC):
@@ -77,17 +73,14 @@ class Runtime(ABC):
     @abstractmethod
     def execute(self, code: str, context: Optional[Dict] = None) -> Any:
         """执行代码"""
-        pass
 
     @abstractmethod
     def is_safe(self) -> bool:
         """检查运行时环境是否安全"""
-        pass
 
     @abstractmethod
     def get_environment(self) -> Dict[str, Any]:
         """获取运行时环境"""
-        pass
 
 
 class ModuleLoader(ABC):
@@ -96,17 +89,14 @@ class ModuleLoader(ABC):
     @abstractmethod
     def load(self, module_name: str) -> Any:
         """加载模块"""
-        pass
 
     @abstractmethod
     def is_available(self, module_name: str) -> bool:
         """检查模块是否可用"""
-        pass
 
     @abstractmethod
     def list_modules(self) -> List[str]:
         """列出所有可用模块"""
-        pass
 
 
 class Compiler(ABC):
@@ -122,17 +112,14 @@ class Compiler(ABC):
     @abstractmethod
     def compile(self, source: str, target: str = "python") -> str:
         """编译源代码到目标语言"""
-        pass
 
     @abstractmethod
     def get_diagnostics(self) -> List[Diagnostic]:
         """获取编译过程中的诊断信息"""
-        pass
 
     @abstractmethod
     def has_errors(self) -> bool:
         """检查是否有错误"""
-        pass
 
 
 # 导出核心类型

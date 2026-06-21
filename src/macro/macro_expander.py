@@ -5,7 +5,6 @@
 """
 
 
-
 from src.macro.macro_system import MacroSystem
 from src.parser.ast_nodes import (
     ASTNode,
@@ -153,7 +152,7 @@ class MacroExpander:
         from src.parser.parser import Parser
 
         lexer = Lexer(expanded_code)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
         expanded_ast = parser.parse()
 

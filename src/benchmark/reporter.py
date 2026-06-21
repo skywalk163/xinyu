@@ -74,7 +74,7 @@ class BenchmarkReporter:
             report_lines.append("-" * 80)
 
             # 最快和最慢
-            fastest = min(results, key=lambda r: r.statistics.get("time_mean", float("inf")))
+            fastest = min(results, key=lambda r: r.statistics.get("time_mean", float("in")))
             slowest = max(results, key=lambda r: r.statistics.get("time_mean", 0))
 
             report_lines.append(
@@ -85,7 +85,7 @@ class BenchmarkReporter:
             )
 
             # 内存使用
-            min_memory = min(results, key=lambda r: r.statistics.get("memory_mean", float("inf")))
+            min_memory = min(results, key=lambda r: r.statistics.get("memory_mean", float("in")))
             max_memory = max(results, key=lambda r: r.statistics.get("memory_mean", 0))
 
             min_memory_kb = min_memory.statistics.get("memory_mean", 0) / 1024
@@ -130,7 +130,7 @@ class BenchmarkReporter:
             chart_data = self._generate_chart_data(sorted_results)
 
         # 生成HTML
-        html = f"""<!DOCTYPE html>
+        html = """<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -249,7 +249,7 @@ class BenchmarkReporter:
 
         for result in sorted_results:
             stats = result.statistics
-            html += f"""                <tr>
+            html += """                <tr>
                     <td>{result.name}</td>
                     <td>{result.function_name}</td>
                     <td>{stats.get('time_mean', 0):.6f}</td>
@@ -266,7 +266,7 @@ class BenchmarkReporter:
 """
 
         if include_charts and results:
-            html += f"""        <div class="chart-container">
+            html += """        <div class="chart-container">
             <h2>性能对比图表</h2>
             <canvas id="performanceChart" width="800" height="400"></canvas>
         </div>
@@ -368,7 +368,7 @@ class BenchmarkReporter:
             if "cpu_mean" in stats:
                 cpu_data.append(stats.get("cpu_mean", 0))
 
-        chart_data = f"""
+        chart_data = """
             // 图表数据
             const benchmarkNames = [{', '.join(benchmark_names)}];
             const timeData = [{', '.join(f'{t:.6f}' for t in time_data)}];
@@ -376,7 +376,7 @@ class BenchmarkReporter:
         """
 
         if cpu_data:
-            chart_data += f"""
+            chart_data += """
             const cpuData = [{', '.join(f'{c:.2f}' for c in cpu_data)}];
             """
 
@@ -412,11 +412,11 @@ class BenchmarkReporter:
         if results:
             report_data["summary"] = {
                 "fastest_test": min(
-                    results, key=lambda r: r.statistics.get("time_mean", float("inf"))
+                    results, key=lambda r: r.statistics.get("time_mean", float("in"))
                 ).name,
                 "slowest_test": max(results, key=lambda r: r.statistics.get("time_mean", 0)).name,
                 "min_memory_test": min(
-                    results, key=lambda r: r.statistics.get("memory_mean", float("inf"))
+                    results, key=lambda r: r.statistics.get("memory_mean", float("in"))
                 ).name,
                 "max_memory_test": max(
                     results, key=lambda r: r.statistics.get("memory_mean", 0)

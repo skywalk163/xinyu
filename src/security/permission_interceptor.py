@@ -4,9 +4,7 @@
 """
 
 import builtins
-import os
-import sys
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List
 
 # 使用统一的日志工具
 from src.utils.logging_utils import get_logger
@@ -184,7 +182,7 @@ def test_permission_system():
 
     all_passed = True
     for role, operation, resource, expected, description in test_cases:
-    _ = _permission(role, operation, resource)  # 未使用变量
+        result = pm.check_permission(role, operation, resource)
         passed = result == expected
         all_passed = all_passed and passed
 

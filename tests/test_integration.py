@@ -4,7 +4,6 @@
 测试完整的编译流程：词法分析 → 语法分析 → 语义分析 → 代码生成 → 执行
 """
 import io
-import sys
 from contextlib import redirect_stdout
 
 import pytest
@@ -34,7 +33,7 @@ class TestHelloWorld:
         # 捕获输出
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "你好，世界！" in output
@@ -51,7 +50,7 @@ class TestHelloWorld:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "你好，世界！" in output
@@ -69,7 +68,7 @@ class TestArithmetic:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "8" in output
@@ -83,7 +82,7 @@ class TestArithmetic:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "7" in output
@@ -97,7 +96,7 @@ class TestArithmetic:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "20" in output
@@ -111,7 +110,7 @@ class TestArithmetic:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "5" in output
@@ -125,7 +124,7 @@ class TestArithmetic:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "20" in output
@@ -147,7 +146,7 @@ class TestFunction:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "你好！" in output
@@ -166,7 +165,7 @@ class TestFunction:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "你好，世界！" in output
@@ -185,7 +184,7 @@ class TestFunction:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "8" in output
@@ -207,7 +206,7 @@ class TestFunction:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "120" in output
@@ -229,7 +228,7 @@ class TestControlFlow:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "x 大于 5" in output
@@ -249,13 +248,13 @@ class TestControlFlow:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "x 小于等于 5" in output
 
     def test_nested_if(self):
-        """测试嵌套 if"""
+        """测试嵌套 i"""
         from src.main import ChineseProgram
 
         program = ChineseProgram()
@@ -268,7 +267,7 @@ class TestControlFlow:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "x 大于 8" in output
@@ -289,7 +288,7 @@ class TestLoop:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "1" in output
@@ -310,7 +309,7 @@ class TestLoop:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "1" in output
@@ -329,7 +328,7 @@ class TestLoop:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert output.count("你好") == 3
@@ -356,7 +355,7 @@ class TestComplexPrograms:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "13" in output  # fib(7) = 13
@@ -376,7 +375,7 @@ class TestComplexPrograms:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "15" in output
@@ -401,7 +400,7 @@ class TestComplexPrograms:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "120" in output
@@ -452,7 +451,7 @@ class TestErrorHandling:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            result = program.run(source)
 
         output = captured_output.getvalue()
         assert result is None
@@ -467,7 +466,7 @@ class TestErrorHandling:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            result = program.run(source)
 
         output = captured_output.getvalue()
         assert result is None
@@ -482,7 +481,7 @@ class TestErrorHandling:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            result = program.run(source)
 
         output = captured_output.getvalue()
         # 语义分析应该检测到未定义的变量
@@ -502,7 +501,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "你好" in output
@@ -523,7 +522,7 @@ class TestBuiltinFunctions:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "True" in output
@@ -545,7 +544,7 @@ class TestPythonModules:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "3.14" in output
@@ -562,7 +561,7 @@ class TestPythonModules:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         # 应该输出一个数字

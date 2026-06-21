@@ -2,7 +2,6 @@
 
 测试语义分析器的边界情况处理能力。
 """
-import pytest
 
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
@@ -15,22 +14,22 @@ class TestSemanticBoundary:
     def test_empty_program(self):
         """测试空程序语义分析"""
         lexer = Lexer("")
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_undefined_variable(self):
         """测试未定义变量检查"""
         source = "打印 未定义变量。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         # 应该检测到未定义变量错误
         assert result is False or len(analyzer.errors) > 0
 
@@ -41,11 +40,11 @@ class TestSemanticBoundary:
 定义 变量 = 2。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        analyzer.analyze(ast)
         # 可能允许重定义，也可能报错
         # 根据实际实现决定
 
@@ -53,11 +52,11 @@ class TestSemanticBoundary:
         """测试函数定义"""
         source = "定义 函数名 = 函数 x：返回 x 相乘 2。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_function_call_with_correct_args(self):
@@ -67,11 +66,11 @@ class TestSemanticBoundary:
 定义 结果 = 加法 1 2。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_if_statement(self):
@@ -83,11 +82,11 @@ class TestSemanticBoundary:
     打印"假"。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_while_loop(self):
@@ -98,11 +97,11 @@ class TestSemanticBoundary:
     定义 计数 = 计数 相加 1。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_for_loop(self):
@@ -113,11 +112,11 @@ class TestSemanticBoundary:
     打印 元素。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_nested_scopes(self):
@@ -129,22 +128,22 @@ class TestSemanticBoundary:
     返回 内层变量。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_return_outside_function(self):
         """测试函数外的return语句"""
         source = "返回 42。"
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         # 应该检测到return在函数外的错误
         assert result is False or len(analyzer.errors) > 0
 
@@ -156,11 +155,11 @@ class TestSemanticBoundary:
 定义 长度 = 列表的长度。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        analyzer.analyze(ast)
         # 根据实际实现决定是否支持
 
     def test_dict_operations(self):
@@ -170,11 +169,11 @@ class TestSemanticBoundary:
 定义 值 = 字典["键"]。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        analyzer.analyze(ast)
         # 根据实际实现决定是否支持
 
     def test_arithmetic_operations(self):
@@ -186,11 +185,11 @@ class TestSemanticBoundary:
 定义 d = 6 相除 2。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True
 
     def test_comparison_operations(self):
@@ -201,9 +200,9 @@ class TestSemanticBoundary:
 定义 结果3 = 1 等于 1。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
-    _ = .analyze(ast)  # 未使用变量
+        result = analyzer.analyze(ast)
         assert result is True

@@ -9,16 +9,10 @@ import pytest
 from src.runtime.secure_runtime import (
     InputValidator,
     SecureRuntime,
-    SecurityError,
     create_safe_runtime,
     execute_safely,
 )
-from src.security.input_validator import (
-    InputSanitizer,
-    SourceCodeValidator,
-    sanitize_source,
-    validate_source,
-)
+from src.security.input_validator import SourceCodeValidator, sanitize_source, validate_source
 
 
 class TestInputValidator:
@@ -173,35 +167,35 @@ class TestSourceCodeValidator:
     def test_validate_valid_code(self):
         """测试验证有效代码"""
         source = "定 x = 5。"
-    _ = _source(source)  # 未使用变量
+        result = validate_source(source)
         assert result.is_valid is True
         assert len(result.errors) == 0
 
     def test_validate_empty_code(self):
         """测试验证空代码"""
         source = ""
-    _ = _source(source)  # 未使用变量
+        result = validate_source(source)
         assert result.is_valid is False
         assert "空" in result.errors[0]
 
     def test_validate_too_long_code(self):
         """测试验证过长代码"""
         source = "x" * (SourceCodeValidator.MAX_SOURCE_LENGTH + 1)
-    _ = _source(source)  # 未使用变量
+        result = validate_source(source)
         assert result.is_valid is False
         assert "过长" in result.errors[0]
 
     def test_validate_dangerous_import(self):
         """测试验证危险导入"""
         source = "导入 os"
-    _ = _source(source)  # 未使用变量
+        result = validate_source(source)
         assert result.is_valid is False
         assert any("os" in err for err in result.errors)
 
     def test_validate_bracket_mismatch(self):
         """测试验证括号不匹配"""
         source = "定 x = [1, 2, 3"
-    _ = _source(source, strict=True)  # 未使用变量
+        result = validate_source(source, strict=True)
         assert len(result.warnings) > 0  # 应该有警告
 
 
@@ -212,7 +206,7 @@ class TestInputSanitizer:
         """测试清理BOM标记"""
         source = '\ufeffprint("你好")'
         sanitized = sanitize_source(source)
-        assert not sanitized.startswith("\ufeff")
+        assert not sanitized.startswith("﻿")
 
     def test_sanitize_newlines(self):
         """测试规范化换行符"""
@@ -267,7 +261,7 @@ class TestSecurityIntegration:
         sanitized = sanitize_source(source)
 
         # 2. 验证输入
-    _ = _source(sanitized)  # 未使用变量
+        result = validate_source(sanitized)
         assert result.is_valid is True
 
         # 3. 执行代码（模拟）

@@ -8,7 +8,7 @@ import threading
 import weakref
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Dict, Generic, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -316,7 +316,7 @@ class TokenFlyweight:
         """
         with cls._lock:
             # 假设每个Token对象占用约100字节
-            unique_tokens = len(cls._pool)
+            len(cls._pool)
             # 如果没有共享，每个Token都是独立的
             # 这里我们无法知道总Token数，所以返回0
             return 0

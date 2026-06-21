@@ -43,7 +43,7 @@ class TestCompilationCache:
 
         # 创建Token
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 缓存Token
         cache.set_tokens(source, tokens)
@@ -69,9 +69,9 @@ class TestCompilationCache:
 
         # 创建AST
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 缓存AST
         cache.set_ast(source, ast)
@@ -96,7 +96,7 @@ class TestCompilationCache:
         # 添加3个条目，应该驱逐最旧的
         for i in range(3):
             source = f"定 x{i} = {i}。"
-    _ = ).tokenize()  # 未使用变量
+            tokens = Lexer(source).tokenize()
             cache.set_tokens(source, tokens)
 
         # 缓存大小应该不超过max_size
@@ -107,7 +107,7 @@ class TestCompilationCache:
         """测试缓存清空"""
         cache = CompilationCache()
         source = "定 x = 5。"
-    _ = urce).tokenize()  # 未使用变量
+        tokens = Lexer(source).tokenize()
 
         # 缓存数据
         cache.set_tokens(source, tokens)
@@ -123,7 +123,7 @@ class TestCompilationCache:
         """测试缓存统计"""
         cache = CompilationCache()
         source = "定 x = 5。"
-    _ = urce).tokenize()  # 未使用变量
+        tokens = Lexer(source).tokenize()
 
         # 缓存数据
         cache.set_tokens(source, tokens)
@@ -144,7 +144,7 @@ class TestCompilationCache:
         """测试内存使用"""
         cache = CompilationCache()
         source = "定 x = 5。"
-    _ = urce).tokenize()  # 未使用变量
+        tokens = Lexer(source).tokenize()
 
         # 缓存数据
         cache.set_tokens(source, tokens)
@@ -165,7 +165,7 @@ class TestCachedLexer:
         source = "定 x = 5。"
 
         # 首次调用，应该执行词法分析
-    _ = exer.tokenize(source)  # 未使用变量
+        tokens = cached_lexer.tokenize(source)
         assert len(tokens) > 0
 
         # 检查统计
@@ -202,10 +202,10 @@ class TestCachedParser:
         source = "定 x = 5。"
 
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 首次调用，应该执行语法分析
-    _ = arser.parse(source, tokens)  # 未使用变量
+        ast = cached_parser.parse(source, tokens)
         assert ast is not None
 
         # 检查统计
@@ -219,7 +219,7 @@ class TestCachedParser:
         source = "定 x = 5。"
 
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 首次调用
         ast1 = cached_parser.parse(source, tokens)
@@ -251,7 +251,7 @@ class TestGlobalCache:
         """测试清空全局缓存"""
         cache = get_global_cache()
         source = "定 x = 5。"
-    _ = urce).tokenize()  # 未使用变量
+        tokens = Lexer(source).tokenize()
 
         # 缓存数据
         cache.set_tokens(source, tokens)
@@ -272,7 +272,7 @@ class TestTokenizeCached:
         source = "定 x = 5。"
 
         # 首次调用
-    _ = _cached(source)  # 未使用变量
+        tokens = tokenize_cached(source)
         assert len(tokens) > 0
         assert isinstance(tokens, tuple)  # 返回tuple
 
@@ -302,13 +302,13 @@ class TestCachePerformance:
 
         # 首次调用（未命中）
         start1 = time.time()
-        tokens1 = cached_lexer.tokenize(source)
-    _ = e() - start1  # 未使用变量
+        cached_lexer.tokenize(source)
+        time.time() - start1
 
         # 第二次调用（命中）
         start2 = time.time()
-        tokens2 = cached_lexer.tokenize(source)
-    _ = e() - start2  # 未使用变量
+        cached_lexer.tokenize(source)
+        time.time() - start2
 
         # 缓存命中应该更快（虽然对于简单代码差异很小）
         # 这里只验证缓存命中

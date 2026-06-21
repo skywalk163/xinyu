@@ -73,7 +73,7 @@ def measure_execution_time(
             execution_times = []
             for _ in range(iterations):
                 start_time = time.perf_counter()
-    _ = s)  # 未使用变量
+                result = f(*args, **kwargs)
                 end_time = time.perf_counter()
                 execution_times.append(end_time - start_time)
 
@@ -135,7 +135,7 @@ def profile_function(
 
             # 运行函数并分析性能
             profiler.enable()
-    _ = wargs)  # 未使用变量
+            result = f(*args, **kwargs)
             profiler.disable()
 
             # 获取分析结果
@@ -413,11 +413,11 @@ def run_benchmark(
 
         start_time = time.perf_counter()
         try:
-    _ = ist[arg_idx], **kwargs_list[kwargs_idx])  # 未使用变量
+            result = func(*args_list[arg_idx], **kwargs_list[kwargs_idx])
             success = True
             error = None
         except Exception as e:
-    _ =   # 未使用变量
+            result = None
             success = False
             error = str(e)
 
@@ -529,8 +529,6 @@ def print_benchmark_result(result: BenchmarkResult, detailed: bool = False) -> N
 class TimeoutException(Exception):
     """超时异常"""
 
-    pass
-
 
 def timeout(seconds: float):
     """
@@ -553,7 +551,7 @@ def timeout(seconds: float):
             try:
                 signal.signal(signal.SIGALRM, _handle_timeout)
                 signal.alarm(int(seconds))
-    _ = args)  # 未使用变量
+                result = func(*args, **kwargs)
                 signal.alarm(0)  # 取消警报
                 return result
             except TimeoutException:

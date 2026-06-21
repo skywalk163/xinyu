@@ -23,7 +23,7 @@ from src.runtime.secure_executor import SecureExecutor
 # 常量定义
 VERSION = "1.0"
 REPL_PROMPT = "心语> "
-WELCOME_MESSAGE = f"""心语语言 v{VERSION}
+WELCOME_MESSAGE = """心语语言 v{VERSION}
 输入 '退出' 或 'exit' 退出
 输入 '帮助' 或 'help' 查看帮助
 """
@@ -63,7 +63,7 @@ class ChineseProgram:
         """
         try:
             # 使用编译器进行编译
-    _ = r.execute(source)  # 未使用变量
+            result = self.compiler.execute(source)
             return result
 
         except CompilationError as e:

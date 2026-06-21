@@ -3,16 +3,12 @@
 """测试增强的REPL历史记录管理器（简化版）"""
 
 import json
-import os
 import tempfile
-from datetime import datetime
 from pathlib import Path
 
 from src.repl.history_manager import (
     CommandType,
-    HistoryEntry,
     HistoryManager,
-    create_history_manager,
 )
 
 
@@ -20,7 +16,6 @@ def test_basic_operations():
     """测试基本操作"""
     print("测试基本操作...")
 
-    import os
     import tempfile
 
     # 使用临时文件避免状态共享

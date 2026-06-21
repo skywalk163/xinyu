@@ -230,7 +230,7 @@ class Lexer:
                 if dot_count > 1:
                     # 遇到第二个小数点，停止解析并报错
                     error_msg = (
-                        f"Invalid number format: multiple decimal points "
+                        "Invalid number format: multiple decimal points "
                         f"in '{self.source[start:self.pos + 1]}'"
                     )
                     raise LexerError(error_msg, self.line, start_col)
@@ -267,7 +267,7 @@ class Lexer:
         Returns:
             bool: 如果是中文字符返回True，否则返回False
         """
-        return "\u4e00" <= char <= "\u9fff"
+        return "\u4e00" <= char <= "鿿"
 
     def _read_chinese(self):
         """读取中文（关键字、操作符或标识符）
@@ -310,7 +310,7 @@ class Lexer:
         # 如果找到操作符匹配，检查上下文
         if best_op_match:
             # 检查前一个token是否是操作数（数字、标识符、字符串、右括号等）
-            prev_is_operand = False
+            pass
             # 检查前一个token是否是声明关键字（定、函等）
             prev_is_declaration = False
 
@@ -324,12 +324,11 @@ class Lexer:
                     TokenType.RBRACKET,
                     TokenType.RBRACE,
                 ):
-                    _ = True  # prev_is_operand - 未使用变量
+                    pass
                 elif last_token.type in (TokenType.VAR, TokenType.FUNCTION, TokenType.ASSIGN):
                     prev_is_declaration = True
 
             # 检查后面是否是操作数
-            next_is_operand = False
             next_pos = start + best_op_len
             if next_pos < len(self.source):
                 next_char = self.source[next_pos]
@@ -339,7 +338,7 @@ class Lexer:
                     or next_char == "_"
                     or self._is_chinese(next_char)
                 ):
-                    _ = True  # next_is_operand - 未使用变量
+                    pass
 
             # 如果前面是声明关键字，则不识别为操作符（如"定 加 为 5"中的"加"是变量名）
             if prev_is_declaration:

@@ -9,7 +9,6 @@ import pytest
 from src.macro.macro_expander import MacroExpander
 from src.macro.macro_system import Macro, MacroSystem, MacroType
 from src.parser.ast_nodes import (
-    BinaryOpNode,
     ForNode,
     FunctionCallNode,
     IdentifierNode,
@@ -17,7 +16,6 @@ from src.parser.ast_nodes import (
     NumberNode,
     ProgramNode,
     RepeatNode,
-    ReturnNode,
     StringNode,
     VarDefNode,
     WhileNode,

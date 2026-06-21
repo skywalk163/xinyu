@@ -4,12 +4,10 @@
 
 import json
 import tempfile
-from datetime import datetime, timedelta
 from pathlib import Path
 
 from src.repl.history_manager import (
     CommandType,
-    HistoryEntry,
     HistoryManager,
     create_history_manager,
     print_history_stats,

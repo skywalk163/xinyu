@@ -6,7 +6,6 @@ import tempfile
 from pathlib import Path
 
 from src.repl.enhanced_repl import EnhancedREPL
-from src.repl.history_manager import CommandType, HistoryManager
 
 
 class MockCompiler:
@@ -89,8 +88,6 @@ def test_repl_history_integration():
         # 测试历史编辑命令
         print("\n8. 测试历史编辑命令...")
         # 模拟用户输入
-        import io
-        import sys
 
         # 保存原始输入
         original_input = __builtins__.input

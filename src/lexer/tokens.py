@@ -47,6 +47,17 @@ class TokenType(Enum):
     # 模块导入
     IMPORT = auto()  # 导入
     FROM = auto()  # 从
+    EXPORT = auto()  # 导出
+
+    # 面向对象编程
+    CLASS = auto()  # 类
+    EXTENDS = auto()  # 继承
+    IMPLEMENTS = auto()  # 实现
+    NEW = auto()  # 新建
+    THIS = auto()  # 自身
+    STATIC = auto()  # 静态
+    INTERFACE = auto()  # 接口
+    SUPER = auto()  # 父类
 
     # 操作符（双字）
     PLUS = auto()  # 相加

@@ -249,7 +249,7 @@ class LexerWithErrorHandler:
 
     def _is_chinese(self, char: str) -> bool:
         """判断字符是否为中文"""
-        return "\u4e00" <= char <= "\u9fff"
+        return "\u4e00" <= char <= "鿿"
 
     def _read_chinese(self):
         """读取中文（关键字、操作符或标识符）"""
@@ -275,7 +275,6 @@ class LexerWithErrorHandler:
 
         # 如果找到操作符匹配，检查上下文
         if best_op_match:
-            prev_is_operand = False
             prev_is_declaration = False
 
             if self.tokens:
@@ -288,7 +287,7 @@ class LexerWithErrorHandler:
                     TokenType.RBRACKET,
                     TokenType.RBRACE,
                 ):
-                    _ = True  # prev_is_operand - 未使用变量
+                    pass
                 elif last_token.type in (TokenType.VAR, TokenType.FUNCTION, TokenType.ASSIGN):
                     prev_is_declaration = True
 

@@ -4,14 +4,11 @@
 测试宏的定义、注册、展开等功能。
 """
 
-import pytest
 
-from src.lexer.lexer import Lexer
 from src.macro.builtin_macros import register_builtin_macros
 from src.macro.idiom_macros import register_idiom_macros
 from src.macro.macro_expander import MacroExpander
 from src.macro.macro_system import Macro, MacroSystem, MacroType
-from src.parser.parser import Parser
 
 
 class TestMacro:
@@ -179,7 +176,7 @@ class TestMacroExpander:
             body="定计数器=0。当计数器小于次数：循环体。计数器=计数器加1。",
         )
         system.register("重复", macro)
-        expander = MacroExpander(system)
+        MacroExpander(system)
 
         # 测试宏展开功能（通过宏系统直接展开）
         expanded_code = system.expand("重复", {"次数": "5", "循环体": '印"你好"。'})

@@ -47,7 +47,6 @@ class TestMathModule:
 
     def test_三角函数(self):
         """测试三角函数"""
-        import math
 
         assert abs(数学.正弦(0) - 0.0) < 0.0001
         assert abs(数学.余弦(0) - 1.0) < 0.0001
@@ -214,7 +213,7 @@ class TestStdlibIntegration:
     def test_跨模块使用(self):
         """测试跨模块使用"""
         # 使用数学模块计算
-    _ = 6)  # 未使用变量
+        result = 数学.平方根(16)
         # 使用字符串模块处理
         text = 字符串.大写("hello")
         # 使用列表模块处理

@@ -4,7 +4,6 @@
 测试心语语言的模块导入功能。
 """
 import io
-import sys
 from contextlib import redirect_stdout
 
 import pytest
@@ -36,7 +35,7 @@ class TestBasicImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "4.0" in output
@@ -54,7 +53,7 @@ class TestBasicImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "5.0" in output
@@ -76,7 +75,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "6.0" in output
@@ -94,7 +93,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "7.0" in output
@@ -112,7 +111,7 @@ class TestFromImport:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "8.0" in output
@@ -134,7 +133,7 @@ class TestImportUsage:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "3.14" in output
@@ -153,7 +152,7 @@ class TestImportUsage:
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
-    _ = source)  # 未使用变量
+            program.run(source)
 
         output = captured_output.getvalue()
         assert "10.0" in output

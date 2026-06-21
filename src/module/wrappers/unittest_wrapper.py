@@ -17,7 +17,7 @@ class UnittestWrapper(ChineseModuleWrapper):
         "测试运行器": "TextTestRunner",
         "主函数": "main",
         "跳过": "skip",
-        "跳过如果": "skipIf",
+        "跳过如果": "skipI",
         "跳过除非": "skipUnless",
         "预期失败": "expectedFailure",
     }

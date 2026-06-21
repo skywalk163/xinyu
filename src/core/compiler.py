@@ -70,14 +70,14 @@ class XinyuCompiler(Compiler):
         try:
             # 1. 词法分析
             lexer = self.lexer(source, self.error_handler)
-    _ = ze()  # 未使用变量
+            tokens = lexer.tokenize()
 
             # 收集词法错误
             self._collect_lexer_errors()
 
             # 2. 语法分析
             parser = self.parser(tokens, self.error_handler)
-    _ = ()  # 未使用变量
+            ast = parser.parse()
 
             # 收集语法错误
             self._collect_parser_errors()
@@ -146,7 +146,6 @@ class XinyuCompiler(Compiler):
         """收集语义分析错误"""
         # 注意：当前语义分析器可能没有集成到错误处理器中
         # 这里需要根据实际实现调整
-        pass
 
     def get_diagnostics(self) -> List[Diagnostic]:
         """获取编译过程中的诊断信息"""
@@ -195,7 +194,7 @@ class XinyuCompiler(Compiler):
         try:
             # 只进行词法和语法分析
             lexer = self.lexer(source, self.error_handler)
-    _ = ze()  # 未使用变量
+            tokens = lexer.tokenize()
 
             parser = self.parser(tokens, self.error_handler)
             parser.parse()
@@ -208,8 +207,6 @@ class XinyuCompiler(Compiler):
 
 class CompilationError(Exception):
     """编译错误异常"""
-
-    pass
 
 
 # 导出

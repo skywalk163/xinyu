@@ -3,7 +3,6 @@
 测试用户定义函数的元数自动推断功能。
 """
 
-import pytest
 
 from src.lexer.lexer import Lexer
 from src.parser.ast_nodes import FunctionCallNode, FunctionDefNode, VarDefNode
@@ -22,9 +21,9 @@ class TestUserDefinedFunctionArity:
 平方 5。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 检查变量定义（值为函数定义）
         var_def = ast.statements[0]
@@ -47,9 +46,9 @@ class TestUserDefinedFunctionArity:
 。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        parser.parse()
 
         # 检查函数已注册
         assert parser.verb_registry.is_registered("自定义函数")
@@ -68,9 +67,9 @@ class TestUserDefinedFunctionArity:
 。
 """
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
 
         # 检查变量定义
         var_def = ast.statements[0]

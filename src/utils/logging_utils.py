@@ -144,7 +144,7 @@ def log_function_call(
             # 执行函数
             start_time = time.time()
             try:
-    _ = args)  # 未使用变量
+                result = func(*args, **kwargs)
                 elapsed = time.time() - start_time
                 logger.log(level, f"函数 {func_name} 执行完成，耗时: {elapsed:.4f}秒")
                 return result
@@ -178,7 +178,7 @@ def log_performance(logger: logging.Logger, level: int = logging.INFO, threshold
 
             start_time = time.time()
             try:
-    _ = args)  # 未使用变量
+                result = func(*args, **kwargs)
                 elapsed = time.time() - start_time
 
                 if elapsed > threshold:
@@ -237,7 +237,7 @@ def log_memory_usage(logger: logging.Logger, level: int = logging.DEBUG, include
 
             start_time = time.time()
             try:
-    _ = args)  # 未使用变量
+                result = func(*args, **kwargs)
                 elapsed = time.time() - start_time
 
                 log_parts = [f"函数 {module_name}.{func_name} 执行时间: {elapsed:.4f}秒"]

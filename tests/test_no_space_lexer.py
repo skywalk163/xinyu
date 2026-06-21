@@ -16,7 +16,7 @@ class TestNoSpaceLexer:
         """测试无空格变量定义"""
         source = "定义x=5。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 验证token数量（包括EOF）
         assert len(tokens) == 6
@@ -34,7 +34,7 @@ class TestNoSpaceLexer:
         """测试中文变量名"""
         source = "定义价格=100。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.VAR
         assert tokens[1].type == TokenType.IDENTIFIER
@@ -45,7 +45,7 @@ class TestNoSpaceLexer:
         """测试打印语句"""
         source = "打印x。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.IDENTIFIER
         assert tokens[0].value == "print"
@@ -56,7 +56,7 @@ class TestNoSpaceLexer:
         """测试打印字符串"""
         source = '打印"你好"。'
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.IDENTIFIER
         assert tokens[0].value == "print"
@@ -67,7 +67,7 @@ class TestNoSpaceLexer:
         """测试算术操作符"""
         source = "定义结果=3相加5。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.VAR
         assert tokens[1].value == "结果"
@@ -79,7 +79,7 @@ class TestNoSpaceLexer:
         """测试比较操作符"""
         source = '如果x大于5那么：打印"大"。'
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.IF
         assert tokens[1].value == "x"
@@ -92,7 +92,7 @@ class TestNoSpaceLexer:
         """测试函数定义"""
         source = "定义平方=函x：返回x相乘x。。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.VAR
         assert tokens[1].value == "平方"
@@ -105,7 +105,7 @@ class TestNoSpaceLexer:
         """测试if-else语句"""
         source = '如果x大于5那么：打印"大"。否则：打印"小"。。'
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.IF
         assert tokens[4].type == TokenType.THEN
@@ -115,7 +115,7 @@ class TestNoSpaceLexer:
         """测试while循环"""
         source = "当满足x小于10：打印x。。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.WHILE
         assert tokens[1].value == "x"
@@ -125,7 +125,7 @@ class TestNoSpaceLexer:
         """测试for循环"""
         source = "循环x遍历列表1 2 3：打印x。。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.FOR
         assert tokens[1].value == "x"
@@ -135,7 +135,7 @@ class TestNoSpaceLexer:
         """测试内置函数"""
         source = "定义结果=平方根16。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.IDENTIFIER
         assert tokens[3].value == "sqrt"
@@ -145,7 +145,7 @@ class TestNoSpaceLexer:
         """测试多个变量定义"""
         source = "定义x=5。定义y=10。定义z=x相加y。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 验证第一个变量
         assert tokens[0].type == TokenType.VAR
@@ -163,7 +163,7 @@ class TestNoSpaceLexer:
         """测试复杂表达式"""
         source = "定义结果=(3相加5)相乘2。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.LPAREN
         assert tokens[4].value == "3"
@@ -176,7 +176,7 @@ class TestNoSpaceLexer:
         """测试布尔值"""
         source = "定义flag=真值。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.TRUE
 
@@ -184,7 +184,7 @@ class TestNoSpaceLexer:
         """测试逻辑操作符"""
         source = "定义结果=真值并且假值。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.TRUE
         assert tokens[4].type == TokenType.AND
@@ -194,7 +194,7 @@ class TestNoSpaceLexer:
         """测试兼容模式（旧语法）"""
         source = "定x=5。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[0].type == TokenType.VAR
         assert tokens[1].value == "x"
@@ -231,7 +231,7 @@ class TestNoSpaceEdgeCases:
         """测试空源代码"""
         source = ""
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert len(tokens) == 1
         assert tokens[0].type == TokenType.EOF
@@ -240,7 +240,7 @@ class TestNoSpaceEdgeCases:
         """测试只有空白字符"""
         source = "   \n\t  "
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert len(tokens) == 1
         assert tokens[0].type == TokenType.EOF
@@ -249,7 +249,7 @@ class TestNoSpaceEdgeCases:
         """测试中文数字"""
         source = "定义x=123。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.NUMBER
         assert tokens[3].value == "123"
@@ -258,7 +258,7 @@ class TestNoSpaceEdgeCases:
         """测试浮点数"""
         source = "定义x=3.14。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[3].type == TokenType.NUMBER
         assert tokens[3].value == "3.14"
@@ -269,7 +269,7 @@ class TestNoSpaceEdgeCases:
 定义y=10。
 打印x。"""
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 验证token数量
         assert len(tokens) > 1
@@ -284,7 +284,7 @@ class TestNoSpaceEdgeCases:
         """测试包含空格的字符串"""
         source = '打印"你好 世界"。'
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         assert tokens[1].type == TokenType.STRING
         assert tokens[1].value == "你好 世界"
@@ -293,7 +293,7 @@ class TestNoSpaceEdgeCases:
         """测试嵌套括号"""
         source = "定义结果=((3相加5)相乘2)。"
         lexer = NoSpaceLexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
 
         # 验证括号匹配
         lparens = [t for t in tokens if t.type == TokenType.LPAREN]

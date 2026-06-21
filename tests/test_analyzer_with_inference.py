@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """语义分析器（集成类型推断）测试"""
 
-import pytest
 
 from src.error_handling import ErrorHandler
 from src.parser.ast_nodes import (
@@ -21,7 +20,7 @@ from src.parser.ast_nodes import (
     VarDefNode,
     WhileNode,
 )
-from src.semantic.analyzer_with_inference import SemanticAnalyzerWithInference, SemanticError
+from src.semantic.analyzer_with_inference import SemanticAnalyzerWithInference
 
 
 def create_program_node(statement):

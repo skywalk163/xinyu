@@ -12,16 +12,13 @@ from src.parser.ast_nodes import (
     AssignNode,
     ASTNode,
     BinaryOpNode,
-    BlockNode,
     DictNode,
     ForNode,
     FunctionCallNode,
     FunctionDefNode,
     IdentifierNode,
     IfNode,
-    IndexNode,
     ListNode,
-    MemberAccessNode,
     NumberNode,
     ProgramNode,
     RepeatNode,
@@ -259,9 +256,9 @@ class SemanticAnalyzerWithInference:
         """
         # 检查变量是否已定义
         if self.current_scope.has(node.name):
-            symbol = self.current_scope.lookup(node.name)
+            self.current_scope.lookup(node.name)
             self._report_error(
-                f"变量 '{node.name}' 已定义", node.line, node.column, suggestion=f"请使用不同的变量名，或删除重复的定义"
+                f"变量 '{node.name}' 已定义", node.line, node.column, suggestion="请使用不同的变量名，或删除重复的定义"
             )
             return "unknown"
 
@@ -351,8 +348,8 @@ class SemanticAnalyzerWithInference:
         Returns:
             str: 运算结果的类型
         """
-        left_type = self._visit(node.left)
-        right_type = self._visit(node.right)
+        self._visit(node.left)
+        self._visit(node.right)
 
         # 使用类型推断器推断结果类型
         context = self._build_type_context()

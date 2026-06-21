@@ -3,15 +3,13 @@
 支持代码补全、语法高亮、历史记录等功能
 """
 
-import atexit
-import os
+import re
 import readline
-import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
-from .history_manager import CommandType, HistoryEntry, HistoryManager
+from .history_manager import CommandType, HistoryManager
 
 
 class CodeCompletionProvider:
@@ -194,7 +192,6 @@ class SyntaxHighlighter:
 
     def _highlight_code(self, code: str) -> str:
         """高亮代码部分（不含注释）"""
-        import re
 
         # 高亮字符串
         code = self._highlight_strings(code)
@@ -337,7 +334,7 @@ class EnhancedREPL:
 
                 # 执行代码
                 if code.strip():
-    _ = e(code)  # 未使用变量
+                    result = self.compiler.execute(code)
                     if result is not None:
                         print(f"结果: {result}")
 
@@ -402,13 +399,13 @@ class EnhancedREPL:
         try:
             # 执行命令并获取结果
             start_time = time.time()
-    _ = r.execute(command)  # 未使用变量
+            result = self.compiler.execute(command)
             execution_time = time.time() - start_time
 
             # 添加到历史记录管理器
             self.history_manager.add_entry(
                 command=command,
-    _ = esult is not None else None,  # 未使用变量
+                result=str(result) if result is not None else None,
                 execution_time=execution_time,
                 success=True,  # 假设执行成功，实际应该根据异常处理
                 tags=self._extract_tags(command),
@@ -422,7 +419,7 @@ class EnhancedREPL:
             # 执行失败，但仍然记录
             self.history_manager.add_entry(
                 command=command,
-    _ =   # 未使用变量
+                result=f"错误: {e}",
                 execution_time=None,
                 success=False,
                 tags=self._extract_tags(command),
@@ -436,7 +433,7 @@ class EnhancedREPL:
     def _extract_tags(self, command: str) -> List[str]:
         """从命令中提取标签"""
         tags = []
-        command_lower = command.lower()
+        command.lower()
 
         # 根据命令内容添加标签
         if "定义" in command:
@@ -740,7 +737,7 @@ class EnhancedREPL:
 
             # 执行新命令
             try:
-    _ = ecute(new_command)  # 未使用变量
+                result = self.compiler.execute(new_command)
                 if result is not None:
                     print(f"结果: {result}")
             except Exception as e:
@@ -772,7 +769,7 @@ class EnhancedREPL:
             print("-" * 50)
 
             # 执行代码
-    _ = r.execute(code)  # 未使用变量
+            result = self.compiler.execute(code)
             if result is not None:
                 print(f"执行结果: {result}")
 

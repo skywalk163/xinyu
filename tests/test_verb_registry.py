@@ -134,7 +134,7 @@ class TestVerbRegistry:
         """测试字符串表示"""
         registry = VerbRegistry()
         registry.register_builtin_verbs()
-    _ = stry)  # 未使用变量
+        result = str(registry)
         assert "VerbRegistry" in result
         assert "操作符" in result
         assert "函数" in result
@@ -143,7 +143,7 @@ class TestVerbRegistry:
         """测试详细表示"""
         registry = VerbRegistry()
         registry.register_builtin_verbs()
-    _ = istry)  # 未使用变量
+        result = repr(registry)
         assert "VerbRegistry" in result
         assert "operators" in result
         assert "functions" in result

@@ -26,7 +26,7 @@ def test_fnmatch_module():
     filenames = ["test.py", "example.txt", "script.py", "data.json", "main.py"]
     pattern = "*.py"
 
-    print(f"\n1. 文件名匹配测试:")
+    print("\n1. 文件名匹配测试:")
     print(f"   文件列表: {filenames}")
     print(f"   匹配模式: {pattern}")
 
@@ -34,7 +34,7 @@ def test_fnmatch_module():
     print(f"   匹配结果: {matched}")
 
     # 测试单个匹配
-    print(f"\n2. 单个文件匹配:")
+    print("\n2. 单个文件匹配:")
     print(f"   'test.py' 匹配 '*.py': {fnmatch.匹配('test.py', '*.py')}")
     print(f"   'test.txt' 匹配 '*.py': {fnmatch.匹配('test.txt', '*.py')}")
 
@@ -51,7 +51,7 @@ def test_bisect_module():
     # 测试二分查找
     sorted_list = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
 
-    print(f"\n1. 二分查找测试:")
+    print("\n1. 二分查找测试:")
     print(f"   有序列表: {sorted_list}")
 
     # 查找插入位置
@@ -67,7 +67,7 @@ def test_bisect_module():
     print(f"   插入 {value} 后: {new_list}")
 
     # 查找左位置
-    print(f"\n2. 查找左右位置:")
+    print("\n2. 查找左右位置:")
     print(f"   查找 7 的左位置: {bisect.查找左位置(sorted_list, 7)}")
     print(f"   查找 7 的右位置: {bisect.查找右位置(sorted_list, 7)}")
 
@@ -84,7 +84,7 @@ def test_heapq_module():
     # 测试堆操作
     data = [5, 3, 8, 1, 9, 2, 7, 4, 6]
 
-    print(f"\n1. 堆化测试:")
+    print("\n1. 堆化测试:")
     print(f"   原始数据: {data}")
 
     import copy
@@ -94,7 +94,7 @@ def test_heapq_module():
     print(f"   堆化后: {heap}")
 
     # 弹出最小元素
-    print(f"\n2. 堆操作测试:")
+    print("\n2. 堆操作测试:")
     min_val = heapq.弹出(heap)
     print(f"   弹出最小值: {min_val}")
     print(f"   弹出后堆: {heap}")
@@ -104,7 +104,7 @@ def test_heapq_module():
     print(f"   推入 0 后: {heap}")
 
     # 获取最大n个元素
-    print(f"\n3. 最大最小n个元素:")
+    print("\n3. 最大最小n个元素:")
     print(f"   最大3个: {heapq.最大n个(3, data)}")
     print(f"   最小3个: {heapq.最小n个(3, data)}")
 
@@ -119,7 +119,7 @@ def test_linecache_module():
     linecache = manager.import_module("行缓存")
 
     # 测试获取行
-    print(f"\n1. 行缓存测试:")
+    print("\n1. 行缓存测试:")
     # 使用当前文件测试
     current_file = __file__
     line = linecache.获取行(current_file, 1)

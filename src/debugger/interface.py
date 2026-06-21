@@ -134,12 +134,10 @@ class DebuggerBase(ABC):
     @abstractmethod
     def set_breakpoint(self, filename: str, line: int, condition: Optional[str] = None) -> bool:
         """设置断点"""
-        pass
 
     @abstractmethod
     def clear_breakpoint(self, breakpoint_id: int) -> bool:
         """清除断点"""
-        pass
 
     def list_breakpoints(self) -> List[Dict[str, Any]]:
         """列出所有断点"""
@@ -148,22 +146,18 @@ class DebuggerBase(ABC):
     @abstractmethod
     def step_over(self) -> Dict[str, Any]:
         """单步执行（步过）"""
-        pass
 
     @abstractmethod
     def step_into(self) -> Dict[str, Any]:
         """单步执行（步入）"""
-        pass
 
     @abstractmethod
     def step_out(self) -> Dict[str, Any]:
         """单步执行（步出）"""
-        pass
 
     @abstractmethod
     def continue_execution(self) -> Dict[str, Any]:
         """继续执行"""
-        pass
 
     def pause_execution(self) -> None:
         """暂停执行"""
@@ -172,22 +166,18 @@ class DebuggerBase(ABC):
     @abstractmethod
     def get_variables(self, scope: str = "local") -> Dict[str, Any]:
         """获取变量"""
-        pass
 
     @abstractmethod
     def set_variable(self, name: str, value: Any) -> bool:
         """设置变量值"""
-        pass
 
     @abstractmethod
     def get_call_stack(self) -> List[Dict[str, Any]]:
         """获取调用栈"""
-        pass
 
     @abstractmethod
     def evaluate(self, expression: str) -> Any:
         """计算表达式"""
-        pass
 
     def _generate_breakpoint_id(self) -> int:
         """生成断点ID"""

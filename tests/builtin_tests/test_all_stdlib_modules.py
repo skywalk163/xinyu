@@ -102,12 +102,12 @@ def test_all_modules():
 
     # 测试文件匹配模块
     print("\n10. 文件匹配模块测试:")
-    glob = manager.import_module("文件匹配")
+    manager.import_module("文件匹配")
     print("   glob模块已加载，可用于文件路径匹配")
 
     # 测试文件操作模块
     print("\n11. 文件操作模块测试:")
-    shutil = manager.import_module("文件操作")
+    manager.import_module("文件操作")
     print("   shutil模块已加载，可用于高级文件操作")
 
     # 测试序列化模块

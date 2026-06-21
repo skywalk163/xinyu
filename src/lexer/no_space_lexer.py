@@ -23,7 +23,7 @@ class NoSpaceLexer:
         # 3字关键字
         "定义": (TokenType.VAR, "var"),
         "函数": (TokenType.FUNCTION, "function"),
-        "如果": (TokenType.IF, "if"),
+        "如果": (TokenType.IF, "i"),
         "那么": (TokenType.THEN, "then"),
         "否则": (TokenType.ELSE, "else"),
         "当满足": (TokenType.WHILE, "while"),
@@ -32,7 +32,7 @@ class NoSpaceLexer:
         "遍历": (TokenType.IN, "in"),
         "返回": (TokenType.RETURN, "return"),
         "循环": (TokenType.FOR, "for"),
-        "可选": (TokenType.ELIF, "elif"),
+        "可选": (TokenType.ELIF, "eli"),
         "继续": (TokenType.CONTINUE, "continue"),
         "跳出": (TokenType.BREAK, "break"),
         "结束": (TokenType.END, "end"),
@@ -73,7 +73,7 @@ class NoSpaceLexer:
         # 单字关键字（兼容旧语法）
         "定": (TokenType.VAR, "var"),
         "函": (TokenType.FUNCTION, "function"),
-        "若": (TokenType.IF, "if"),
+        "若": (TokenType.IF, "i"),
         "则": (TokenType.THEN, "then"),
         "否": (TokenType.ELSE, "else"),
         "真": (TokenType.TRUE, "true"),
@@ -186,7 +186,7 @@ class NoSpaceLexer:
             是否是标识符开始字符
         """
         char = self.source[self.pos]
-        return char.isalpha() or "\u4e00" <= char <= "\u9fff" or char == "_"
+        return char.isalpha() or "\u4e00" <= char <= "鿿" or char == "_"
 
     def _is_identifier_char(self) -> bool:
         """判断是否是标识符字符
@@ -200,7 +200,7 @@ class NoSpaceLexer:
         char = self.source[self.pos]
 
         # 如果是数字、字母、中文或下划线，可能是标识符
-        if char.isalnum() or "\u4e00" <= char <= "\u9fff" or char == "_":
+        if char.isalnum() or "\u4e00" <= char <= "鿿" or char == "_":
             # 但需要检查是否是关键字的一部分
             # 检查从当前位置开始是否能匹配关键字
             for length in range(4, 0, -1):

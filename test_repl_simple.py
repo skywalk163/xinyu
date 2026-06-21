@@ -6,7 +6,6 @@ import tempfile
 from pathlib import Path
 
 from src.repl.enhanced_repl import EnhancedREPL
-from src.repl.history_manager import CommandType, HistoryManager
 
 
 class MockCompiler:

@@ -8,18 +8,11 @@ import threading
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 # 使用统一的导入工具
-from src.utils.imports import (
-    import_optional,
-    with_gc,
-    with_json,
-    with_os,
-    with_psutil,
-    with_time,
-    with_tracemalloc,
-)
+from src.utils.imports import import_optional
+from src.utils.logging_utils import get_logger
 
 # 导入可选模块
 tracemalloc = import_optional("tracemalloc")
@@ -317,8 +310,8 @@ class MemoryMonitor:
             "time_diff_seconds": snapshot2.timestamp - snapshot1.timestamp,
             "memory_growth_mb": snapshot2.current_memory_mb - snapshot1.current_memory_mb,
             "object_growth": snapshot2.object_count - snapshot1.object_count,
-            "gc_collected_diff": snapshot2.gc_collected - snapshot1.gc_collected,
-            "gc_uncollectable_diff": snapshot2.gc_uncollectable - snapshot1.gc_uncollectable,
+            "gc_collected_dif": snapshot2.gc_collected - snapshot1.gc_collected,
+            "gc_uncollectable_dif": snapshot2.gc_uncollectable - snapshot1.gc_uncollectable,
             "memory_growth_percent": (
                 (snapshot2.current_memory_mb - snapshot1.current_memory_mb)
                 / snapshot1.current_memory_mb
@@ -419,7 +412,7 @@ class MemoryMonitor:
             recommendations.append("内存持续增长，可能存在内存泄漏")
 
         # GC建议
-        if comparison["gc_uncollectable_diff"] > 100:
+        if comparison["gc_uncollectable_dif"] > 100:
             recommendations.append("不可回收对象数量增加，检查循环引用")
 
         return recommendations

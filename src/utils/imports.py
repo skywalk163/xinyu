@@ -5,6 +5,7 @@
 """
 
 import importlib
+import importlib.util
 from typing import Any, Optional, Tuple
 
 
@@ -160,4 +161,14 @@ def get_available_modules() -> dict:
 
 
 # 常用导入的快捷方式
-# 这些条件导入在需要时动态导入，不在这里静态导入
+if HAS_PSUTIL:
+    pass
+if HAS_TRACEMALLOC:
+    pass
+if HAS_YAML:
+    pass
+if HAS_OBJGRAPH:
+    pass
+
+
+# 移除未使用的通配符导入

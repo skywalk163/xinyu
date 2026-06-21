@@ -2,7 +2,6 @@
 
 测试编译各阶段的性能。
 """
-import pytest
 
 from src.codegen.python_codegen import PythonCodegen
 from src.lexer.lexer import Lexer
@@ -35,7 +34,7 @@ class TestCompileBenchmark:
         """测试语法分析性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
         parser.parse()
 
@@ -44,7 +43,7 @@ class TestCompileBenchmark:
         """测试语法分析性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
         parser.parse()
 
@@ -53,9 +52,9 @@ class TestCompileBenchmark:
         """测试语义分析性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -64,9 +63,9 @@ class TestCompileBenchmark:
         """测试语义分析性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         analyzer = SemanticAnalyzer()
         analyzer.analyze(ast)
 
@@ -75,9 +74,9 @@ class TestCompileBenchmark:
         """测试代码生成性能（小规模：100行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(100)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         codegen = PythonCodegen()
         codegen.generate(ast)
 
@@ -86,9 +85,9 @@ class TestCompileBenchmark:
         """测试代码生成性能（中规模：1000行）"""
         source = "\n".join([f"定义 变量{i} = {i}。" for i in range(1000)])
         lexer = Lexer(source)
-    _ = kenize()  # 未使用变量
+        tokens = lexer.tokenize()
         parser = Parser(tokens)
-    _ = arse()  # 未使用变量
+        ast = parser.parse()
         codegen = PythonCodegen()
         codegen.generate(ast)
 
@@ -119,7 +118,7 @@ class TestCompileBenchmark:
         codegen_result = self.test_codegen_performance_small()
 
         # 输出结果（用于调试）
-        print(f"\n小规模（100行）性能:")
+        print("\n小规模（100行）性能:")
         print(format_result(lexer_result, "词法分析"))
         print(format_result(parser_result, "语法分析"))
         print(format_result(semantic_result, "语义分析"))

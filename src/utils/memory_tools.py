@@ -82,7 +82,7 @@ def track_memory_allocation(
             snapshot1 = tracemalloc.take_snapshot()
 
             # 执行函数
-    _ = wargs)  # 未使用变量
+            result = f(*args, **kwargs)
 
             # 获取结束快照
             snapshot2 = tracemalloc.take_snapshot()
@@ -104,9 +104,9 @@ def track_memory_allocation(
                 total_allocated += stat.size_diff
                 allocation_stats.append(
                     {
-                        "size_diff": stat.size_diff,
+                        "size_dif": stat.size_diff,
                         "size_diff_kb": stat.size_diff / 1024,
-                        "count_diff": stat.count_diff,
+                        "count_dif": stat.count_diff,
                         "traceback": stat.traceback,
                     }
                 )
@@ -165,10 +165,10 @@ def find_memory_leaks(
         if stat.size_diff > 0:  # 只关注内存增长
             leaks.append(
                 {
-                    "size_diff": stat.size_diff,
+                    "size_dif": stat.size_diff,
                     "size_diff_kb": stat.size_diff / 1024,
                     "size_diff_mb": stat.size_diff / 1024 / 1024,
-                    "count_diff": stat.count_diff,
+                    "count_dif": stat.count_diff,
                     "traceback": stat.traceback,
                 }
             )
@@ -220,7 +220,7 @@ def monitor_memory_growth(
     growth_mb = end_memory - start_memory
     exceeded_threshold = growth_mb > threshold_mb
 
-    _ =   # 未使用变量
+    result = {
         "success": True,
         "start_memory_mb": start_memory,
         "end_memory_mb": end_memory,
@@ -326,9 +326,9 @@ def compare_snapshots(snapshot1: MemorySnapshot, snapshot2: MemorySnapshot) -> D
 
     return {
         "time_elapsed": time_diff,
-        "memory_diff": memory_diff,
+        "memory_dif": memory_diff,
         "object_diffs": object_diffs,
-        "gc_collections_diff": (
+        "gc_collections_dif": (
             snapshot2.gc_stats["collections"][0] - snapshot1.gc_stats["collections"][0],
             snapshot2.gc_stats["collections"][1] - snapshot1.gc_stats["collections"][1],
             snapshot2.gc_stats["collections"][2] - snapshot1.gc_stats["collections"][2],
@@ -505,7 +505,7 @@ class MemoryProfiler:
             "start_time": self.start_time,
             "end_time": time.time(),
             "snapshots": len(self.snapshots),
-            "overall_diff": overall_diff,
+            "overall_dif": overall_diff,
             "stage_diffs": stage_diffs,
             "final_report": generate_memory_report(last_snapshot),
         }

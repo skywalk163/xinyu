@@ -78,7 +78,7 @@ class PdbDebugger(DebuggerBase):
 
             # 使用pdb的next命令
             self.pdb.set_step()
-    _ = e_with_debug("next")  # 未使用变量
+            result = self._execute_with_debug("next")
 
             return {
                 "status": "step_over_completed",
@@ -97,7 +97,7 @@ class PdbDebugger(DebuggerBase):
 
             # 使用pdb的step命令
             self.pdb.set_step()
-    _ = e_with_debug("step")  # 未使用变量
+            result = self._execute_with_debug("step")
 
             return {
                 "status": "step_into_completed",
@@ -116,7 +116,7 @@ class PdbDebugger(DebuggerBase):
 
             # 使用pdb的return命令
             self.pdb.set_return()
-    _ = e_with_debug("return")  # 未使用变量
+            result = self._execute_with_debug("return")
 
             return {
                 "status": "step_out_completed",
@@ -134,7 +134,7 @@ class PdbDebugger(DebuggerBase):
                 return {"error": "没有活动的执行帧"}
 
             # 使用pdb的continue命令
-    _ = e_with_debug("continue")  # 未使用变量
+            result = self._execute_with_debug("continue")
 
             return {"status": "execution_completed", "result": result}
 
@@ -238,7 +238,7 @@ class PdbDebugger(DebuggerBase):
             frame = self.current_frame
 
             # 在帧的上下文中计算表达式
-    _ = ion, frame.f_globals, frame.f_locals)  # 未使用变量
+            result = eval(expression, frame.f_globals, frame.f_locals)
             return result
 
         except Exception as e:
@@ -262,7 +262,7 @@ class PdbDebugger(DebuggerBase):
             self.pdb.run(compiled_code, exec_context)
 
             # 获取结果
-    _ = .get("__result__", None)  # 未使用变量
+            result = exec_context.get("__result__", None)
 
             return result
 

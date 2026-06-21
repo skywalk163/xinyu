@@ -5,12 +5,10 @@
 """
 
 import gc
-import sys
-import weakref
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -37,16 +35,13 @@ class MemoryOptimizationStrategy(ABC):
     @abstractmethod
     def apply(self, context: Dict[str, Any] = None) -> OptimizationResult:
         """应用优化策略"""
-        pass
 
     @abstractmethod
     def can_apply(self, context: Dict[str, Any] = None) -> bool:
         """检查是否可以应用此策略"""
-        pass
 
     def reset(self) -> None:
         """重置策略状态"""
-        pass
 
     def get_stats(self) -> Dict[str, Any]:
         """获取策略统计信息"""
@@ -184,7 +179,6 @@ class ASTNodePoolStrategy(MemoryOptimizationStrategy):
             # 在Python 3.12中，sys.path_importer_cache可能不存在
             # 使用更安全的导入方式
             import importlib.util
-            import sys
 
             # 检查模块是否存在
             spec = importlib.util.find_spec("src.parser.ast")
@@ -192,7 +186,6 @@ class ASTNodePoolStrategy(MemoryOptimizationStrategy):
                 return False
 
             # 尝试导入
-            from src.parser.ast import ASTNode
 
             return True
         except (ImportError, AttributeError):
@@ -272,8 +265,7 @@ class ASTNodePoolStrategy(MemoryOptimizationStrategy):
                 execution_time_ms=0.0,
                 success=True,
                 message=(
-                    f"AST节点池优化应用成功，"
-                    f"复用率: {self._reuses/(self._allocations+self._reuses)*100:.1f}%"
+                    "AST节点池优化应用成功，" f"复用率: {self._reuses/(self._allocations+self._reuses)*100:.1f}%"
                 ),
                 details={
                     "allocations": self._allocations,
@@ -345,7 +337,6 @@ class CacheMemoryLimitStrategy(MemoryOptimizationStrategy):
                 return False
 
             # 尝试导入
-            from src.cache.compilation_cache import CompilationCache
 
             return True
         except (ImportError, AttributeError):
@@ -539,7 +530,6 @@ class StringInterningStrategy(MemoryOptimizationStrategy):
             before_objects = len(gc.get_objects())
 
             # 创建字符串驻留函数
-            import sys
 
             def intern_string(s: str) -> str:
                 """字符串驻留"""
@@ -570,7 +560,7 @@ class StringInterningStrategy(MemoryOptimizationStrategy):
 
             # 创建优化后的str函数
             def optimized_str(obj):
-    _ = )  # 未使用变量
+                result = original_str(obj)
                 return intern_string(result)
 
             # 临时替换str函数
@@ -661,7 +651,7 @@ class MemoryOptimizer:
 
         for name, strategy in self.strategies.items():
             if strategy.enabled and strategy.can_apply(context):
-    _ = ontext)  # 未使用变量
+                result = strategy.apply(context)
                 self.results.append(result)
 
         return self.results
@@ -673,7 +663,7 @@ class MemoryOptimizer:
         if name in self.strategies:
             strategy = self.strategies[name]
             if strategy.can_apply(context):
-    _ = ontext)  # 未使用变量
+                result = strategy.apply(context)
                 self.results.append(result)
                 return result
         return None

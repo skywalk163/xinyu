@@ -74,7 +74,7 @@ def calculate_percentiles(
     sorted_data = sorted(data)
     n = len(sorted_data)
 
-    _ =   # 未使用变量
+    result = {}
     for p in percentiles:
         if p < 0 or p > 100:
             continue
@@ -428,7 +428,7 @@ class StatisticsCollector:
 
         # 添加时间信息
         if self.timestamps:
-            time_stats = calculate_statistics(self.timestamps)
+            calculate_statistics(self.timestamps)
             stats["timestamps"] = {
                 "start": self.timestamps[0],
                 "end": self.timestamps[-1],

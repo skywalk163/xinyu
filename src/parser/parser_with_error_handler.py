@@ -7,21 +7,17 @@
 
 from typing import List, Optional
 
+from src.error_handling import ErrorHandler, ErrorType
 from src.lexer.tokens import Token, TokenType
 from src.parser.ast_nodes import (
     AssignNode,
     ASTNode,
     BinaryOpNode,
-    BlockNode,
-    DictNode,
     ForNode,
     FunctionCallNode,
-    FunctionDefNode,
     IdentifierNode,
     IfNode,
-    IndexNode,
     ListNode,
-    MemberAccessNode,
     NumberNode,
     ProgramNode,
     RepeatNode,
@@ -238,7 +234,7 @@ class ParserWithErrorHandler:
         left = self._parse_and()
 
         while self._check(TokenType.OR):
-            op_token = self._advance()
+            self._advance()
             right = self._parse_and()
 
             left = BinaryOpNode(
@@ -252,7 +248,7 @@ class ParserWithErrorHandler:
         left = self._parse_comparison()
 
         while self._check(TokenType.AND):
-            op_token = self._advance()
+            self._advance()
             right = self._parse_comparison()
 
             left = BinaryOpNode(

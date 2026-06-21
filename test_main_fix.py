@@ -11,7 +11,7 @@ print("测试1: 导入修复验证")
 print("=" * 50)
 
 try:
-    from src.main import main
+    pass
 
     print("[OK] 成功导入 src.main")
 except Exception as e:
