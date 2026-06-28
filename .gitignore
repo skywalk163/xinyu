@@ -40,6 +40,9 @@ htmlcov/
 .tox/
 .hypothesis/
 
+# Type checking
+.mypy_cache/
+
 # Auto-generated
 .auto-coder/
 .autocodercommands/
@@ -56,3 +59,16 @@ Thumbs.db
 # Temporary
 *.tmp
 *.bak
+
+# Performance profiles
+performance_profile.json
+performance_profile.txt
+
+# Benchmark reports (generated)
+benchmark_reports/
+
+# Debug/temp scripts at root
+debug_*.py
+test_*.py
+demo_*.py
+migrate_*.py
